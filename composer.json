@@ -1,0 +1,24 @@
+{
+  "name": "wp-bootstrap-hooks",
+  "type": "wordpress-muplugin",
+  "license": "MIT",
+  "description": "A collection of hooks to fit bootstrap into wordpress",
+  "homepage": "http://github.com/rexblack/wp-bootstrap-hooks",
+  "authors": [
+    {
+      "name": "Rafael Nowrotek",
+      "email": "mail@benignware.com",
+      "homepage": "https://github.com/benignware"
+    }
+  ],
+  "keywords": [
+    "wordpress", "wordpress-muplugin"
+  ],
+  "support": {
+    "issues": "https://github.com/rexblack/wp-bootstrap-hooks/issues"
+  },
+  "require": {
+    "php": ">=5.3.0",
+    "composer/installers": "~1.0"
+  }
+}
