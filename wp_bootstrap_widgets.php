@@ -13,7 +13,7 @@ function wpbsx_dynamic_sidebar_filter( $sidebar_params ) {
   return $sidebar_params;
  
 }
-add_filter( 'dynamic_sidebar_params', 'wpbsx_dynamic_sidebar_filter' );
+
 
 function wpbsx_widget_callback_function() {
  
@@ -119,7 +119,8 @@ function wpbsx_widget_output_filter( $widget_output, $widget_id_base, $widget_id
   }
   return $widget_output;
 }
-add_filter( 'widget_output', 'wpbsx_widget_output_filter', 10, 3 );
+
+
 
 function wpbsx_widgets_init() {
   register_sidebar( array(
@@ -133,7 +134,8 @@ function wpbsx_widgets_init() {
     'class'         => '.list-group'
   ) );
 }
-add_action( 'widgets_init', 'wpbsx_widgets_init', 20);
+
+
 
 
 function wpbsx_search_form( $form ) {
@@ -150,7 +152,7 @@ function wpbsx_search_form( $form ) {
   return $form;
 }
 
-add_filter( 'get_search_form', 'wpbsx_search_form' );
+
 
 // Dropdown in widget
 // http://webinspiration.gallery/5-tips-build-wordpress-theme-using-bootstrap-3/
@@ -162,7 +164,8 @@ function wpbsx_widget_categories_dropdown_args( $args ) {
     }
     return $args;
 }
-add_filter( 'widget_categories_dropdown_args', 'wpbsx_widget_categories_dropdown_args' );
+
+
 
 
 

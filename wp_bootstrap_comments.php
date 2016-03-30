@@ -34,10 +34,6 @@ function wpbsx_comment_form_default_fields( $fields ) {
   return $fields;
 }
 
-
-add_filter( 'comment_form_default_fields', 'wpbsx_comment_form_default_fields');
-
-
 function wpbsx_comment_form_defaults( $args ) {
   $args['comment_field'] = 
     '<div class="form-group comment-form-comment">
@@ -49,12 +45,7 @@ function wpbsx_comment_form_defaults( $args ) {
   return $args;
 }
 
-    
-    
-add_filter( 'comment_form_defaults', 'wpbsx_comment_form_defaults' );
-
-
-    
+   
 function wpbsx_comment_form_after() {
   echo 
     "<script>\n" .
@@ -64,9 +55,7 @@ function wpbsx_comment_form_after() {
     "</script>\n";
 }
 
-add_action('comment_form_after', 'wpbsx_comment_form_after' );
-
-
+ 
 
 /* Comments */
 
@@ -82,9 +71,6 @@ function wp_bootstrap_list_comments_args($args) {
   return $args;
 }
 
-add_action('wp_list_comments_args', 'wp_bootstrap_list_comments_args' );
-
-
 // add bootstrap classes to the comment reply link
 if(!function_exists('wpbs_comment_reply_link_filter'))
 {
@@ -92,4 +78,4 @@ if(!function_exists('wpbs_comment_reply_link_filter'))
     return $link = '<div class="form-group">' . str_replace("class='comment-reply-", "class='comment-reply- btn btn-primary btn-xs ", $link) . '</div>';
   }
 }
-add_filter('comment_reply_link', 'wp_bootstrap_comment_reply_link', 10, 4);
+

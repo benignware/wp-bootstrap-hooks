@@ -127,6 +127,6 @@ function wpbsx_post_gallery($output, $attr) {
 }
 
 
-add_filter('post_gallery', 'wpbsx_post_gallery', 10, 2);
+
 
 ?>

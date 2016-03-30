@@ -26,7 +26,7 @@ if(!function_exists('wp_bootstrap_the_content')) {
   }
   
 }
-add_filter('the_content', 'wp_bootstrap_the_content', 11);
+
 
 
 ?>
