@@ -49,7 +49,7 @@ function wpbsx_widget_output_filter( $widget_output, $widget_id_base, $widget_id
       
       if ($widget_id_base === "search") {
         $class = $widget_root_node->getAttribute("class");
-        $class = preg_replace("/panel-default/", "", $class);
+        $class = preg_replace("/card/", "", $class);
         $widget_root_node->setAttribute('class', $class);
         $style = $widget_root_node->getAttribute('style');
         $widget_root_node->setAttribute('style', $style . " border: none;");
@@ -62,7 +62,7 @@ function wpbsx_widget_output_filter( $widget_output, $widget_id_base, $widget_id
 
       foreach ($elems as $widget_content_node) {
 
-        if ($widget_content_node->nodeType === 1 && strpos($widget_content_node->getAttribute('class'), 'panel-heading') !== false) {
+        if ($widget_content_node->nodeType === 1 && strpos($widget_content_node->getAttribute('class'), 'card-header') !== false) {
           $content_fragment->appendChild($widget_content_node);
           $panel_body = null;
         } else if ( $widget_content_node->nodeType === 1 && $widget_content_node->nodeName === 'ul') {
@@ -103,7 +103,7 @@ function wpbsx_widget_output_filter( $widget_output, $widget_id_base, $widget_id
           if ($panel_body === null) {
             $panel_body = $html->createElement( 'div' );
             if ($widget_id_base !== "search") {
-              $panel_body->setAttribute('class', 'panel-body');              
+              $panel_body->setAttribute('class', 'card-block');              
             }
             $content_fragment->appendChild($panel_body);
           }
@@ -126,10 +126,10 @@ function wpbsx_widgets_init() {
     'name'          => __( 'Widget Area', 'twentyfifteen' ),
     'id'            => 'sidebar-1',
     'description'   => __( 'Add widgets here to appear in your sidebar.', 'twentyfifteen' ),
-    'before_widget' => '<div id="%1$s" class="panel panel-default panel-widget widget %2$s">',
+    'before_widget' => '<div id="%1$s" class="card widget %2$s">',
     'after_widget'  => '</div>',
-    'before_title'  => '<div class="panel-heading"><h3 class="panel-title widget-title">',
-    'after_title'   => '</h3></div>',
+    'before_title'  => '<div class="card-header"><span class="widget-title">',
+    'after_title'   => '</span></div>',
     'class'         => '.list-group'
   ) );
 }

@@ -47,11 +47,11 @@
             <div id="comment-body-<?php comment_ID() ?>" class="comment-body media-body">
                 
                 <div class="comment-author vcard author media-left">
-                    <h4 class="media-heading fn n author-name"><?php echo get_comment_author_link(); ?></h4>
-                    <div class="comment-meta comment-meta-data">
-                      <i class="glyphicon glyphicon-time"> </i>
+                    <h3 class="media-heading fn n author-name"><?php echo get_comment_author_link(); ?>
+                    </h3>
+                    <small class="comment-meta comment-meta-data">
                       <a href="<?php echo htmlspecialchars( get_comment_link( get_comment_ID() ) ) ?>"><?php comment_date(); ?> at <?php comment_time(); ?></a> <?php edit_comment_link( '(Edit)' ); ?>
-                    </div><!-- /.comment-meta -->
+                    </small><!-- /.comment-meta -->
                 </div><!-- /.comment-author -->
                 
                 <div id="comment-content-<?php comment_ID(); ?>" class="comment-content">

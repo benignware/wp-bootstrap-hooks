@@ -39,7 +39,7 @@ function wpbsx_post_gallery($output, $attr) {
     
     $col_value = floor(12 / $columns);
     // Here's your actual output, you may customize it to your need
-    $output = "<div class=\"gallery\" id=\"gallery-$gallery_id\">\n";
+    $output = "<div class=\"gallery card card-block\" id=\"gallery-$gallery_id\">\n";
     $output.= "  <div class=\"row\">\n";
     // Now you loop through each attachment
     foreach ($attachments as $id => $attachment) {
@@ -62,7 +62,7 @@ function wpbsx_post_gallery($output, $attr) {
     $output.= '        <h3 class="modal-title"></h3>';
     $output.= '      </div>';
     $output.= '      <div class="modal-body">';
-    $output.= "        <div id=\"carousel-gallery-$gallery_id\" class=\"carousel carousel-gallery slide carousel-fit\" data-ride=\"carousel\">";
+    $output.= "        <div id=\"carousel-gallery-$gallery_id\" class=\"carousel slide carousel-fit\" data-ride=\"carousel\">";
     $output.= '          <ol class="carousel-indicators">';
     $image_index = 0;
     foreach ($attachments as $id => $attachment) {
@@ -70,15 +70,18 @@ function wpbsx_post_gallery($output, $attr) {
       $image_index++;
     };
     $output.= '          </ol>';
-    $output.= '          <div class="carousel-inner">';    
+    $output.= '          <div class="carousel-inner">';
+    $image_index = 0;
     foreach ($attachments as $id => $attachment) {
       $img_large = wp_get_attachment_image_src($id, 'large');
-      $output.= "          <div class=\"item\" data-id=\"$id\">";
+      $active = $image_index === 0 ? 'active' : '';
+      $output.= "          <div class=\"carousel-item $active\" data-id=\"$id\">";
       $output.= "            <img src=\"{$img_large[0]}\" title=\"{$attachment->post_excerpt}\" alt=\"{$attachment->post_excerpt}\" />\n";
-      $output.= '            <div class="carousel-caption">';
+      //$output.= '            <div class="carousel-caption">';
       //$output.= "              {$attachment->post_excerpt}";
-      $output.= '            </div>';
+      //$output.= '            </div>';
       $output.= '          </div>';
+      $image_index++;
     }
     $output.= '          </div>';
     $output.= "          <a class=\"carousel-control left\" href=\"#carousel-gallery-$gallery_id\" data-slide=\"prev\"><i class=\"glyphicon glyphicon-chevron-left icon-left icon-prev\"></i></a>";
@@ -100,13 +103,13 @@ function wpbsx_post_gallery($output, $attr) {
     $output.= "    \$modal = $('#modal-gallery-' + galleryId),\n";
     $output.= "    \$carousel = $('#carousel-gallery-' + galleryId);\n";
     $output.= "    \$gallery.find('a.thumbnail[data-id]').on('ontouchend' in window ? 'touchend' : 'click', function(event) {\n";
-    $output.= "      \$carousel.find('.item').removeClass('active');\n";
-    $output.= "      \$carousel.find('.item').removeClass('next');\n";
-    $output.= "      \$carousel.find('.item').removeClass('left');\n";
+    $output.= "      \$carousel.find('.carousel-item').removeClass('active');\n";
+    $output.= "      \$carousel.find('.carousel-item').removeClass('next');\n";
+    $output.= "      \$carousel.find('.carousel-item').removeClass('left');\n";
     $output.= "      \$carousel.find('.carousel-indicators li').removeClass('active');\n";
     $output.= "      var\n";
     $output.= "        itemId = $(this).data('id');\n"; 
-    $output.= "        \$carousel.find(\".item[data-id='\" + itemId + \"']\").addClass('active');\n";
+    $output.= "        \$carousel.find(\".carousel-item[data-id='\" + itemId + \"']\").addClass('active');\n";
     $output.= "        \$carousel.find(\".carousel-indicators li[data-id='\" + itemId + \"']\").addClass('active');\n";
     $output.= "      \$modal.find('.modal-title').html(\$carousel.find('.active img').attr('title'));";
     $output.= "      \$modal.modal('show');\n";
