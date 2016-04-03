@@ -13,7 +13,6 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
   return $sidebar_params;
  
 }
-add_filter( 'dynamic_sidebar_params', 'wpbsx_dynamic_sidebar_filter' );
 
 function wp_bootstrap_widget_callback_function() {
  
