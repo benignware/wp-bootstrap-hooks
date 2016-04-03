@@ -1,5 +1,5 @@
 <?php
-function wpbsx_post_gallery($output, $attr) {
+function wp_bootstrap_post_gallery($output, $attr) {
     global $post;
 
     if (isset($attr['orderby'])) {

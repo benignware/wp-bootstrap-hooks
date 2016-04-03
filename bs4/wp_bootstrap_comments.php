@@ -4,7 +4,7 @@ require('wp_bootstrap_commentwalker.php');
 // http://www.codecheese.com/2013/11/wordpress-comment-form-with-twitter-bootstrap-3-supports/
 // http://bassjobsen.weblogs.fm/wordpress-theming-comment_form-call-power-less/
 
-function wpbsx_comment_form_default_fields( $fields ) {
+function wp_bootstrap_comment_form_default_fields( $fields ) {
     
   $commenter = wp_get_current_commenter();
   $req = get_option( 'require_name_email' );
@@ -34,7 +34,7 @@ function wpbsx_comment_form_default_fields( $fields ) {
   return $fields;
 }
 
-function wpbsx_comment_form_defaults( $args ) {
+function wp_bootstrap_comment_form_defaults( $args ) {
   $args['comment_field'] = 
     '<div class="form-group comment-form-comment">
       <label for="comment">' . _x( 'Comment', 'noun' ) . '</label>
@@ -46,7 +46,7 @@ function wpbsx_comment_form_defaults( $args ) {
 }
 
    
-function wpbsx_comment_form_after() {
+function wp_bootstrap_comment_form_after() {
   echo 
     "<script>\n" .
     "  (function($) {\n" . 

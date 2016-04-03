@@ -1,6 +1,6 @@
 <?php
 
-function wpbsx_dynamic_sidebar_filter( $sidebar_params ) {
+function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
   if ( is_admin() ) {
     return $sidebar_params;
   }
@@ -9,13 +9,13 @@ function wpbsx_dynamic_sidebar_filter( $sidebar_params ) {
   $widget_id = $sidebar_params[0]['widget_id'];
  
   $wp_registered_widgets[ $widget_id ]['original_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
-  $wp_registered_widgets[ $widget_id ]['callback'] = 'wpbsx_widget_callback_function';
+  $wp_registered_widgets[ $widget_id ]['callback'] = 'wp_bootstrap_widget_callback_function';
   return $sidebar_params;
  
 }
 
 
-function wpbsx_widget_callback_function() {
+function wp_bootstrap_widget_callback_function() {
  
   global $wp_registered_widgets;
   $original_callback_params = func_get_args();
@@ -34,7 +34,7 @@ function wpbsx_widget_callback_function() {
   }
 }
 
-function wpbsx_widget_output_filter( $widget_output, $widget_id_base, $widget_id) {
+function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id) {
   if ($widget_output) {
       
     $html = new DOMDocument();
@@ -122,7 +122,7 @@ function wpbsx_widget_output_filter( $widget_output, $widget_id_base, $widget_id
 
 
 
-function wpbsx_widgets_init() {
+function wp_bootstrap_widgets_init() {
   register_sidebar( array(
     'name'          => __( 'Widget Area', 'twentyfifteen' ),
     'id'            => 'sidebar-1',
@@ -138,7 +138,7 @@ function wpbsx_widgets_init() {
 
 
 
-function wpbsx_search_form( $form ) {
+function wp_bootstrap_get_search_form( $form ) {
   $form = '<form role="search" method="get" id="searchform" class="searchform" action="' . home_url( '/' ) . '" >
   <label class="screen-reader-text" for="s">' . __( 'Search for:' ) . '</label>
   <div class="input-group">
@@ -156,7 +156,7 @@ function wpbsx_search_form( $form ) {
 
 // Dropdown in widget
 // http://webinspiration.gallery/5-tips-build-wordpress-theme-using-bootstrap-3/
-function wpbsx_widget_categories_dropdown_args( $args ) {
+function wp_bootstrap_widget_categories_dropdown_args( $args ) {
     if ( array_key_exists( 'class', $args ) ) {
         $args['class'] .= ' form-control';
     } else {
