@@ -1,14 +1,14 @@
 <?php
 
 
-require_once "bs4/wp_bootstrap_comments.php";
-require_once "bs4/wp_bootstrap_content.php";
-require_once "bs4/wp_bootstrap_gallery.php";
-require_once "bs4/wp_bootstrap_navbar.php";
-require_once "bs4/wp_bootstrap_widgets.php";
-
 
 function wp_bootstrap_hooks($version = 4) {
+
+  require_once "bs$version/wp_bootstrap_comments.php";
+  require_once "bs$version/wp_bootstrap_content.php";
+  require_once "bs$version/wp_bootstrap_gallery.php";
+  require_once "bs$version/wp_bootstrap_navbar.php";
+  require_once "bs$version/wp_bootstrap_widgets.php";
 
   add_filter( 'comment_form_default_fields', 'wp_bootstrap_comment_form_default_fields' );
   add_filter( 'comment_form_defaults', 'wp_bootstrap_comment_form_defaults' );
