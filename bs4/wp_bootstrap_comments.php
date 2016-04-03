@@ -58,7 +58,6 @@ function wp_bootstrap_comment_form_after() {
  
 
 /* Comments */
-
 function wp_bootstrap_list_comments_args($args) {
   
   $args = array_merge($args, array(
@@ -72,8 +71,7 @@ function wp_bootstrap_list_comments_args($args) {
 }
 
 // add bootstrap classes to the comment reply link
-if(!function_exists('wpbs_comment_reply_link_filter'))
-{
+if (!function_exists('wpbs_comment_reply_link_filter')) {
   function wp_bootstrap_comment_reply_link($link, $args, $comment, $post) {
     return $link = '<div class="form-group">' . str_replace("class='comment-reply-", "class='comment-reply- btn btn-primary btn-xs ", $link) . '</div>';
   }
