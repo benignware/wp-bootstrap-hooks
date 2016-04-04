@@ -33,7 +33,7 @@ function wp_bootstrap_widget_callback_function() {
   }
 }
 
-function wp_bootstrap_widget_output_filter( $widget_output, $widget_id_base, $widget_id) {
+function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id) {
   if ($widget_output) {
       
     $html = new DOMDocument();
