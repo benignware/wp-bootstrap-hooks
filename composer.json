@@ -2,7 +2,7 @@
   "name": "wp-bootstrap-hooks",
   "type": "wordpress-muplugin",
   "license": "MIT",
-  "description": "A collection of hooks to fit bootstrap into wordpress",
+  "description": "A collection of action and filters for bootstrap based themes",
   "homepage": "http://github.com/rexblack/wp-bootstrap-hooks",
   "authors": [
     {
