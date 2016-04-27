@@ -84,8 +84,8 @@ function wp_bootstrap_post_gallery($output, $attr) {
       $image_index++;
     }
     $output.= '          </div>';
-    $output.= "          <a class=\"carousel-control left\" href=\"#carousel-gallery-$gallery_id\" data-slide=\"prev\"><i class=\"glyphicon glyphicon-chevron-left icon-left icon-prev\"></i></a>";
-    $output.= "          <a class=\"carousel-control right\" href=\"#carousel-gallery-$gallery_id\" data-slide=\"next\"><i class=\"glyphicon glyphicon-chevron-right icon-right icon-next\"></i></a>";
+    $output.= "          <a class=\"carousel-control left\" href=\"#carousel-gallery-$gallery_id\" data-slide=\"prev\"><i class=\"icon-left icon-prev\"></i></a>";
+    $output.= "          <a class=\"carousel-control right\" href=\"#carousel-gallery-$gallery_id\" data-slide=\"next\"><i class=\"icon-right icon-next\"></i></a>";
     $output.= '        </div>';
     $output.= '      </div>';
     $output.= '      <div class="modal-footer">';
