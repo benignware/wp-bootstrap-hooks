@@ -126,6 +126,7 @@ function wp_bootstrap_widgets_init() {
   register_sidebar( array(
     'name'          => __( 'Widget Area', 'twentyfifteen' ),
     'id'            => 'sidebar-1',
+    // TODO: Text domain
     'description'   => __( 'Add widgets here to appear in your sidebar.', 'twentyfifteen' ),
     'before_widget' => '<div id="%1$s" class="card widget %2$s">',
     'after_widget'  => '</div>',
