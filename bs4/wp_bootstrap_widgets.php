@@ -115,7 +115,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
         $widget_root_node->appendChild($content_fragment);  
       }
     }
-    $widget_output = preg_replace('/^<!DOCTYPE.+?>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), $html->saveHTML())); 
+    $widget_output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $html->saveHTML());
   }
   return $widget_output;
 }
@@ -129,7 +129,7 @@ function wp_bootstrap_widgets_init() {
     'description'   => __( 'Add widgets here to appear in your sidebar.', 'twentyfifteen' ),
     'before_widget' => '<div id="%1$s" class="card widget %2$s">',
     'after_widget'  => '</div>',
-    'before_title'  => '<div class="card-header"><span class="widget-title">',
+    'before_title'  => '<div class="card-header"><span class="card-title">',
     'after_title'   => '</span></div>',
     'class'         => '.list-group'
   ) );
