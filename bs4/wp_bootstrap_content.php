@@ -21,8 +21,8 @@ if(!function_exists('wp_bootstrap_the_content')) {
       $image_node->setAttribute('class', $class);
     }
     
+    return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $html->saveHTML());
     
-    return preg_replace('/^<!DOCTYPE.+?>/', '', str_replace( array('<html>', '</html>', '<body>', '</body>'), array('', '', '', ''), $html->saveHTML())); 
   }
   
 }
