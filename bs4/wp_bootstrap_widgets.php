@@ -223,7 +223,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
   
 }
 
-/*
+
 
 function wp_bootstrap_widgets_init() {
   register_sidebar( array(
@@ -237,7 +237,6 @@ function wp_bootstrap_widgets_init() {
     'class'         => '.list-group'
   ) );
 }
-*/
 
 function wp_bootstrap_get_search_form( $form ) {
   $form = '<form role="search" method="get" id="searchform" class="searchform" action="' . home_url( '/' ) . '" >
