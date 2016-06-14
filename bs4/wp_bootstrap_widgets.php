@@ -92,23 +92,28 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
       $component_extra_classes = array($widget_id_base_hyphens, "widget");
       // Try to find additional classes that specify the widget more further
       $widget_class_elem = $html_xpath->query("//*[contains(@class, '$widget_id_base') or contains(@class, '$widget_id_base_hyphens')]")->item(0);
-      $widget_class_elem_classes = explode(" ", $widget_class_elem->getAttribute('class'));
-      $widget_leading_class = "";
-      foreach ($widget_class_elem_classes as $widget_class_elem_class) {
-        $matched = preg_match("~(" . preg_quote($widget_id_base, "~") . "|" . preg_quote($widget_id_base_hyphens) . ")$~", $widget_class_elem_class, $match);
-        if ($matched) {
-          $widget_leading_class = $widget_class_elem_class;
-          break;
-        }
-      }
-      foreach ($widget_class_elem_classes as $widget_class_elem_class) {
-        $matched = preg_match("~^" .preg_quote($widget_leading_class, "~") . "[-_]~", $widget_class_elem_class, $match);
-        if ($match) {
-          // Additional class found:
-          $widget_base_class = (strpos($widget_class_elem_class, $widget_id_base_hyphens) !== false) ? $widget_id_base_hyphens : $widget_id_base;
-          $widget_additional_class = preg_replace("~.*(" . preg_quote($widget_base_class, "~") . ")~", "$1", $widget_class_elem_class);
-          array_push($component_extra_classes, $widget_additional_class);
-        }
+      if ($widget_class_elem) {
+        $widget_class_elem_class_attr = $widget_class_elem->getAttribute('class');
+        if ($widget_class_elem_class_attr !== null) {
+          $widget_class_elem_classes = explode(" ", $widget_class_elem_class_attr);
+          $widget_leading_class = "";
+          foreach ($widget_class_elem_classes as $widget_class_elem_class) {
+            $matched = preg_match("~(" . preg_quote($widget_id_base, "~") . "|" . preg_quote($widget_id_base_hyphens) . ")$~", $widget_class_elem_class, $match);
+            if ($matched) {
+              $widget_leading_class = $widget_class_elem_class;
+              break;
+            }
+          }
+          foreach ($widget_class_elem_classes as $widget_class_elem_class) {
+            $matched = preg_match("~^" .preg_quote($widget_leading_class, "~") . "[-_]~", $widget_class_elem_class, $match);
+            if ($match) {
+              // Additional class found:
+              $widget_base_class = (strpos($widget_class_elem_class, $widget_id_base_hyphens) !== false) ? $widget_id_base_hyphens : $widget_id_base;
+              $widget_additional_class = preg_replace("~.*(" . preg_quote($widget_base_class, "~") . ")~", "$1", $widget_class_elem_class);
+              array_push($component_extra_classes, $widget_additional_class);
+            }
+          }
+          }
       }
       $component_extra_classes = array_unique($component_extra_classes);
       // Clean up extra classes
@@ -129,9 +134,15 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
       }
       $content_parent->setAttribute('class', implode(" ", $content_parent_classes));
       
-      // Clean up header
+      // Clean up header position in markup
       $content_header = $html_xpath->query("//*[contains(@class, '$component_class-header')]")->item(0);
-      $content_parent->insertBefore($content_header, $content_parent->firstChild);
+      if ($content_header && $content_parent->firstChild !== $content_header) {
+        if ($content_parent->firstChild !== null) {
+          $content_parent->insertBefore($content_header, $content_parent->firstChild);
+        } else {
+          $content_parent->appendChild($content_header);
+        }
+      }
       
       // Collect content elems
       foreach ($content_parent->childNodes as $child) {
