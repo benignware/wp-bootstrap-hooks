@@ -27,4 +27,7 @@ function wp_bootstrap_hooks($version = 4) {
   add_filter( 'get_search_form', 'wp_bootstrap_get_search_form' );
   add_filter( 'widget_categories_dropdown_args', 'wp_bootstrap_widget_categories_dropdown_args' );
   
+  if ($version == 4) {
+    require_once "bs$version/wp_bootstrap_pagination.php";
+  }
 }
