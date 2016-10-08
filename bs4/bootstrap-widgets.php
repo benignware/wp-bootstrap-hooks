@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * Dynamic sidebar params
+ */
 function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
   if ( is_admin() ) {
     return $sidebar_params;
@@ -24,8 +26,9 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
   $wp_registered_widgets[ $widget_id ]['callback'] = 'wp_bootstrap_widget_callback_function';
   return $sidebar_params;
 }
+add_filter( 'dynamic_sidebar_params', 'wp_bootstrap_dynamic_sidebar_params' );
 
-
+// Widget Callback
 function wp_bootstrap_widget_callback_function() {
  
   global $wp_registered_widgets;
@@ -45,6 +48,10 @@ function wp_bootstrap_widget_callback_function() {
   }
 }
 
+
+/**
+ * Override Widget Output
+ */
 function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id) {
   $component_class = 'card';
   $widget_id_base_hyphens = preg_replace("~_~Ui", "-", $widget_id_base);
@@ -60,9 +67,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
     
     $content_fragment = $html->createDocumentFragment();
     $elems = array();
-    
     if ($widget_root_node) {
-      
       if ($widget_id_base === "search") {
         $class = $widget_root_node->getAttribute("class");
         $class = preg_replace("/card/Ui", "", $class);
@@ -229,45 +234,15 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
     
     $widget_output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $html->saveHTML());
   }
-  
   return $widget_output;
-  
 }
+add_filter( 'widget_output', 'wp_bootstrap_widget_output', 10, 3 );
 
 
-
-function wp_bootstrap_widgets_init() {
-  register_sidebar( array(
-    'name'          => __( 'Widget Area', 'twentyfifteen' ),
-    'id'            => 'sidebar-1',
-    'description'   => __( 'Add widgets here to appear in your sidebar.', 'twentyfifteen' ),
-    'before_widget' => '<div id="%1$s" class="card widget %2$s">',
-    'after_widget'  => '</div>',
-    'before_title'  => '<div class="card-header"><span class="card-title">',
-    'after_title'   => '</span></div>',
-    'class'         => '.list-group'
-  ) );
-}
-
-function wp_bootstrap_get_search_form( $form ) {
-  $form = '<form role="search" method="get" id="searchform" class="searchform" action="' . home_url( '/' ) . '" >
-  <label class="screen-reader-text" for="s">' . __( 'Search for:' ) . '</label>
-  <div class="form-group">
-    <div class="input-group">
-    <input class="form-control" type="text" value="' . get_search_query() . '" name="s" id="s" placeholder="'. esc_attr__( 'Search' ) .'..."/>
-    <span class="input-group-btn">
-      <button class="btn btn-default" type="submit" id="searchsubmit" title="' . esc_attr_x( 'Search', 'submit button' ) . '"><i>🔎</i></button>
-    </span>
-    </div>
-  </div>
-  </form>';
-  return $form;
-}
-
-
-
-// Dropdown in widget
-// http://webinspiration.gallery/5-tips-build-wordpress-theme-using-bootstrap-3/
+/**
+ * Dropdown in widget
+ * Reference: http://webinspiration.gallery/5-tips-build-wordpress-theme-using-bootstrap-3/
+ */
 function wp_bootstrap_widget_categories_dropdown_args( $args ) {
     if ( array_key_exists( 'class', $args ) ) {
         $args['class'] .= ' form-control';
@@ -276,4 +251,5 @@ function wp_bootstrap_widget_categories_dropdown_args( $args ) {
     }
     return $args;
 }
+add_filter( 'widget_categories_dropdown_args', 'wp_bootstrap_widget_categories_dropdown_args' );
 ?>

@@ -1,19 +1,20 @@
 <?php
-
+/**
+ * Dynamic Sidebar Params
+ */
 function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
   if ( is_admin() ) {
     return $sidebar_params;
   }
- 
   global $wp_registered_widgets;
   $widget_id = $sidebar_params[0]['widget_id'];
- 
   $wp_registered_widgets[ $widget_id ]['original_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
   $wp_registered_widgets[ $widget_id ]['callback'] = 'wp_bootstrap_widget_callback_function';
   return $sidebar_params;
- 
 }
+add_filter( 'dynamic_sidebar_params', 'wp_bootstrap_dynamic_sidebar_params' );
 
+// Widget Callback
 function wp_bootstrap_widget_callback_function() {
  
   global $wp_registered_widgets;
@@ -33,6 +34,10 @@ function wp_bootstrap_widget_callback_function() {
   }
 }
 
+
+/**
+ * Widget Output
+ */
 function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id) {
   if ($widget_output) {
       
@@ -118,38 +123,13 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
   }
   return $widget_output;
 }
-
-function wp_bootstrap_widgets_init() {
-  register_sidebar( array(
-    'name'          => __( 'Widget Area', 'twentyfifteen' ),
-    'id'            => 'sidebar-1',
-    'description'   => __( 'Add widgets here to appear in your sidebar.', 'twentyfifteen' ),
-    'before_widget' => '<div id="%1$s" class="panel panel-default panel-widget widget %2$s">',
-    'after_widget'  => '</div>',
-    'before_title'  => '<div class="panel-heading"><h3 class="panel-title widget-title">',
-    'after_title'   => '</h3></div>',
-    'class'         => '.list-group'
-  ) );
-}
+add_filter( 'widget_output', 'wp_bootstrap_widget_output', 10, 3 );
 
 
-function wp_bootstrap_get_search_form( $form ) {
-  $form = '<form role="search" method="get" id="searchform" class="searchform" action="' . home_url( '/' ) . '" >
-  <label class="screen-reader-text" for="s">' . __( 'Search for:' ) . '</label>
-  <div class="input-group">
-  <input class="form-control" type="text" value="' . get_search_query() . '" name="s" id="s" placeholder="'. esc_attr__( 'Search' ) .'..."/>
-  <span class="input-group-btn">
-    <button class="btn btn-default" type="submit" id="searchsubmit" title="' . esc_attr_x( 'Search', 'submit button' ) . '"><i class="glyphicon glyphicon-search"> </i></button>
-  </span>
-  </div>
-  </form>';
-
-  return $form;
-}
-
-
-// Dropdown in widget
-// http://webinspiration.gallery/5-tips-build-wordpress-theme-using-bootstrap-3/
+/**
+ * Dropdown in widget
+ * Reference: http://webinspiration.gallery/5-tips-build-wordpress-theme-using-bootstrap-3/
+ */
 function wp_bootstrap_widget_categories_dropdown_args( $args ) {
     if ( array_key_exists( 'class', $args ) ) {
         $args['class'] .= ' form-control';
@@ -158,6 +138,5 @@ function wp_bootstrap_widget_categories_dropdown_args( $args ) {
     }
     return $args;
 }
-
-
+add_filter( 'widget_categories_dropdown_args', 'wp_bootstrap_widget_categories_dropdown_args' );
 ?>

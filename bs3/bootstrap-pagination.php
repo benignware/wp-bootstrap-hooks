@@ -1,5 +1,8 @@
 <?php
 
+/**
+ * Posts Pagination
+ */
 function wp_bootstrap_get_the_posts_pagination( $args = array() ) {
   $navigation = '';
   

@@ -2,11 +2,11 @@
 .settings
 .project
 
+# GFM Preview
+.README.md.html
+
 # Mac OS
 .DS_Store
-
-# Node
-node_modules
 
 # Composer
 composer.phar
@@ -21,7 +21,3 @@ test
 
 # Vendor
 vendor
-
-# App dependencies
-app/mu-plugins/**
-app/plugins/**

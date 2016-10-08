@@ -1,4 +1,7 @@
 <?php
+/**
+ * Post Gallery
+ */
 function wp_bootstrap_post_gallery($output, $attr) {
     global $post;
 
@@ -119,14 +122,8 @@ function wp_bootstrap_post_gallery($output, $attr) {
     $output.= "    });\n";
     $output.= "    console.log('script: ', \$gallery, \$modal, \$carousel);";
     $output.= "})(jQuery)";
-    
-    
     $output.= "</script>";
-    
     return $output;
 }
-
-
-
-
+add_filter( 'post_gallery', 'wp_bootstrap_post_gallery', 10, 2 );
 ?>
