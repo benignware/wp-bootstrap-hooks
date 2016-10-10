@@ -81,7 +81,6 @@ add_action( 'comment_form_after', 'wp_bootstrap_comment_form_after' );
 /**
  * List Comments Args
  */
-
 function wp_bootstrap_list_comments_args($args) {
   $args = array_merge($args, array(
     'style' => 'div'

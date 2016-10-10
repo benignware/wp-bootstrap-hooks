@@ -3,7 +3,6 @@
 // http://www.codecheese.com/2013/11/wordpress-comment-form-with-twitter-bootstrap-3-supports/
 // http://bassjobsen.weblogs.fm/wordpress-theming-comment_form-call-power-less/
 
-
 /**
  * Comment Form Default Fields
  */
@@ -39,7 +38,6 @@ function wp_bootstrap_comment_form_default_fields( $fields ) {
 add_filter( 'comment_form_default_fields', 'wp_bootstrap_comment_form_default_fields' );
 
 
-
 /**
  * Comment Form Defaults
  */
@@ -55,6 +53,7 @@ function wp_bootstrap_comment_form_defaults( $args ) {
 }
 add_filter( 'comment_form_defaults', 'wp_bootstrap_comment_form_defaults' );
    
+
 /**
  * Comment Form After
  */

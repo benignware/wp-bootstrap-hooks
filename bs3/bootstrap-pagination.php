@@ -1,5 +1,4 @@
 <?php
-
 /**
  * Posts Pagination
  */
