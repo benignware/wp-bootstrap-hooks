@@ -5,10 +5,10 @@
  */
 function wp_bootstrap_get_widgets_options() {
   return apply_filters( 'bootstrap_widgets_options', array(
-    'widget_class' => 'card',
-    'widget_modifier_class' => 'card-default',
-    'widget_header_class' => 'card-header',
-    'widget_content_class' => 'card-block',
+    'widget_class' => 'panel',
+    'widget_modifier_class' => 'panel-default',
+    'widget_header_class' => 'panel-heading',
+    'widget_content_class' => 'panel-block',
   ));
 }
 

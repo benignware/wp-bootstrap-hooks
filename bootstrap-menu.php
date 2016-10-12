@@ -7,10 +7,10 @@ function wp_bootstrap_get_menu_options() {
   return apply_filters( 'bootstrap_menu_options', array(
     'menu_item_class' => 'nav-item',
     'menu_item_link_class' => 'nav-link',
-    'sub_menu_tag' => 'div',
+    'sub_menu_tag' => 'ul',
     'sub_menu_class' => 'dropdown-menu',
     'sub_menu_header_class' => 'dropdown-header',
-    'sub_menu_item_tag' => false,
+    'sub_menu_item_tag' => 'li',
     'sub_menu_item_class' => '',
     'sub_menu_item_link_class' => 'dropdown-item',
     'divider_class' => 'divider',
