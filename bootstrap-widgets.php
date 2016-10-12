@@ -1,8 +1,25 @@
 <?php
+
+/**
+ * Get or set Bootstrap Widgets Args
+ */
+function wp_bootstrap_get_widgets_options() {
+  return apply_filters( 'bootstrap_widgets_options', array(
+    'widget_class' => 'card',
+    'widget_modifier_class' => 'card-default',
+    'widget_header_class' => 'card-header',
+    'widget_content_class' => 'card-block',
+  ));
+}
+
 /**
  * Dynamic sidebar params
  */
 function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
+  $options = wp_bootstrap_get_widgets_options();
+  $widget_class = $options['widget_class'];
+  $widget_modifier_class = $options['widget_modifier_class'];
+  $widget_header_class = $options['widget_header_class'];
   if ( is_admin() ) {
     return $sidebar_params;
   }
@@ -11,12 +28,11 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
     $sidebar_params[$index] = array_merge( 
       $widget_params, 
       array(
-        //'before_widget' => '<div class="widget">',
-        //'before_widget' => "<div class=\"widget widget-$widget_name card card-$widget_name\">",
+        'before_widget' => '<div class="widget">',
+        'before_widget' => "<div class=\"widget widget-$widget_name $widget_class $widget_modifier_class\">",
         'after_widget'  => '</div>',
-        'before_title'  => '<div class="card-header">',
-        'after_title'   => '</div>',
-        //'class'         => '.testo'
+        'before_title'  => '<div class="' . $widget_header_class . '">',
+        'after_title'   => '</div>'
       )
     );
   }
@@ -30,7 +46,6 @@ add_filter( 'dynamic_sidebar_params', 'wp_bootstrap_dynamic_sidebar_params' );
 
 // Widget Callback
 function wp_bootstrap_widget_callback_function() {
- 
   global $wp_registered_widgets;
   $original_callback_params = func_get_args();
   $widget_id = $original_callback_params[0]['widget_id'];
@@ -53,7 +68,12 @@ function wp_bootstrap_widget_callback_function() {
  * Override Widget Output
  */
 function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id) {
-  $component_class = 'card';
+  $options = wp_bootstrap_get_widgets_options();
+  $widget_class = $options['widget_class'];
+  $widget_modifier_class = $options['widget_modifier_class'];
+  $widget_header_class = $options['widget_header_class'];
+  $widget_content_class = $options['widget_content_class'];
+  
   $widget_id_base_hyphens = preg_replace("~_~Ui", "-", $widget_id_base);
   
   if ($widget_output) {
@@ -70,19 +90,18 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
     if ($widget_root_node) {
       if ($widget_id_base === "search") {
         $class = $widget_root_node->getAttribute("class");
-        $class = preg_replace("/card/Ui", "", $class);
+        $class = preg_replace("/" . preg_quote($widget_class, '/') . "/Ui", "", $class);
         $class.= strlen($class) > 0 ? " " . $class : $class; 
         $widget_root_node->setAttribute('class', $class);
         $style = $widget_root_node->getAttribute('style');
         $widget_root_node->setAttribute('style', $style . " border: none;");
       }
       
-      $content_parent = $html_xpath->query("//*[contains(@class, '$component_class') and not(contains(@class, '$component_class-'))]")->item(0);
-      
+      $content_parent = $html_xpath->query("//*[contains(@class, '$widget_class')]")->item(0);
       if (!$content_parent) {
-        // If no element with component class is found yet, we'll add one and wrap the actual content in it
+        // If no element with component class is found yet, we'll add it and append with modifier and wrap the actual content in it
         $content_parent = $html->createElement('div');
-        $content_parent->setAttribute("class", $component_class);
+        $content_parent->setAttribute("class", $widget_class . ($widget_modifier_class ? " $widget_modifier_class" : ""));
         $content_children = array();
         foreach ($widget_root_node->childNodes as $child) {
           array_push($content_children, $child);
@@ -94,7 +113,8 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
       }
       
       // Setup component extra classes
-      $component_extra_classes = array($widget_id_base_hyphens, "widget");
+      $widget_extra_classes = array($widget_id_base_hyphens, "widget");
+      
       // Try to find additional classes that specify the widget more further
       $widget_class_elem = $html_xpath->query("//*[contains(@class, '$widget_id_base') or contains(@class, '$widget_id_base_hyphens')]")->item(0);
       if ($widget_class_elem) {
@@ -115,32 +135,32 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
               // Additional class found:
               $widget_base_class = (strpos($widget_class_elem_class, $widget_id_base_hyphens) !== false) ? $widget_id_base_hyphens : $widget_id_base;
               $widget_additional_class = preg_replace("~.*(" . preg_quote($widget_base_class, "~") . ")~", "$1", $widget_class_elem_class);
-              array_push($component_extra_classes, $widget_additional_class);
+              array_push($widget_extra_classes, $widget_additional_class);
             }
           }
           }
       }
-      $component_extra_classes = array_unique($component_extra_classes);
+      $widget_extra_classes = array_unique($widget_extra_classes);
       // Clean up extra classes
-      foreach ($component_extra_classes as $index => $component_extra_class) {
+      foreach ($widget_extra_classes as $index => $widget_extra_class) {
         // FIXME: Remove null-prefix, i.e. Instagram widget
-        $component_extra_class = preg_replace("~^null-~", "", $component_extra_class);
+        $widget_extra_class = preg_replace("~^null-~", "", $widget_extra_class);
         // Remove -widget suffix
-        $component_extra_class = preg_replace("~-widget$~Ui", "", $component_extra_class);
+        $widget_extra_class = preg_replace("~-widget$~Ui", "", $widget_extra_class);
         // Remove -widget prefix
-        $component_extra_class = preg_replace("~^widget-~Ui", "", $component_extra_class);
-        $component_extra_classes[$index] = $component_extra_class;
+        $widget_extra_class = preg_replace("~^widget-~Ui", "", $widget_extra_class);
+        $widget_extra_classes[$index] = $widget_extra_class;
       }
       
       // Add component widget class
       $content_parent_classes = explode(" ", $content_parent->getAttribute('class'));
-      foreach ($component_extra_classes as $component_extra_class) {
-        array_push($content_parent_classes, $component_class . "-" . $component_extra_class);
+      foreach ($widget_extra_classes as $widget_extra_class) {
+        array_push($content_parent_classes, $widget_class . "-" . $widget_extra_class);
       }
       $content_parent->setAttribute('class', implode(" ", $content_parent_classes));
       
       // Clean up header position in markup
-      $content_header = $html_xpath->query("//*[contains(@class, '$component_class-header')]")->item(0);
+      $content_header = $html_xpath->query("//*[contains(@class, '$widget_header_class')]")->item(0);
       if ($content_header && $content_parent->firstChild !== $content_header) {
         if ($content_parent->firstChild !== null) {
           $content_parent->insertBefore($content_header, $content_parent->firstChild);
@@ -159,7 +179,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
       $panel_body = null;
       foreach ($elems as $widget_content_node) {
         
-        if ($widget_content_node->nodeType === 1 && strpos($widget_content_node->getAttribute('class'), 'card-header') !== false) {
+        if ($widget_content_node->nodeType === 1 && strpos($widget_content_node->getAttribute('class'), $widget_class . '-header') !== false) {
           $content_fragment->appendChild($widget_content_node);
           $panel_body = null;
           
@@ -193,7 +213,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
             if ($panel_body == null) {
               $panel_body = $html->createElement( 'div' );
               if ($widget_id_base !== "search") {
-                $panel_body->setAttribute('class', 'card-block');              
+                $panel_body->setAttribute('class', $widget_content_class);              
               }
               // If a listnode has been extracted before, prepend to the listnode
               if ($list_node && $widget_content_node !== $list_node) {

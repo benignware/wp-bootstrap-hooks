@@ -1,14 +1,31 @@
 <?php
 
+
+/**
+ * Get Bootstrap Comments Options
+ */
+function wp_bootstrap_get_comments_options() {
+  return apply_filters( 'bootstrap_comments_options', array(
+    'field_class' => 'form-group',
+    'text_input_class' => 'form-control',
+    'submit_class' => 'btn btn-primary',
+    'reply_link_class' => 'btn btn-primary btn-xs'
+  ));
+}
+
+
 // http://www.codecheese.com/2013/11/wordpress-comment-form-with-twitter-bootstrap-3-supports/
 // http://bassjobsen.weblogs.fm/wordpress-theming-comment_form-call-power-less/
-
 
 /**
  * Comment Form Default Fields
  */
 function wp_bootstrap_comment_form_default_fields( $fields ) {
-    
+  
+  $options = wp_bootstrap_get_comments_options();
+  $field_class = $options['field_class'];
+  $text_input_class = $options['text_input_class'];
+  
   $commenter = wp_get_current_commenter();
   $req = get_option( 'require_name_email' );
   $aria_req = ( $req ? " aria-required='true'" : '' );
@@ -16,30 +33,21 @@ function wp_bootstrap_comment_form_default_fields( $fields ) {
   
   $fields = array(
     'author' => 
-      '<div class="form-group comment-form-author">' .
+      '<div class="' . $field_class . ' comment-form-author">' .
         '<label for="author">' . __( 'Name' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
-        '<div class="input-group">' .  
-          '<span class="input-group-addon"><i class="glyphicon glyphicon-user"></i></span>' . 
-          '<input class="form-control" id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="30"' . $aria_req . ' />' .
-        '</div>' .
+        '<input class="' . $text_input_class . '" id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="30"' . $aria_req . ' />' .
       '</div>',
         
     'email' => 
-      '<div class="form-group comment-form-email">' . 
+      '<div class="' . $field_class . ' comment-form-email">' . 
         '<label for="email">' . __( 'Email' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
-        '<div class="input-group">' .  
-          '<span class="input-group-addon"><i class="glyphicon glyphicon-envelope"></i></span>' . 
-          '<input class="form-control" id="email" name="email" ' . ( $html5 ? 'type="email"' : 'type="text"' ) . ' value="' . esc_attr( $commenter['comment_author_email'] ) . '" size="30"' . $aria_req . ' />' .
-        '</div>' . 
+        '<input class="' . $text_input_class . '" id="email" name="email" ' . ( $html5 ? 'type="email"' : 'type="text"' ) . ' value="' . esc_attr( $commenter['comment_author_email'] ) . '" size="30"' . $aria_req . ' />' .
       '</div>',
        
     'url' => 
-      '<div class="form-group comment-form-url">' .
+      '<div class="' . $field_class . ' comment-form-url">' .
         '<label for="url">' . __( 'Website' ) . '</label> ' .
-        '<div class="input-group">' .
-          '<span class="input-group-addon"><i class="glyphicon glyphicon-link"></i></span>' . 
-          '<input class="form-control" id="url" name="url" ' . ( $html5 ? 'type="url"' : 'type="text"' ) . ' value="' . esc_attr( $commenter['comment_author_url'] ) . '" size="30" />' .
-         '</div>' .
+        '<input class="' . $text_input_class . '" id="url" name="url" ' . ( $html5 ? 'type="url"' : 'type="text"' ) . ' value="' . esc_attr( $commenter['comment_author_url'] ) . '" size="30" />' .
       '</div>',
       
   );
@@ -52,39 +60,48 @@ add_filter( 'comment_form_default_fields', 'wp_bootstrap_comment_form_default_fi
  * Comment Form Defaults
  */
 function wp_bootstrap_comment_form_defaults( $args ) {
+    
+  $options = wp_bootstrap_get_comments_options();
+  $field_class = $options['field_class'];
+  $text_input_class = $options['text_input_class'];
+  
   $args['comment_field'] = 
-    '<div class="form-group comment-form-comment">
+    '<div class="' . $field_class . ' comment-form-comment">
       <label for="comment">' . _x( 'Comment', 'noun' ) . '</label>
-      <textarea class="form-control" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea>
+      <textarea class="' . $text_input_class . '" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea>
     </div>';
     
   $args['comment_notes_after'] = $args['comment_notes_after'];
   return $args;
 }
 add_filter( 'comment_form_defaults', 'wp_bootstrap_comment_form_defaults' );
-
+   
 
 /**
  * Comment Form After
  */
 function wp_bootstrap_comment_form_after() {
+  $options = wp_bootstrap_get_comments_options();
+  $submit_class = $options['submit_class'];
   echo 
     "<script>\n" .
     "  (function($) {\n" . 
-    "    $('#commentform input#submit').addClass('btn btn-primary');\n" . 
+    "    $('#commentform input#submit').addClass('$submit_class');\n" . 
     "  })(jQuery)\n" . 
     "</script>\n";
 }
 add_action( 'comment_form_after', 'wp_bootstrap_comment_form_after' );
-
+ 
 
 /**
- * List Comments Args
+ * List Comment Args
  */
 function wp_bootstrap_list_comments_args($args) {
+  
   $args = array_merge($args, array(
     'style' => 'div'
   ));
+  
   if (empty($args['walker'])) {
     $args['walker'] = new wp_bootstrap_commentwalker();
   }
@@ -98,13 +115,18 @@ add_action( 'wp_list_comments_args', 'wp_bootstrap_list_comments_args' );
  */
 if (!function_exists('wp_bootstrap_comment_reply_link')) {
   function wp_bootstrap_comment_reply_link($link, $args, $comment, $post) {
-    return $link = '<div class="form-group">' . str_replace("class='comment-reply-", "class='comment-reply- btn btn-default btn-xs ", $link) . '</div>';
+    $options = wp_bootstrap_get_comments_options();
+    $field_class = $options['field_class'];
+    $reply_link_class = $options['reply_link_class'];
+    
+    return $link = '<div class="' . $field_class . '">' . str_replace("class='comment-reply-", "class='comment-reply-link $reply_link_class", $link) . '</div>';
   }
+  add_filter( 'comment_reply_link', 'wp_bootstrap_comment_reply_link', 10, 4 );
 }
 
 
 /**
- * Comment Walker
+ * Comment Walker Class
  */
 class wp_bootstrap_commentwalker extends Walker_Comment {
     // init classwide variables
@@ -154,11 +176,11 @@ class wp_bootstrap_commentwalker extends Walker_Comment {
             <div id="comment-body-<?php comment_ID() ?>" class="comment-body media-body">
                 
                 <div class="comment-author vcard author media-left">
-                    <h4 class="media-heading fn n author-name"><?php echo get_comment_author_link(); ?></h4>
-                    <div class="comment-meta comment-meta-data">
-                      <i class="glyphicon glyphicon-time"> </i>
+                    <h3 class="media-heading fn n author-name"><?php echo get_comment_author_link(); ?>
+                    </h3>
+                    <small class="comment-meta comment-meta-data">
                       <a href="<?php echo htmlspecialchars( get_comment_link( get_comment_ID() ) ) ?>"><?php comment_date(); ?> at <?php comment_time(); ?></a> <?php edit_comment_link( '(Edit)' ); ?>
-                    </div><!-- /.comment-meta -->
+                    </small><!-- /.comment-meta -->
                 </div><!-- /.comment-author -->
                 
                 <div id="comment-content-<?php comment_ID(); ?>" class="comment-content">
@@ -198,4 +220,4 @@ class wp_bootstrap_commentwalker extends Walker_Comment {
  
     <?php }
 
-  }
+}
