@@ -11,9 +11,10 @@ function wp_bootstrap_get_menu_options() {
     'sub_menu_class' => 'dropdown-menu',
     'sub_menu_header_class' => 'dropdown-header',
     'sub_menu_item_tag' => false,
-    'sub_menu_item_class' => 'dropdown-item',
-    'sub_menu_item_link_class' => 'dropdown-link',
-    'divider_class' => 'divider'
+    'sub_menu_item_class' => '',
+    'sub_menu_item_link_class' => 'dropdown-item',
+    'divider_class' => 'divider',
+    'caret' => '<span class="caret"></span>'
   ));
 }
 
@@ -67,7 +68,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
     $indent = str_repeat( "\t", $depth );
     $sub_menu_tag = $this->options['sub_menu_tag'];
     $sub_menu_class = $this->options['sub_menu_class'];
-    $output .= "\n$indent<ul role=\"$sub_menu_tag\" class=\" $sub_menu_class\">\n";
+    $output .= "\n$indent<$sub_menu_tag role=\"dropdown\" class=\" $sub_menu_class\">\n";
   }
 
   /**
@@ -94,6 +95,8 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
     $sub_menu_item_class = $this->options['sub_menu_item_class'];
     $sub_menu_class = $this->options['sub_menu_class'];
     $sub_menu_item_link_class = $this->options['sub_menu_item_link_class'];
+    
+    $caret = $this->options['caret'];
     
     /**
      * Dividers, Headers or Disabled
@@ -178,7 +181,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
       $item_output .= '<a'. $attributes .'>';
       
       $item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID ) . $args->link_after;
-      $item_output .= ( $args->has_children && 0 === $depth ) ? ' <span class="caret"></span></a>' : '</a>';
+      $item_output .= ( $caret && $args->has_children && 0 === $depth ) ? '&nbsp;' . $caret . '</a>' : '</a>';
       $item_output .= $args->after;
 
       if ($depth > 0 && $sub_menu_item_tag) {
