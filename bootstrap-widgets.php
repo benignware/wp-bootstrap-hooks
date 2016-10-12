@@ -8,7 +8,7 @@ function wp_bootstrap_get_widgets_options() {
     'widget_class' => 'panel',
     'widget_modifier_class' => 'panel-default',
     'widget_header_class' => 'panel-heading',
-    'widget_content_class' => 'panel-block',
+    'widget_content_class' => 'panel-block'
   ));
 }
 
