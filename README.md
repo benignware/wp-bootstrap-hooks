@@ -2,7 +2,7 @@
 
 > A collection of filters and actions for bootstrap-based themes
 
-When integrating bootstrap with wordpress, it is not sufficient to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc. 
+When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not sufficient to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc. 
 Bootstrap Hooks aims to cover most of these cases and make us start developing immediately after this point.
     
 
@@ -22,13 +22,23 @@ Otherwise you may require single hooks as desired
 require_once 'inc/bootstrap-comments.php'
 ```
 
-## Hooks
+## Usage
 
-Included are solutions for Comments, Gallery, Navbar, Pagination, Search Form and Widgets.
+Included are solutions for Comments, Gallery, Navbar, Pagination, Search Form and Widgets. With exception of the Pagination-Hook, you're done with requiring source files.
 
 ### Comments
 
-Comments are rendered as nested media-objects.
+Comments are rendered as nested media-objects. You can customize the label 'Comment' by utilizing the `bootstrap_comments_options`-filter:
+
+```php
+// Customize Comment Label
+function bootstrap_comments_options($args) {
+  return array_merge($args, array(
+    'comment_label' => ('Comment' , 'textdomain');
+  ));
+}
+add_filter( 'bootstrap_comments_options', 'bootstrap_comments_options' );
+```
 
 ### Gallery
 
@@ -43,8 +53,12 @@ An extended version of [Bootstrap Navwalker]() by Edward McIntyre is included an
 Since there's no existing hook for posts pagination, we need to call a custom method from archive templates:
 
 ```php
-// Render posts pagination
-wp_bootstrap_posts_pagination();
+// Previous/next page navigation.
+echo wp_bootstrap_get_the_posts_pagination( array(
+  'prev_text'          => __( 'Previous page', 'textdomain' ),
+  'next_text'          => __( 'Next page', 'textdomain' ),
+  'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'textdomain' ) . ' </span>',
+));
 ```
 
 ### Search Form
@@ -53,13 +67,13 @@ A search-form is rendered as input-group.
 You can customize the submit button by passing arguments from a filter. This example shows how to integrate font-awesome: 
 
 ```php
-// Show Font-Awesome search icon in search-form
-function bootstrap_search_form_options($args) {
+// Show Font-Awesome search icon in Searchform
+function bootstrap_searchform_options($args) {
   return array_merge($args, array(
     'submit_label' => '<i class="fa fa-search"></i>'
   ));
 }
-add_filter( 'bootstrap_search_form_options', 'bootstrap_search_form_options' );
+add_filter( 'bootstrap_searchform_options', 'bootstrap_searchform_options' );
 ```
 
 
@@ -80,30 +94,23 @@ register_sidebar( array(
 ```
 
 
-## Bootstrap 3
+## Bootstrap 4
 
-If you need to support Bootstrap 3, you can override options as follows:
+If you're already working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least widget options. 
+Most of options can be shared between both versions without any harm.
 
-```
-// Bootstrap 3 Widget Options
-function bootstrap_widgets_options($options) {
-  return array_merge($options, array(
-    'widget_class' => 'panel',
-    'widget_modifier_class' => 'panel-default',
-    'widget_header_class' => 'panel-heading'
+```php
+// Bootstrap 4 Widget Options
+function bootstrap_widgets_options($args) {
+  return array_merge($args, array(
+    'widget_class' => 'card',
+    'widget_modifier_class' => '',
+    'widget_header_class' => 'card-header',
+    'widget_content_class' => 'card-block'
   ));
 }
 add_filter( 'bootstrap_widgets_options', 'bootstrap_widgets_options' );
-
-// Bootstrap 3 Menu Options
-function bootstrap_menu_options($options) {
-  return array_merge($options, array(
-    'sub_menu_tag' => 'ul',
-    'sub_menu_item_tag' => 'li'
-  ));
-}
-add_filter( 'bootstrap_menu_options', 'bootstrap_menu_options' );
-
 ```  
+
 
 Please note that as soon as Bootstrap 4 is finally released, the default configuration will change.
