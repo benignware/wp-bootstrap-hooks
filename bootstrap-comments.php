@@ -9,7 +9,8 @@ function wp_bootstrap_get_comments_options() {
     'field_class' => 'form-group',
     'text_input_class' => 'form-control',
     'submit_class' => 'btn btn-primary',
-    'reply_link_class' => 'btn btn-primary btn-xs'
+    'reply_link_class' => 'btn btn-primary btn-xs',
+    'comment_label' => 'Comment'
   ));
 }
 
@@ -25,6 +26,7 @@ function wp_bootstrap_comment_form_default_fields( $fields ) {
   $options = wp_bootstrap_get_comments_options();
   $field_class = $options['field_class'];
   $text_input_class = $options['text_input_class'];
+  $comment_label = $options['comment_label'];
   
   $commenter = wp_get_current_commenter();
   $req = get_option( 'require_name_email' );
@@ -67,7 +69,7 @@ function wp_bootstrap_comment_form_defaults( $args ) {
   
   $args['comment_field'] = 
     '<div class="' . $field_class . ' comment-form-comment">
-      <label for="comment">' . _x( 'Comment', 'noun' ) . '</label>
+      <label for="comment">' . $comment_label . '</label>
       <textarea class="' . $text_input_class . '" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea>
     </div>';
     
