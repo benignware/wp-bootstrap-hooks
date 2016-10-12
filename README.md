@@ -80,13 +80,29 @@ register_sidebar( array(
 ```
 
 
-## Bootstrap 4-alpha
+## Bootstrap 3
 
-If you need to support [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you can override options as follows:
+If you need to support Bootstrap 3, you can override options as follows:
 
 ```
+// Bootstrap 3 Widget Options
+function bootstrap_widgets_options($options) {
+  return array_merge($options, array(
+    'widget_class' => 'panel',
+    'widget_modifier_class' => 'panel-default',
+    'widget_header_class' => 'panel-heading'
+  ));
+}
+add_filter( 'bootstrap_widgets_options', 'bootstrap_widgets_options' );
 
-
+// Bootstrap 3 Menu Options
+function bootstrap_menu_options($options) {
+  return array_merge($options, array(
+    'sub_menu_tag' => 'ul',
+    'sub_menu_item_tag' => 'li'
+  ));
+}
+add_filter( 'bootstrap_menu_options', 'bootstrap_menu_options' );
 
 ```  
 
