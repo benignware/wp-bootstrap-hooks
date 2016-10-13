@@ -24,11 +24,13 @@ require_once 'inc/bootstrap-comments.php'
 
 ## Usage
 
-Included are solutions for Comments, Gallery, Navbar, Pagination, Search Form and Widgets. With exception of the Pagination-Hook, you're done with requiring source files.
+Included are solutions for Comments, Gallery, Navbar, Pagination, Search Form and Widgets. Any hook can be used independently from each other by requiring the corresponding source files. 
 
 ### Comments
 
-Comments are rendered as nested media-objects. You can customize the label 'Comment' by utilizing the `bootstrap_comments_options`-filter:
+Comments are rendered as nested media-objects. 
+
+You can customize the label 'Comment' by utilizing the `bootstrap_comments_options`-filter:
 
 ```php
 // Customize Comment Label
@@ -39,6 +41,10 @@ function bootstrap_comments_options($args) {
 }
 add_filter( 'bootstrap_comments_options', 'bootstrap_comments_options' );
 ```
+
+### Content
+
+The Content-Hook takes care of your post content. Sets proper classes to images, tables etc
 
 ### Gallery
 
