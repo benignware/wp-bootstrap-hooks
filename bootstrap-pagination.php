@@ -17,11 +17,7 @@ function wp_bootstrap_get_pagination_options() {
 function wp_bootstrap_posts_pagination( $args = array() ) {
   $navigation = '';
   
-  $options = wp_bootstrap_get_pagination_options();
-  $page_item_class = $options['page_item_class'];
-  $page_item_active_class = $options['page_item_active_class'];
-  $page_link_class = $options['page_link_class'];
-  $pagination_class = $options['pagination_class'];
+  extract(wp_bootstrap_get_pagination_options());
  
     // Don't print empty markup if there's only one page.
   if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
@@ -58,4 +54,37 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
   echo $navigation;
  
   return $navigation;
+}
+
+
+function wp_bootstrap_post_navigation($args = array()) {
+  
+  extract(wp_bootstrap_get_pagination_options());
+  extract($args);
+  
+  $output = "<ul class=\"pagination\">";
+  
+  $prev_post = get_next_post();
+  if ($prev_post) {
+    $prev_post_link = get_permalink($prev_post);
+    $output.= "<li class=\"$page_item_class\">";
+    $output.= "<a class=\"$page_link_class\" href=\"$prev_post_link\">";
+    $output.= preg_replace("~%title~", $prev_post->post_title, $prev_text);
+    $output.= "</a>";
+    $output.= "</li>";
+  }
+  
+  $next_post = get_next_post();
+  if ($next_post) {
+    $next_post_link = get_permalink($next_post);
+    $output.= "<li class=\"$page_item_class\">";
+    $output.= "<a class=\"$page_link_class\" href=\"$next_post_link\">";
+    $output.= preg_replace("~%title~", $next_post->post_title, $next_text);
+    $output.= "</a>";
+    $output.= "</li>";
+  }
+  
+  
+  $output.= "</ul>";
+  echo $output;
 }
