@@ -16,12 +16,14 @@ function wp_bootstrap_get_content_options() {
     'table_class' => 'table',
     'blockquote_class' => 'blockquote',
     'blockquote_footer_tag' => 'footer',
-    'blockquote_footer_class' => 'blockquote-footer'
+    'blockquote_footer_class' => 'blockquote-footer',
+    'edit_post_link_class' => 'btn btn-secondary',
+    'edit_post_link_container_class' => 'form-group btn-group btn-group-sm'
   ));
 }
 
 /**
- * The content
+ * Add bootstrap classes to content images
  */
 if(!function_exists('wp_bootstrap_the_content')) {
   
@@ -188,7 +190,7 @@ EOT;
   add_filter( 'post_thumbnail_html', 'wp_bootstrap_post_thumbnail_html', 100, 5 );
   
   /**
-   * Additional Styles
+   * Custom Styles
    */
   function wp_bootstrap_content_styles() {
     echo <<<EOT
@@ -213,5 +215,76 @@ EOT;
 EOT;
   }
   add_action('wp_head', 'wp_bootstrap_content_styles', 100);
+}
+
+/**
+ * Edit Post Link
+ */
+function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null, $id = null, $class = "") {
+  // Extract options
+  extract(wp_bootstrap_get_content_options());
+  
+  // Capture edit post link html
+  ob_start();
+  edit_post_link($link, $before, $after, $id, $class);
+  $html = ob_get_contents();
+  ob_end_clean();
+  
+  // Parse DOM
+  $doc = new DOMDocument();
+  @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html );
+  
+  $doc_xpath = new DOMXpath($doc);
+  
+  // Container Element
+  //$body_element = $doc->getElementByTagName( 'body' );
+  $container_element = $doc_xpath->query('body/*[1]')->item(0);
+  
+  if ($container_element) {
+    $container_element_class = $container_element->getAttribute('class');
+    $container_element_class.= " $edit_post_link_container_class";
+    $container_element->setAttribute('class', trim($container_element_class));
+  }
+    
+  
+  // Links
+  $link_elements = $doc->getElementsByTagName( 'a' );
+  foreach ($link_elements as $link_element) {
+    $link_element_class = $link_element->getAttribute('class');
+    $link_element_class.= " $edit_post_link_class";
+    $link_element->setAttribute('class', trim($link_element_class));
+  }
+  
+  echo preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+  
+  return;
+  
+  
+  
+  //edit_post_link($link, $before, $after, $id, $class);
+  //return;
+  // Extract options
+  extract(wp_bootstrap_get_content_options());
+  // Set the default class
+  if (!$class) {
+    $class = 'edit-post-link';
+  }
+  
+  // Container start
+  if ($edit_post_link_container_tag) {
+    echo "<$edit_post_link_container_tag class=\"edit-link $edit_post_link_container_class\">";
+  }
+  
+  // Add class to link
+  $class = $class . " " . $edit_post_link_class;
+  
+  // Render Link
+  ob_start();
+   
+  
+  // Container End
+  if ($edit_post_link_container_tag) {
+    echo "</$edit_post_link_container_tag>";
+  }
 }
 ?>

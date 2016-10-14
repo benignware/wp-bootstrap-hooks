@@ -5,6 +5,7 @@
  */
 function wp_bootstrap_get_gallery_options() {
   return apply_filters( 'bootstrap_gallery_options', array(
+    // Options to be defined
   ));
 }
 

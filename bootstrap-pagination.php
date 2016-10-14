@@ -7,7 +7,12 @@ function wp_bootstrap_get_pagination_options() {
     'pagination_class' => 'pagination',
     'page_item_class' => 'page-item',
     'page_item_active_class' => 'active',
-    'page_link_class' => 'page-link'
+    'page_link_class' => 'page-link',
+    'post_nav_class' => 'nav',
+    'post_nav_tag' => 'ul',
+    'post_nav_item_class' => 'nav-item',
+    'post_nav_item_tag' => 'li',
+    'post_nav_link_class' => 'nav-link'
   ));
 }
 
@@ -62,29 +67,33 @@ function wp_bootstrap_post_navigation($args = array()) {
   extract(wp_bootstrap_get_pagination_options());
   extract($args);
   
-  $output = "<ul class=\"pagination\">";
+  $output = "<$post_nav_tag class=\"navigation post-navigation $post_nav_class\" role=\"navigation\">";
   
   $prev_post = get_next_post();
   if ($prev_post) {
     $prev_post_link = get_permalink($prev_post);
-    $output.= "<li class=\"$page_item_class\">";
-    $output.= "<a class=\"$page_link_class\" href=\"$prev_post_link\">";
+    $output.= "<$post_nav_item_tag class=\"$post_nav_item_class nav-previous\">";
+    $output.= "<a class=\"$post_nav_link_class\" href=\"$prev_post_link\" rel=\"prev\">";
+    // Replace %title with post title
+    // TODO: A more general, sprintf-like solution
     $output.= preg_replace("~%title~", $prev_post->post_title, $prev_text);
     $output.= "</a>";
-    $output.= "</li>";
+    $output.= "</$post_nav_item_tag>";
   }
   
   $next_post = get_next_post();
   if ($next_post) {
     $next_post_link = get_permalink($next_post);
-    $output.= "<li class=\"$page_item_class\">";
-    $output.= "<a class=\"$page_link_class\" href=\"$next_post_link\">";
+    $output.= "<$post_nav_item_tag class=\"$post_nav_item_class nav-next\">";
+    $output.= "<a class=\"$post_nav_link_class\" href=\"$next_post_link\" rel=\"next\">";
+    // Replace %title with post title
+    // TODO: A more general, sprintf-like solution
     $output.= preg_replace("~%title~", $next_post->post_title, $next_text);
     $output.= "</a>";
-    $output.= "</li>";
+    $output.= "</$post_nav_item_tag>";
   }
   
   
-  $output.= "</ul>";
+  $output.= "</$post_nav_tag>";
   echo $output;
 }

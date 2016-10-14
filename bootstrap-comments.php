@@ -63,9 +63,7 @@ add_filter( 'comment_form_default_fields', 'wp_bootstrap_comment_form_default_fi
  */
 function wp_bootstrap_comment_form_defaults( $args ) {
     
-  $options = wp_bootstrap_get_comments_options();
-  $field_class = $options['field_class'];
-  $text_input_class = $options['text_input_class'];
+  extract(wp_bootstrap_get_comments_options());
   
   $args['comment_field'] = 
     '<div class="' . $field_class . ' comment-form-comment">
@@ -83,8 +81,7 @@ add_filter( 'comment_form_defaults', 'wp_bootstrap_comment_form_defaults' );
  * Comment Form After
  */
 function wp_bootstrap_comment_form_after() {
-  $options = wp_bootstrap_get_comments_options();
-  $submit_class = $options['submit_class'];
+  extract(wp_bootstrap_get_comments_options());
   echo 
     "<script>\n" .
     "  (function($) {\n" . 

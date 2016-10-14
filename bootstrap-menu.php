@@ -44,7 +44,7 @@ add_filter( 'wp_nav_menu_args', 'wp_bootstrap_nav_menu_args' );
  * GitHub URI: https://github.com/twittem/wp-bootstrap-navwalker
  * Description: A custom WordPress nav walker class to implement the Bootstrap 3 navigation style in a custom theme using the WordPress built in menu manager.
  * Version: 2.0.4
- * Author: Edward McIntyre - @twittem
+ * Author: Based On Edward McIntyre - @twittem, Edited by Rafael Nowrotek - @benignware
  * License: GPL-2.0+
  * License URI: http://www.gnu.org/licenses/gpl-2.0.txt
  */

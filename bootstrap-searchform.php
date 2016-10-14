@@ -4,7 +4,7 @@
  */
 function wp_bootstrap_get_searchform_options() {
   return apply_filters( 'bootstrap_searchform_options', array(
-    'submit_label' => '<i>x🔎x</i>'
+    'submit_label' => '<i>🔎</i>'
   ));
 }
 
