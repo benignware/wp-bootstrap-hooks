@@ -5,6 +5,8 @@
 When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not sufficient to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc. 
 Bootstrap Hooks aims to cover most of these cases and make us start developing immediately after this point.
     
+Included are solutions for Comments, Gallery, Navbar, Pagination, Search Form and Widgets. Any hook can be used independently from each other by requiring the corresponding source files. 
+
 
 ## Install
 
@@ -22,9 +24,7 @@ Otherwise you may require single hooks as desired
 require_once 'inc/bootstrap-comments.php'
 ```
 
-## Hooks
-
-Included are solutions for Comments, Gallery, Navbar, Pagination, Search Form and Widgets. Any hook can be used independently from each other by requiring the corresponding source files. 
+## Modules
 
 ### Comments
 
@@ -197,9 +197,26 @@ The Content-Hook takes care of your post content primarily. It sets markup and p
 
 The gallery hook uses a grid of thumbnails in combination with a carousel inside a modal for zoom view
 
+#### Filters
+
+<table>
+  <tr>
+    <th>Signature</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      bootstrap_gallery_options ( $options )
+    </td>
+    <td>
+      Inject custom options
+    </td>
+  </tr>
+</table>
+
 #### Options
 
-The gallery-hook currently doesn't have any options
+The gallery-hook currently does not expose any options.
 
 ### Menu
 
@@ -222,7 +239,7 @@ An extended version of [Bootstrap Navwalker]() by Edward McIntyre is included an
   </tr>
 </table>
 
-### Options
+#### Options
 
 <table>
   <tr>
@@ -402,6 +419,23 @@ register_sidebar( array(
 ) );
 ```
 
+#### Filters
+
+<table>
+  <tr>
+    <th>Signature</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      bootstrap_widgets_options ( $options )
+    </td>
+    <td>
+      Inject custom options
+    </td>
+  </tr>
+</table>
+
 #### Options
 
 <table>
@@ -459,7 +493,7 @@ Please note that as soon as Bootstrap 4 is finally released, the default configu
 
 ## Recipes
 
-### Use as Plugin
+#### Use as Plugin
 
 When intended to use as plugin, you should take care of a situation where the plugin is unistalled: 
 
@@ -478,6 +512,6 @@ When intended to use as plugin, you should take care of a situation where the pl
 ```
 
 
-### Less/Sass
+#### Less/Sass
 
 To get the most out of Bootstrap, you should consider to build your setup on the native preprocessor language in which Bootstrap is build, meaning Less for Bootstrap 3 respectively Sass for Bootstrap 4. 
