@@ -12,7 +12,12 @@ function wp_bootstrap_get_pagination_options() {
     'post_nav_tag' => 'ul',
     'post_nav_item_class' => 'nav-item',
     'post_nav_item_tag' => 'li',
-    'post_nav_link_class' => 'nav-link'
+    'post_nav_link_class' => 'nav-link',
+    'paginated_class' => 'pagination pagination-sm',
+    'paginated_tag' => 'ul',
+    'paginated_item_class' => 'page-item',
+    'paginated_item_tag' => 'li',
+    'paginated_link_class' => 'page-link'
   ));
 }
 
@@ -97,3 +102,58 @@ function wp_bootstrap_post_navigation($args = array()) {
   $output.= "</$post_nav_tag>";
   echo $output;
 }
+
+
+// define the wp_link_pages callback 
+function wp_bootstrap_link_pages( $output, $args ) {
+  
+  if (!$output) {
+    return $output;
+  }
+  
+  extract(wp_bootstrap_get_pagination_options());
+  extract($args);
+  
+  // Parse DOM
+  $doc = new DOMDocument();
+  @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $output );
+  
+  $element = $doc->createElement($paginated_tag);
+  $element->setAttribute('class', $paginated_class);
+  
+  $body_element = $doc->getElementsByTagName('body')->item(0);
+  $link_element = $doc->getElementsByTagName('a')->item(0);
+  $container_element = $link_element ? $link_element->parentNode : $body_element;
+  
+  foreach ($container_element->childNodes as $child_element) {
+    $clone = $child_element->cloneNode(true);
+    if ($child_element->nodeType == 1 && strtolower($child_element->tagName) == 'a') {
+      // Add link class
+      $link_element_class = $clone->getAttribute('class');
+      $link_element_class.= trim(' ' . $paginated_link_class);
+      $clone->setAttribute('class', $link_element_class);
+      // Create item
+      $item_element = $doc->createElement($paginated_item_tag);
+      $item_element->setAttribute('class', $paginated_item_class);
+      $item_element->appendChild($clone);
+      $element->appendChild($item_element);
+    } else {
+      // Bootstrap pagination does not support other elements
+      //$element->appendChild($clone);
+    }
+  }
+  
+  if ($body_element) {
+    // Remove all children from body element
+    while ($body_element->hasChildNodes()) {
+      $body_element->removeChild($body_element->firstChild);
+    }
+    // Add paginated element
+    $body_element->appendChild($element);
+  }
+  
+  return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+};
+add_filter( 'wp_link_pages', 'wp_bootstrap_link_pages', 10, 2 );
+
+
