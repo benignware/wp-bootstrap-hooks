@@ -5,26 +5,35 @@
 When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not sufficient to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc. 
 Bootstrap Hooks aims to cover most of these cases and make us start developing immediately after this point.
     
-Included are solutions for Comments, Gallery, Navbar, Pagination, Search Form and Widgets. Any hook can be used independently from each other by requiring the corresponding source files. 
-
+Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a filter method.
 
 ## Install
 
-Either install as a mu-plugin or copy the desired files directly to your theme and require them in your functions.php.
+Either install as a must-use-plugin or copy the desired files directly to your theme and require them in your functions.php.
 
-When utilizing the plugin, we need to require hooks by specifying desired bootstrap version as follows:
+### Plugin
+When utilizing the plugin, require specific hooks from your functions.php as follows:
+
+```php
+wp_bootstrap_hooks('menu', 'widgets', ...);
+```
+
+To include all hooks, just omit the parameters:
 
 ```php
 wp_bootstrap_hooks();
 ```
+Please note that it's recommended to install Bootstrap Hooks as a Must Use Plugin which should only be updated manually by theme developers.
 
-Otherwise you may require single hooks as desired
+### Template
+
+When used from inside a theme, all hooks can be required by including only the main file:
 
 ```php
-require_once 'inc/bootstrap-comments.php'
+require_once 'inc/wp-bootstrap-hooks/bootstrap-hooks.php';
 ```
 
-## Modules
+## Usage
 
 ### Comments
 
@@ -41,6 +50,134 @@ function bootstrap_comments_options($args) {
 }
 add_filter( 'bootstrap_comments_options', 'bootstrap_comments_options' );
 ```
+
+### Content
+
+The Content-Hook takes care of your post content primarily. It sets proper markup and classes to images, captions, blockquotes and tables. It also handles the post thumbnail to add the responsive image class.
+
+In Bootstrap 4, the Tag-component may break Wordpress\` default taxonomy styles. See [here](https://github.com/twbs/bootstrap/issues/20542) for reference. 
+To avoid undesired effects, the `tag` class is replaced with `post-tag` in `body_class`- or `post_class`-methods and also when it's found in the content.  
+
+
+### Forms
+
+This module handles search- and password-forms.
+
+A search-form is rendered as input-group. 
+You can customize the button's icon by passing arguments from a filter. This example shows how to integrate font-awesome: 
+
+```php
+// Show Font-Awesome search icon in Searchform
+function bootstrap_forms_options($options) {
+  return array_merge($options, array(
+    'search_submit_label' => '<i class="fa fa-search"></i>'
+  ));
+}
+add_filter( 'bootstrap_forms_options', 'bootstrap_forms_options' );
+```
+
+
+### Gallery
+
+The gallery hook uses a grid of thumbnails in combination with a carousel inside a modal for zoom view.
+
+In typical Bootstrap-driven layout, column sizes may differ from Wordpress default thumbnail size. 
+You may update thumbnail size to your needs in order to fit thumbnail images into at least three columns:
+
+```
+// Adjust thumbnail size
+update_option( 'thumbnail_size_w', 230 );
+update_option( 'thumbnail_size_h', 230 );
+update_option( 'thumbnail_crop', 1 );
+``` 
+
+The implementation does not handle different zoom-image heights. An easy way to fix this, is to register a custom image size with cropping enabled and apply to the Gallery Hook:
+
+```php
+// Register custom image sizes
+add_image_size( 'gallery-zoom', 900, 500, true );
+// Apply custom image size to gallery zoom
+function bootstrap_gallery_options($options) {
+  return array_merge($options, array(
+    'gallery_large_size' => 'gallery-zoom'
+  ));
+}
+add_filter( 'bootstrap_gallery_options', 'bootstrap_gallery_options' );
+```
+
+
+### Menu
+
+Bootstrap Hooks provides a Nav Menu Walker based on the work by Edward McIntyre which is automatically injected into menus per default. For the primary menu the `navbar-nav`-class will be added.
+
+
+### Pagination
+
+Since there's no existing hook for posts pagination, we need to call a custom method from archive templates:
+
+
+### Widgets
+
+Widgets are rendered as panels. Some manipulations take care of third-party widgets, such as applying list-groups to unordered lists. 
+Make sure that you registered any widget areas in your `functions.php`:
+
+```php
+// Register widget area.
+register_sidebar( array(
+  'name'          => __( 'Widget Area', 'kicks-app' ),
+  'id'            => 'sidebar-1',
+  'description'   => __( 'Add widgets here to appear in your sidebar.', 'kicks-app' ),
+  'before_widget' => '<aside id="%1$s" class="widget %2$s">',
+  'after_widget'  => '</aside>'
+) );
+```
+
+
+
+
+## Bootstrap 4
+
+If you're already working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least some options. 
+
+```php
+// Bootstrap 4 Widget Options
+function bootstrap4_widgets_options($options) {
+  return array_merge($options, array(
+    'widget_class' => 'card',
+    'widget_modifier_class' => '',
+    'widget_header_class' => 'card-header',
+    'widget_content_class' => 'card-block'
+  ));
+}
+add_filter( 'bootstrap_widgets_options', 'bootstrap4_widgets_options' );
+
+// Bootstrap 4 Gallery Options
+function bootstrap4_gallery_options($options) {
+  return array_merge($options, array(
+    'gallery_thumbnail_class' => '',
+    'gallery_thumbnail_img_class' => 'img-thumbnail m-b-2',
+    'close_button_class' => 'btn btn-secondary',
+    'carousel_item_class' => 'carousel-item'
+  ));
+}
+add_filter( 'bootstrap_gallery_options', 'bootstrap4_gallery_options' );
+
+// Bootstrap 4 Content Options
+function bootstrap4_content_options($options) {
+  return array_merge($options, array(
+    'image_class' => 'img-fluid',
+    'align_center_class' => 'm-x-auto',
+    'edit_post_link_class' => 'btn btn-secondary'
+  ));
+}
+add_filter( 'bootstrap_content_options', 'bootstrap4_content_options' );
+```  
+
+Please note that as soon as Bootstrap 4 is finally released, the default configuration will change.
+
+## API
+
+### Comments
 
 #### Filters
 
@@ -89,11 +226,7 @@ add_filter( 'bootstrap_comments_options', 'bootstrap_comments_options' );
   </tr>
 </table>
 
-
-
 ### Content
-
-The Content-Hook takes care of your post content primarily. It sets markup and proper classes to images, image captions, blockquotes and tables. It also handles the post thumbnail to add the responsive image class.
 
 #### Filters
 
@@ -192,10 +325,53 @@ The Content-Hook takes care of your post content primarily. It sets markup and p
   </tr>
 </table>
 
+### Forms
+
+
+#### Filters
+
+<table>
+  <tr>
+    <th>Signature</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      bootstrap_forms_options ( $options )
+    </td>
+    <td>
+      Inject custom options
+    </td>
+  </tr>
+</table>
+
+#### Options
+
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td>search_submit_label</td>
+    <td>Sets the searchfield's submit label</td>
+    <td><i>🔎</i></td>
+  </tr>
+  <tr>
+    <td>text_input_class</td>
+    <td>Sets the class of textfields used in search- and password-forms</td>
+    <td><i>🔎</i></td>
+  </tr>
+  <tr>
+    <td>submit_button_class</td>
+    <td>Sets the class of submit buttons used in search- and password-forms</td>
+    <td><i>🔎</i></td>
+  </tr>
+</table>
 
 ### Gallery
 
-The gallery hook uses a grid of thumbnails in combination with a carousel inside a modal for zoom view
 
 #### Filters
 
@@ -215,12 +391,36 @@ The gallery hook uses a grid of thumbnails in combination with a carousel inside
 </table>
 
 #### Options
-
-The gallery-hook currently does not expose any options.
+    
+<table>
+  <tr>
+    <th>Name</th>
+    <th>Description</th>
+    <th>Default</th>
+  </tr>
+  <tr>
+    <td>gallery_thumbnail_size</td>
+    <td>Sets the default thumbnail size</td>
+    <td>'thumbnail'</td>
+  </tr>
+  <tr>
+    <td>gallery_large_size</td>
+    <td>Sets the image size for the carousel view</td>
+    <td>large</td>
+  </tr>
+  <tr>
+    <td>close_button_class</td>
+    <td>Sets the modal's close button class</td>
+    <td>btn btn-secondary</td>
+  </tr>
+  <tr>
+    <td>close_button_label</td>
+    <td>Sets the modal's close button label</td>
+    <td>__('Close')</td>
+  </tr>
+</table>
 
 ### Menu
-
-An extended version of [Bootstrap Navwalker]() by Edward McIntyre is included and automatically applied to the primary menu.
 
 #### Filters
 
@@ -280,8 +480,6 @@ An extended version of [Bootstrap Navwalker]() by Edward McIntyre is included an
 </table>
 
 ### Pagination
-
-Since there's no existing hook for posts pagination, we need to call a custom method from archive templates:
 
 #### Filters
 
@@ -356,68 +554,7 @@ Since there's no existing hook for posts pagination, we need to call a custom me
 </table>
 
 
-### Search Form
-
-A search-form is rendered as input-group. 
-You can customize the submit button by passing arguments from a filter. This example shows how to integrate font-awesome: 
-
-```php
-// Show Font-Awesome search icon in Searchform
-function bootstrap_searchform_options($args) {
-  return array_merge($args, array(
-    'submit_label' => '<i class="fa fa-search"></i>'
-  ));
-}
-add_filter( 'bootstrap_searchform_options', 'bootstrap_searchform_options' );
-```
-
-#### Filters
-
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      bootstrap_searchform_options ( $options )
-    </td>
-    <td>
-      Inject custom options
-    </td>
-  </tr>
-</table>
-
-#### Options
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
-  <tr>
-    <td>submit_label</td>
-    <td>Sets the submit label</td>
-    <td><i>🔎</i></td>
-  </tr>
-</table>
-
 ### Widgets
-
-Widgets are rendered as panels. Some manipulations take care of third-party widgets, such as applying list-groups to unordered lists. 
-Make sure that you registered any widget areas in your `functions.php`:
-
-```php
-// Register widget area.
-register_sidebar( array(
-  'name'          => __( 'Widget Area', 'kicks-app' ),
-  'id'            => 'sidebar-1',
-  'description'   => __( 'Add widgets here to appear in your sidebar.', 'kicks-app' ),
-  'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-  'after_widget'  => '</aside>'
-) );
-```
 
 #### Filters
 
@@ -465,29 +602,6 @@ register_sidebar( array(
     <td>panel-block</td>
   </tr>
 </table>
-
-
-## Bootstrap 4
-
-If you're already working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least widget options. 
-Most of options can be shared between both versions without any harm.
-
-```php
-// Bootstrap 4 Widget Options
-function bootstrap_widgets_options($args) {
-  return array_merge($args, array(
-    'widget_class' => 'card',
-    'widget_modifier_class' => '',
-    'widget_header_class' => 'card-header',
-    'widget_content_class' => 'card-block'
-  ));
-}
-add_filter( 'bootstrap_widgets_options', 'bootstrap_widgets_options' );
-```  
-
-
-Please note that as soon as Bootstrap 4 is finally released, the default configuration will change.
-
 
 
 
