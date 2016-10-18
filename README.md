@@ -84,7 +84,7 @@ The gallery hook uses a grid of thumbnails in combination with a carousel inside
 In typical Bootstrap-driven layout, column sizes may differ from Wordpress default thumbnail size. 
 You may update thumbnail size to your needs in order to fit thumbnail images into at least three columns:
 
-```
+```php
 // Adjust thumbnail size
 update_option( 'thumbnail_size_w', 230 );
 update_option( 'thumbnail_size_h', 230 );
