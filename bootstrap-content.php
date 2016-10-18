@@ -4,10 +4,10 @@
  */
 function wp_bootstrap_get_content_options() {
   return apply_filters( 'bootstrap_content_options', array(
-    'image_class' => 'img-fluid img-responsive',
+    'image_class' => 'img-responsive',
     'align_left_class' => 'pull-left',
     'align_right_class' => 'pull-right',
-    'align_center_class' => 'center-block m-x-auto',
+    'align_center_class' => 'center-block',
     'img_caption_tag' => 'figure',
     'img_caption_class' => 'figure',
     'img_caption_text_tag' => 'figcaption',
@@ -17,8 +17,9 @@ function wp_bootstrap_get_content_options() {
     'blockquote_class' => 'blockquote',
     'blockquote_footer_tag' => 'footer',
     'blockquote_footer_class' => 'blockquote-footer',
-    'edit_post_link_class' => 'btn btn-secondary',
-    'edit_post_link_container_class' => 'form-group btn-group btn-group-sm'
+    'edit_post_link_class' => 'btn btn-default',
+    'edit_post_link_container_class' => 'form-group btn-group btn-group-sm',
+    'post_tag_class' => 'post-tag'
   ));
 }
 
@@ -30,13 +31,13 @@ if(!function_exists('wp_bootstrap_the_content')) {
   function wp_bootstrap_the_content($content) {
     $options = wp_bootstrap_get_content_options();
 
-    // Extract options
+    // Extract options 
     extract($options);
     
     // Parse DOM
     $doc = new DOMDocument();
     @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $content );
-    //$doc_xpath = new DOMXpath($doc);
+    $doc_xpath = new DOMXpath($doc);
     
     // Images
     $image_elements = $doc->getElementsByTagName( 'img' );
@@ -64,6 +65,7 @@ if(!function_exists('wp_bootstrap_the_content')) {
       // Find next element sibing
       $sibling = $blockquote_element;
       $next_element_sibling = null;
+      $cite_element = null;
       while ($sibling = $sibling->nextSibling) {
         if ($sibling->nodeType == 1) {
           $next_element_sibling = $sibling;
@@ -72,7 +74,7 @@ if(!function_exists('wp_bootstrap_the_content')) {
       }
       if ($next_element_sibling) {
         // Find cite
-        $cite_element = $doc->getElementsByTagName( 'cite' )->item(0);
+        $cite_element = $next_element_sibling->getElementsByTagName( 'cite' )->item(0);
         if ($cite_element) {
           // Create footer
           $blockquote_footer_element = $doc->createElement($blockquote_footer_tag);
@@ -82,11 +84,11 @@ if(!function_exists('wp_bootstrap_the_content')) {
           foreach ($next_element_sibling->childNodes as $child) {
             $blockquote_footer_element->appendChild($child->cloneNode(true));
           }
+          // Insert before original element
+          $blockquote_element->appendChild($blockquote_footer_element);
+          // Remove original element
+          $next_element_sibling->parentNode->removeChild($next_element_sibling);
         }
-        // Insert before original element
-        $blockquote_element->appendChild($blockquote_footer_element);
-        // Remove original element
-        $next_element_sibling->parentNode->removeChild($next_element_sibling);
       }
     }
     
@@ -96,6 +98,14 @@ if(!function_exists('wp_bootstrap_the_content')) {
       $class = $table_node->getAttribute('class');
       $class.= ' table';
       $table_node->setAttribute('class', $class);
+    }
+    
+    // Tags
+    $tag_elements = $doc_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' tag ') or contains(concat(' ', normalize-space(@class), '-'), ' tag-')]");
+    foreach ($tag_elements as $tag_element) {
+      $classes = preg_split('/\s+/', $tag_element->getAttribute('class'));
+      $classes = wp_bootstrap_post_tag_class($classes);
+      $tag_element->setAttribute('class', implode(" ", $classes));
     }
     
     return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
@@ -286,5 +296,17 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
   if ($edit_post_link_container_tag) {
     echo "</$edit_post_link_container_tag>";
   }
+}
+
+
+add_filter( 'body_class', 'wp_bootstrap_post_tag_class' );
+add_filter( 'post_class', 'wp_bootstrap_post_tag_class' );
+function wp_bootstrap_post_tag_class( $classes ) {
+  extract(wp_bootstrap_get_content_options());
+  foreach ($classes as $index => $class) {
+    $class = preg_replace("~^tag\b~", "$post_tag_class", $class);
+    $classes[$index] = $class;
+  }
+  return $classes;
 }
 ?>
