@@ -8,7 +8,7 @@ function wp_bootstrap_get_widgets_options() {
     'widget_class' => 'panel',
     'widget_modifier_class' => 'panel-default',
     'widget_header_class' => 'panel-heading',
-    'widget_content_class' => 'panel-block'
+    'widget_content_class' => 'panel-body'
   ));
 }
 
@@ -68,15 +68,17 @@ function wp_bootstrap_widget_callback_function() {
  * Override Widget Output
  */
 function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id) {
-  $options = wp_bootstrap_get_widgets_options();
-  $widget_class = $options['widget_class'];
-  $widget_modifier_class = $options['widget_modifier_class'];
-  $widget_header_class = $options['widget_header_class'];
-  $widget_content_class = $options['widget_content_class'];
-  
-  $widget_id_base_hyphens = preg_replace("~_~Ui", "-", $widget_id_base);
+  extract(wp_bootstrap_get_widgets_options());
   
   if ($widget_output) {
+    
+    if (function_exists('wp_bootstrap_the_content')) {
+      $widget_output = wp_bootstrap_the_content( $widget_output );
+    }
+    
+    // Process Widget output
+    $widget_id_base_hyphens = preg_replace("~_~Ui", "-", $widget_id_base);
+    
     $html = new DOMDocument();
     @$html->loadHTML('<?xml encoding="utf-8" ?>' . $widget_output );
     $html_xpath = new DOMXpath($html);
@@ -260,16 +262,57 @@ add_filter( 'widget_output', 'wp_bootstrap_widget_output', 10, 3 );
 
 
 /**
- * Dropdown in widget
+ * Dropdown in category widget dropdown
  * Reference: http://webinspiration.gallery/5-tips-build-wordpress-theme-using-bootstrap-3/
  */
 function wp_bootstrap_widget_categories_dropdown_args( $args ) {
-    if ( array_key_exists( 'class', $args ) ) {
-        $args['class'] .= ' form-control';
-    } else {
-        $args['class'] = 'form-control';
-    }
-    return $args;
+  if ( array_key_exists( 'class', $args ) ) {
+    $args['class'].= ' form-control';
+  } else {
+    $args['class'] = 'form-control';
+  }
+  return $args;
 }
 add_filter( 'widget_categories_dropdown_args', 'wp_bootstrap_widget_categories_dropdown_args' );
+
+
+
+/**
+ * Custom Styles
+ */
+function wp_bootstrap_widget_styles() {
+  $options = wp_bootstrap_get_widgets_options();
+  $widget_class = $options['widget_class'];
+  $widget_header_class = $options['widget_header_class'];
+  echo
+<<<EOT
+  <style type="text/css">
+    /* FIXME: https://github.com/twbs/bootstrap/issues/20395 */
+    .$widget_class > .list-group > .list-group-item {
+      border-left: 0;
+      border-right: 0;
+    }
+    .$widget_class > .list-group:first-child .list-group-item:first-of-type {
+      border-top: 0;
+    }
+    .$widget_class > .list-group:last-child .list-group-item:last-of-type {
+      border-bottom: 0;
+    }
+    /* FIXME: https://github.com/twbs/bootstrap/issues/19047 */
+    .$widget_class > .$widget_header_class + .list-group > .list-group-item:first-child,
+    .$widget_class > .list-group + .$widget_class-footer {
+      border-top: 0;
+    }
+    /* Strip borders in search widget */
+    .$widget_class.$widget_class-search {
+      border: 0;
+    }
+    .$widget_class.$widget_class-search .form-group {
+      margin: 0;
+    }
+  </style>
+EOT;
+}
+add_action('wp_head', 'wp_bootstrap_widget_styles', 0);
+
 ?>
