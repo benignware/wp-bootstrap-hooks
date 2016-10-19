@@ -12,18 +12,19 @@ Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, 
 Either install as a must-use-plugin or copy the desired files directly to your theme and require them in your functions.php.
 
 ### Plugin
-When utilizing the plugin, require specific hooks from your functions.php as follows:
+When utilizing the plugin, require all modules from your functions.php as follows:
+
+```php
+wp_bootstrap_hooks();
+```
+
+To only include specific modules, just pass them parameters:
 
 ```php
 wp_bootstrap_hooks('menu', 'widgets', ...);
 ```
 
-To include all hooks, just omit the parameters:
-
-```php
-wp_bootstrap_hooks();
-```
-Please note that it's recommended to install Bootstrap Hooks as a Must Use Plugin which should only be updated manually by theme developers.
+Please note that it's recommended to install Bootstrap Hooks as a Must-Use-Plugin instead of a regular plugin and should only be updated manually by theme developers.
 
 ### Template
 
@@ -31,6 +32,14 @@ When used from inside a theme, all hooks can be required by including only the m
 
 ```php
 require_once 'inc/wp-bootstrap-hooks/bootstrap-hooks.php';
+```
+
+Otherwise require specific modules as needed:
+
+```php
+require_once 'inc/wp-bootstrap-hooks/bootstrap-menu.php';
+require_once 'inc/wp-bootstrap-hooks/bootstrap-widgets.php';
+...
 ```
 
 ## Usage
@@ -58,6 +67,12 @@ The Content-Hook takes care of your post content primarily. It sets proper marku
 In Bootstrap 4, the Tag-component may break Wordpress\` default taxonomy styles. See [here](https://github.com/twbs/bootstrap/issues/20542) for reference. 
 To avoid undesired effects, the `tag` class is replaced with `post-tag` in `body_class`- or `post_class`-methods and also when it's found in the content.  
 
+This module also provides a custom method to replace the edit-link. 
+Search your theme for occurrences of `edit_post_link` and replace with `wp_bootstrap_edit_post_link`:
+
+```php
+edit_post_link( __( 'Edit', 'textdomain' ), '<span class="edit-link">', '</span>' );
+```
 
 ### Forms
 
@@ -108,12 +123,31 @@ add_filter( 'bootstrap_gallery_options', 'bootstrap_gallery_options' );
 
 ### Menu
 
-Bootstrap Hooks provides a Nav Menu Walker based on the work by Edward McIntyre which is automatically injected into menus per default. For the primary menu the `navbar-nav`-class will be added.
+Bootstrap Hooks provides a Nav Menu Walker based on the work by [Edward McIntyre](https://github.com/twittem/wp-bootstrap-navwalker) which is automatically injected into menus per default. 
+For the primary menu, the `navbar-nav`-class will be added.
 
 
 ### Pagination
 
-Since there's no existing hook for posts pagination, we need to call a custom method from archive templates:
+Since there's no existing hook for posts-pagination as well as for post-navigation, we need to call custom methods from our templates:
+
+Search your theme for occurrences of `the_posts_pagination` and replace with `wp_bootstrap_posts_pagination`:
+
+```php
+// Previous/next page navigation.
+wp_bootstrap_posts_pagination( array(
+  // Options go here
+) );
+```
+
+Search your theme for occurrences of `the_post_navigation` and replace with `wp_bootstrap_post_navigation`:
+
+```php
+// Previous/next post navigation.
+wp_bootstrap_post_navigation( array(
+  // Options go here
+) );
+```
 
 
 ### Widgets
@@ -124,16 +158,13 @@ Make sure that you registered any widget areas in your `functions.php`:
 ```php
 // Register widget area.
 register_sidebar( array(
-  'name'          => __( 'Widget Area', 'kicks-app' ),
+  'name'          => __( 'Widget Area', 'textdomain' ),
   'id'            => 'sidebar-1',
-  'description'   => __( 'Add widgets here to appear in your sidebar.', 'kicks-app' ),
+  'description'   => __( 'Add widgets here to appear in your sidebar.', 'textdomain' ),
   'before_widget' => '<aside id="%1$s" class="widget %2$s">',
   'after_widget'  => '</aside>'
 ) );
 ```
-
-
-
 
 ## Bootstrap 4
 
@@ -551,6 +582,31 @@ Please note that as soon as Bootstrap 4 is finally released, the default configu
     <td>Sets the post navigation link class</td>
     <td>nav-link</td>
   </tr>
+  <tr>
+    <td>paginated_class</td>
+    <td>Sets the paginated class</td>
+    <td>pagination pagination-sm</td>
+  </tr>
+  <tr>
+    <td>paginated_tag</td>
+    <td>Sets the paginated tag</td>
+    <td>ul</td>
+  </tr>
+  <tr>
+    <td>paginated_item_class</td>
+    <td>Sets the paginated item class</td>
+    <td>page-item</td>
+  </tr>
+  <tr>
+    <td>paginated_item_tag</td>
+    <td>Sets the paginated item tag</td>
+    <td>li</td>
+  </tr>
+  <tr>
+    <td>paginated_link_class</td>
+    <td>Sets the paginated link tag</td>
+    <td>page-link</td>
+  </tr>
 </table>
 
 
@@ -612,20 +668,13 @@ Please note that as soon as Bootstrap 4 is finally released, the default configu
 When intended to use as plugin, you should take care of a situation where the plugin is unistalled: 
 
 ```php
-  $edit_post_link_args = array(
-    sprintf(
-      /* translators: %s: Name of current post */
-      __( 'Edit<span class="screen-reader-text"> "%s"</span>', 'twentysixteen' ),
-      get_the_title()
-    ),
-    '<span class="edit-link">',
-    '</span>'
-  );
-  $edit_post_link_method = function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootstrap_edit_post_link' : 'edit_post_link';
-  call_user_func_array($edit_post_link_method, $edit_post_link_args);
+call_user_func_array( function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootstrap_edit_post_link' : 'edit_post_link', array(
+  sprintf(
+    /* translators: %s: Name of current post */
+    __( 'Edit<span class="screen-reader-text"> "%s"</span>', 'textdomain' ),
+    get_the_title()
+  ),
+  '<span class="edit-link">',
+  '</span>'
+) );
 ```
-
-
-#### Less/Sass
-
-To get the most out of Bootstrap, you should consider to build your setup on the native preprocessor language in which Bootstrap is build, meaning Less for Bootstrap 3 respectively Sass for Bootstrap 4. 
