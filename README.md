@@ -44,6 +44,8 @@ require_once 'inc/wp-bootstrap-hooks/bootstrap-widgets.php';
 
 ## Usage
 
+With few exceptions, Bootstrap Hooks works out-of-the-box by injecting magic via actions and filters. Read further to learn more about the distict modules.
+
 ### Comments
 
 Comments are rendered as nested media-objects. 
@@ -207,6 +209,9 @@ add_filter( 'bootstrap_content_options', 'bootstrap4_content_options' );
 Please note that as soon as Bootstrap 4 is finally released, the default configuration will change.
 
 ## API
+
+Bootstrap Hooks is highly customizable. This is mainly required because of managing different Bootstrap versions without splitting up the codebase. Normally there should be no need to change a lot.  
+
 
 ### Comments
 
