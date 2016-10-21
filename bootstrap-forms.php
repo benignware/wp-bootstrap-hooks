@@ -4,7 +4,7 @@
  */
 function wp_bootstrap_get_forms_options() {
   return apply_filters( 'bootstrap_forms_options', array(
-    'search_submit_label' => '<i>🔎</i>',
+    'search_submit_label' => '<i class="glyphicon glyphicon-search"></i>',
     'text_input_class' => 'form-control',
     'submit_button_class' => 'btn btn-primary'
   ));
