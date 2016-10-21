@@ -130,6 +130,7 @@ add_filter( 'bootstrap_gallery_options', 'bootstrap_gallery_options' );
 Bootstrap Hooks provides a Nav Menu Walker based on the work by [Edward McIntyre](https://github.com/twittem/wp-bootstrap-navwalker) which is automatically injected into menus per default. 
 For the primary menu, the `navbar-nav`-class will be added.
 
+Bootstrap Hooks also adds a script that handles links on dropdown-toggles which are prevented by default from Bootstrap.
 
 ### Pagination
 
