@@ -28,7 +28,7 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
     $sidebar_params[$index] = array_merge( 
       $widget_params, 
       array(
-        'before_widget' => '<div class="widget">',
+        //'before_widget' => '<div class="widget">',
         'before_widget' => "<div class=\"widget widget-$widget_name $widget_class $widget_modifier_class\">",
         'after_widget'  => '</div>',
         'before_title'  => '<div class="' . $widget_header_class . '">',
@@ -90,15 +90,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
     $content_fragment = $html->createDocumentFragment();
     $elems = array();
     if ($widget_root_node) {
-      if ($widget_id_base === "search") {
-        $class = $widget_root_node->getAttribute("class");
-        $class = preg_replace("/" . preg_quote($widget_class, '/') . "/Ui", "", $class);
-        $class.= strlen($class) > 0 ? " " . $class : $class; 
-        $widget_root_node->setAttribute('class', $class);
-        $style = $widget_root_node->getAttribute('style');
-        $widget_root_node->setAttribute('style', $style . " border: none;");
-      }
-      
+
       $content_parent = $html_xpath->query("//*[contains(@class, '$widget_class')]")->item(0);
       if (!$content_parent) {
         // If no element with component class is found yet, we'll add it and append with modifier and wrap the actual content in it
@@ -208,7 +200,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
             }
           }
           
-          
+          // Handle lists
           if ((!$list_node || $widget_content_node !== $list_node) && ($widget_content_node->nodeType === 1 || $widget_content_node->nodeType === 3 && strlen(trim($widget_content_node->nodeType === 1)) > 0)) {
               
             // Content Block
@@ -226,20 +218,6 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
               }
             }
           
-            // Tables
-            $table_elems = $widget_content_node->getElementsByTagName( 'table' );
-            foreach ($table_elems as $table_elem) {
-              $class = $table_elem->getAttribute('class');
-              if (!$class || strpos($class, 'table') !== true) {
-                $table_elem->setAttribute('class', $class . " table");
-              }
-            }
-            if ($table_elems->length > 0) {
-              $last_table_elem = $table_elems->item($table_elems->length - 1);
-              $style = $last_table_elem->getAttribute('style');
-              $last_table_elem->setAttribute('style', $style . " margin-bottom: 0");
-            }
-            
             $widget_content_node_class = $widget_content_node->getAttribute('class');
             
             $panel_body->appendChild($widget_content_node);
