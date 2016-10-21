@@ -40,6 +40,31 @@ add_filter( 'wp_nav_menu_args', 'wp_bootstrap_nav_menu_args' );
 
 
 /**
+ * Nav Menu Args
+ */
+function wp_bootstrap_nav_menu($nav_menu = "", $args = array()) {
+  // Parse menu id attribute
+  preg_match("#<\w+\s[^>]*id\s*=\s*[\'\"]??\s*?(.*)[\'\"\s]{1}[^>]*>#simU", $nav_menu, $match);
+  if (!$match) {
+    return $nav_menu;
+  }
+  $menu_id = $match[1];
+  return $nav_menu . <<<EOT
+  <script>
+    (function($) {
+      $('#$menu_id').on('click', '.dropdown-toggle', function(e) {
+        if ($(this).parent('.dropdown').hasClass('open')) {
+          window.location.href = $(this).prop('href');
+        }
+        e.preventDefault();
+      });
+    })(jQuery);
+  </script>
+EOT;
+}
+add_filter( 'wp_nav_menu', 'wp_bootstrap_nav_menu', 10, 2 );
+
+/**
  * Class Name: wp_bootstrap_navwalker
  * GitHub URI: https://github.com/twittem/wp-bootstrap-navwalker
  * Description: A custom WordPress nav walker class to implement the Bootstrap 3 navigation style in a custom theme using the WordPress built in menu manager.
@@ -153,14 +178,16 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
         $atts['class'].= ' ' . $sub_menu_item_link_class;
       }
       
+      $atts['href'] = ! empty( $item->url ) ? $item->url : '';
+      
       // If item has_children add atts to a.
       if ( $args->has_children && $depth === 0 ) {
-        $atts['href']       = '#';
+        //$atts['href']       = '#';
         $atts['data-toggle']  = 'dropdown';
         $atts['class'].= ' dropdown-toggle';
-      } else {
-        $atts['href'] = ! empty( $item->url ) ? $item->url : '';
-      }
+      }/* else {
+        
+      }*/
 
       $atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args );
 
