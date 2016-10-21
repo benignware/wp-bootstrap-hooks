@@ -116,7 +116,7 @@ add_image_size( 'gallery-zoom', 900, 500, true );
 // Apply custom image size to gallery zoom
 function bootstrap_gallery_options($options) {
   return array_merge($options, array(
-    'gallery_large_size' => 'gallery-zoom'
+    'gallery_zoom_size' => 'gallery-zoom'
   ));
 }
 add_filter( 'bootstrap_gallery_options', 'bootstrap_gallery_options' );
@@ -241,8 +241,13 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
     <th>Default</th>
   </tr>
   <tr>
+    <td>field_class</td>
+    <td>Sets the field class used in comment form</td>
+    <td>form-group</td>
+  </tr>
+  <tr>
     <td>text_input_class</td>
-    <td>Sets the text input class used in comments</td>
+    <td>Sets the text input class used comment form</td>
     <td>form-control</td>
   </tr>
   <tr>
@@ -290,7 +295,7 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
     <th>Default</th>
   </tr>
   <tr>
-    <td>image_class</td>
+    <td>img_class</td>
     <td>Sets the general image class used in content and thumbnails</td>
     <td>img-responsive</td>
   </tr>
@@ -303,6 +308,11 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
     <td>align_right_class</td>
     <td>Aligns an image to right</td>
     <td>pull-right</td>
+  </tr>
+  <tr>
+    <td>align_center_class</td>
+    <td>Aligns an image to right</td>
+    <td>center-block</td>
   </tr>
   <tr>
     <td>img_caption_tag</td>
@@ -427,7 +437,6 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 </table>
 
 #### Options
-    
 <table>
   <tr>
     <th>Name</th>
@@ -437,10 +446,20 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
   <tr>
     <td>gallery_thumbnail_size</td>
     <td>Sets the default thumbnail size</td>
-    <td>'thumbnail'</td>
+    <td>thumbnail</td>
   </tr>
   <tr>
-    <td>gallery_large_size</td>
+    <td>gallery_thumbnail_class</td>
+    <td>Sets the default thumbnail size</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>gallery_thumbnail_img_class</td>
+    <td>Sets the default thumbnail size</td>
+    <td></td>
+  </tr>
+  <tr>
+    <td>gallery_zoom_size</td>
     <td>Sets the image size for the carousel view</td>
     <td>large</td>
   </tr>
@@ -452,7 +471,12 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
   <tr>
     <td>close_button_label</td>
     <td>Sets the modal's close button label</td>
-    <td>__('Close')</td>
+    <td>Close</td>
+  </tr>
+  <tr>
+    <td>carousel_item_class</td>
+    <td>Sets the carousel's item class</td>
+    <td>_item</td>
   </tr>
 </table>
 
@@ -504,14 +528,29 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
     <td>dropdown-menu</td>
   </tr>
   <tr>
+    <td>sub_menu_header_class</td>
+    <td>Sets the sub menu class</td>
+    <td>dropdown-header</td>
+  </tr>
+  <tr>
+    <td>sub_menu_item_tag</td>
+    <td>Sets the sub menu item tag</td>
+    <td>li</td>
+  </tr>
+  <tr>
+    <td>sub_menu_item_class</td>
+    <td>Sets the sub menu item class</td>
+    <td></td>
+  </tr>
+  <tr>
     <td>sub_menu_item_link_class</td>
-    <td>Sets the sub menu item link class</td>
+    <td>Sets the sub menu header class</td>
     <td>dropdown-item</td>
   </tr>
   <tr>
     <td>caret</td>
     <td>Sets the menu item caret class</td>
-    <td><span class="caret"></span></td>
+    <td>&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;</td>
   </tr>
 </table>
 
@@ -670,7 +709,7 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Use as Plugin
 
-When intended to use as plugin, you should take care of a situation where the plugin is unistalled: 
+When intended to use as plugin, you should take care of a situation where the plugin is unistalled and check if the function exists first: 
 
 ```php
 call_user_func_array( function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootstrap_edit_post_link' : 'edit_post_link', array(
