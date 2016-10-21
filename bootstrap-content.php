@@ -13,7 +13,9 @@ function wp_bootstrap_get_content_options() {
     'img_caption_text_tag' => 'figcaption',
     'img_caption_text_class' => 'figure-caption',
     'img_caption_img_class' => 'figure-img',
-    'table_class' => 'table',
+    'table_class' => 'table table-responsive',
+    'table_container_tag' => 'div',
+    'table_container_class' => 'table-responsive',
     'blockquote_class' => 'blockquote',
     'blockquote_footer_tag' => 'footer',
     'blockquote_footer_class' => 'blockquote-footer',
@@ -93,11 +95,18 @@ if(!function_exists('wp_bootstrap_the_content')) {
     }
     
     // Tables
-    $table_nodes = $doc->getElementsByTagName( 'table' );
-    foreach ($table_nodes as $table_node) {
-      $class = $table_node->getAttribute('class');
+    $table_elements = $doc->getElementsByTagName( 'table' );
+    foreach ($table_elements as $table_element) {
+      $class = $table_element->getAttribute('class');
       $class.= ' table';
-      $table_node->setAttribute('class', $class);
+      $table_element->setAttribute('class', $class);
+      if ($table_container_tag) {
+        $table_container_element = $doc->createElement($table_container_tag);
+        $table_container_element->setAttribute("class", $table_container_class);
+        $table_element->parentNode->insertBefore($table_container_element, $table_element);
+        $table_container_element->appendChild($table_element);
+      }
+      
     }
     
     // Tags
