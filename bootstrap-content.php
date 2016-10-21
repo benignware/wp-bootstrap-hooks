@@ -4,7 +4,7 @@
  */
 function wp_bootstrap_get_content_options() {
   return apply_filters( 'bootstrap_content_options', array(
-    'image_class' => 'img-responsive',
+    'img_class' => 'img-responsive',
     'align_left_class' => 'pull-left',
     'align_right_class' => 'pull-right',
     'align_center_class' => 'center-block',
@@ -44,7 +44,7 @@ if(!function_exists('wp_bootstrap_the_content')) {
     foreach ($image_elements as $image_element) {
       // Adjust class
       $image_element_class = $image_element->getAttribute('class');
-      $image_element_class = trim($image_element_class . " " . $image_class);
+      $image_element_class = trim($image_element_class . " " . $img_class);
       if (preg_match('/\balignleft\b/i', $image_element_class)) {
         $image_element_class.= " $align_left_class";
       } else if (preg_match('/\balignright\b/i', $image_element_class)) {
@@ -191,7 +191,7 @@ EOT;
     foreach ($image_elements as $image_element) {
       // Add configured image class
       $image_element_class = $image_element->getAttribute('class');
-      $image_element_class = trim($image_element_class . " " . $image_class);
+      $image_element_class = trim($image_element_class . " " . $img_class);
       $image_element->setAttribute('class', $image_element_class);
     }
     return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
