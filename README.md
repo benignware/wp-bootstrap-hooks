@@ -703,8 +703,6 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
   </tr>
 </table>
 
-
-
 ## Recipes
 
 #### Use as Plugin
