@@ -15,10 +15,12 @@ Either install as a must-use-plugin or copy the desired files directly to your t
 When utilizing the plugin, require all modules from your functions.php as follows:
 
 ```php
-wp_bootstrap_hooks();
+if (function_exists('wp_bootstrap_hooks')) {
+  wp_bootstrap_hooks();
+}
 ```
 
-To only include specific modules, just pass them parameters:
+To only include specific modules, just pass them as parameters:
 
 ```php
 wp_bootstrap_hooks('menu', 'widgets', ...);
@@ -162,9 +164,7 @@ Make sure that you registered any widget areas in your `functions.php`:
 register_sidebar( array(
   'name'          => __( 'Widget Area', 'textdomain' ),
   'id'            => 'sidebar-1',
-  'description'   => __( 'Add widgets here to appear in your sidebar.', 'textdomain' ),
-  'before_widget' => '<aside id="%1$s" class="widget %2$s">',
-  'after_widget'  => '</aside>'
+  'description'   => __( 'Add widgets here to appear in your sidebar.', 'textdomain' )
 ) );
 ```
 
@@ -173,6 +173,35 @@ register_sidebar( array(
 If you're already working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least some options. 
 
 ```php
+// Bootstrap 4 Content Options
+function bootstrap4_content_options($options) {
+  return array_merge($options, array(
+    'img_class' => 'img-fluid',
+    'align_center_class' => 'mx-auto',
+    'edit_post_link_class' => 'btn btn-secondary'
+  ));
+}
+add_filter( 'bootstrap_content_options', 'bootstrap4_content_options', 1 );
+
+// Bootstrap 4 Forms Options
+function bootstrap4_forms_options($options) {
+  return array_merge($options, array(
+    'search_submit_label' => '<i>🔎</i>'
+  ));
+}
+add_filter( 'bootstrap_forms_options', 'bootstrap4_forms_options', 1 );
+
+// Bootstrap 4 Gallery Options
+function bootstrap4_gallery_options($options) {
+  return array_merge($options, array(
+    'gallery_thumbnail_class' => '',
+    'gallery_thumbnail_img_class' => 'img-thumbnail mb-2',
+    'close_button_class' => 'btn btn-secondary',
+    'carousel_item_class' => 'carousel-item'
+  ));
+}
+add_filter( 'bootstrap_gallery_options', 'bootstrap4_gallery_options', 1 );
+
 // Bootstrap 4 Widget Options
 function bootstrap4_widgets_options($options) {
   return array_merge($options, array(
@@ -182,28 +211,7 @@ function bootstrap4_widgets_options($options) {
     'widget_content_class' => 'card-block'
   ));
 }
-add_filter( 'bootstrap_widgets_options', 'bootstrap4_widgets_options' );
-
-// Bootstrap 4 Gallery Options
-function bootstrap4_gallery_options($options) {
-  return array_merge($options, array(
-    'gallery_thumbnail_class' => '',
-    'gallery_thumbnail_img_class' => 'img-thumbnail m-b-2',
-    'close_button_class' => 'btn btn-secondary',
-    'carousel_item_class' => 'carousel-item'
-  ));
-}
-add_filter( 'bootstrap_gallery_options', 'bootstrap4_gallery_options' );
-
-// Bootstrap 4 Content Options
-function bootstrap4_content_options($options) {
-  return array_merge($options, array(
-    'image_class' => 'img-fluid',
-    'align_center_class' => 'm-x-auto',
-    'edit_post_link_class' => 'btn btn-secondary'
-  ));
-}
-add_filter( 'bootstrap_content_options', 'bootstrap4_content_options' );
+add_filter( 'bootstrap_widgets_options', 'bootstrap4_widgets_options', 1 );
 ```  
 
 Please note that as soon as Bootstrap 4 is finally released, the default configuration will change.
@@ -345,6 +353,16 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
     <td>table</td>
   </tr>
   <tr>
+    <td>table_container_tag</td>
+    <td>Sets the table container tag</td>
+    <td>div</td>
+  </tr>
+  <tr>
+    <td>table_container_class</td>
+    <td>Sets the table container class</td>
+    <td>table-responsive</td>
+  </tr>
+  <tr>
     <td>blockquote_class</td>
     <td>Sets the blockquote css class</td>
     <td>blockquote</td>
@@ -407,12 +425,12 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
   <tr>
     <td>text_input_class</td>
     <td>Sets the class of textfields used in search- and password-forms</td>
-    <td><i>🔎</i></td>
+    <td>form-control</td>
   </tr>
   <tr>
     <td>submit_button_class</td>
     <td>Sets the class of submit buttons used in search- and password-forms</td>
-    <td><i>🔎</i></td>
+    <td>btn btn-primary</td>
   </tr>
 </table>
 
@@ -710,7 +728,25 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 When intended to use as plugin, you should take care of a situation where the plugin is unistalled and check if the function exists first: 
 
 ```php
-call_user_func_array( function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootstrap_edit_post_link' : 'edit_post_link', array(
+// Previous/next page navigation.
+call_user_func_array(function_exists('wp_bootstrap_posts_pagination') ? 'wp_bootstrap_posts_pagination' : 'the_posts_pagination', array( array(
+  'prev_text'          => __( 'Previous page', 'textdomain' ),
+  'next_text'          => __( 'Next page', 'textdomain' ),
+  'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'textdomain' ) . ' </span>',
+) ) );
+
+// Previous/next post navigation.
+call_user_func_array(function_exists('wp_bootstrap_post_nagination') ? 'wp_bootstrap_post_nagination' : 'the_post_navigation', array( array(
+  'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next', 'textdomain' ) . '</span> ' .
+    '<span class="screen-reader-text">' . __( 'Next post:', 'textdomain' ) . '</span> ' .
+    '<span class="post-title">%title</span>',
+  'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous', 'textdomain' ) . '</span> ' .
+    '<span class="screen-reader-text">' . __( 'Previous post:', 'textdomain' ) . '</span> ' .
+    '<span class="post-title">%title</span>',
+) ) );
+
+// Edit post link
+call_user_func_array(function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootstrap_edit_post_link' : 'edit_post_link', array(
   sprintf(
     /* translators: %s: Name of current post */
     __( 'Edit<span class="screen-reader-text"> "%s"</span>', 'textdomain' ),
