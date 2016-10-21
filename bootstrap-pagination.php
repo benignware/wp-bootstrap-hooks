@@ -29,14 +29,14 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
   
   extract(wp_bootstrap_get_pagination_options());
  
-    // Don't print empty markup if there's only one page.
+  // Don't print empty markup if there's only one page.
   if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
     $args = wp_parse_args( $args, array(
       'mid_size'           => 1,
       'prev_text'          => _x( 'Previous', 'previous post' ),
       'next_text'          => _x( 'Next', 'next post' ),
       'screen_reader_text' => __( 'Posts navigation' )
-      ) );
+    ) );
  
         // Make sure we get a string back. Plain is the next best thing.
     if ( isset( $args['type'] ) && 'array' == $args['type'] ) {
@@ -155,5 +155,3 @@ function wp_bootstrap_link_pages( $output, $args ) {
   return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 };
 add_filter( 'wp_link_pages', 'wp_bootstrap_link_pages', 10, 2 );
-
-
