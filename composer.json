@@ -4,7 +4,7 @@
   "type": "wordpress-muplugin",
   "license": "MIT",
   "description": "A collection of action and filters for bootstrap based themes",
-  "homepage": "http://github.com/rexblack/wp-bootstrap-hooks",
+  "homepage": "http://github.com/benignware/wp-bootstrap-hooks",
   "authors": [
     {
       "name": "Rafael Nowrotek",
