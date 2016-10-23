@@ -143,7 +143,9 @@ Search your theme for occurrences of `the_posts_pagination` and replace with `wp
 ```php
 // Previous/next page navigation.
 wp_bootstrap_posts_pagination( array(
-  // Options go here
+  'prev_text'          => __( 'Previous page', 'textdomain' ),
+  'next_text'          => __( 'Next page', 'textdomain' ),
+  'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'textdomain' ) . ' </span>'
 ) );
 ```
 
@@ -152,7 +154,12 @@ Search your theme for occurrences of `the_post_navigation` and replace with `wp_
 ```php
 // Previous/next post navigation.
 wp_bootstrap_post_navigation( array(
-  // Options go here
+  'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next', 'textdomain' ) . '</span> ' .
+    '<span class="screen-reader-text">' . __( 'Next post:', 'textdomain' ) . '</span> ' .
+    '<span class="post-title">%title</span>',
+  'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous', 'textdomain' ) . '</span> ' .
+    '<span class="screen-reader-text">' . __( 'Previous post:', 'textdomain' ) . '</span> ' .
+    '<span class="post-title">%title</span>'
 ) );
 ```
 
@@ -183,7 +190,7 @@ When intended to use as plugin, you should take care of a situation where the pl
 call_user_func_array(function_exists('wp_bootstrap_posts_pagination') ? 'wp_bootstrap_posts_pagination' : 'the_posts_pagination', array( array(
   'prev_text'          => __( 'Previous page', 'textdomain' ),
   'next_text'          => __( 'Next page', 'textdomain' ),
-  'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'textdomain' ) . ' </span>',
+  'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'textdomain' ) . ' </span>'
 ) ) );
 
 // Previous/next post navigation.
@@ -193,7 +200,7 @@ call_user_func_array(function_exists('wp_bootstrap_post_nagination') ? 'wp_boots
     '<span class="post-title">%title</span>',
   'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous', 'textdomain' ) . '</span> ' .
     '<span class="screen-reader-text">' . __( 'Previous post:', 'textdomain' ) . '</span> ' .
-    '<span class="post-title">%title</span>',
+    '<span class="post-title">%title</span>'
 ) ) );
 
 // Edit post link
@@ -265,20 +272,9 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Filters
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      bootstrap_comments_options ( $options )
-    </td>
-    <td>
-      Inject custom options
-    </td>
-  </tr>
-</table>
+###### bootstrap_comments_options ( array $options = array() )
+
+Inject custom options.
 
 #### Options
 
@@ -319,38 +315,16 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Methods
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      wp_bootstrap_edit_post_link( string $text = null, string $before = '', string $after = '')
-    </td>
-    <td>
-      Displays the edit post link for post.
-      See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
-    </td>
-  </tr>
-</table>
+###### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
+
+Displays the edit post link for post.
+See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
 
 #### Filters
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      bootstrap_contents_options ( $options )
-    </td>
-    <td>
-      Inject custom options
-    </td>
-  </tr>
-</table>
+###### bootstrap_content_options ( array $options = array() )
+
+Inject custom options.
 
 #### Options
 
@@ -452,20 +426,9 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Filters
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      bootstrap_forms_options ( $options )
-    </td>
-    <td>
-      Inject custom options
-    </td>
-  </tr>
-</table>
+###### bootstrap_forms_options ( array $options = array() )
+
+Inject custom options.
 
 #### Options
 
@@ -496,20 +459,9 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Filters
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      bootstrap_gallery_options ( $options )
-    </td>
-    <td>
-      Inject custom options
-    </td>
-  </tr>
-</table>
+###### bootstrap_gallery_options ( array $options = array() )
+
+Inject custom options
 
 #### Options
 <table>
@@ -559,20 +511,9 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Filters
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      bootstrap_menu_options ( $options )
-    </td>
-    <td>
-      Inject custom options
-    </td>
-  </tr>
-</table>
+###### bootstrap_menu_options ( array $options = array() )
+
+Inject custom options.
 
 #### Options
 
@@ -633,47 +574,21 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Methods
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      wp_bootstrap_posts_pagination ( array $args = array() )
-    </td>
-    <td>
-      Displays a paginated navigation to next/previous set of posts, when applicable.
-      See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
-    </td>
-  </tr>
-  <tr>
-    <td>
-      wp_bootstrap_post_navigation ( array $args = array() )
-    </td>
-    <td>
-      Displays the navigation to next/previous post, when applicable.
-      See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details
-    </td>
-  </tr>
-</table>
+###### wp_bootstrap_posts_pagination ( array $args = array() )
+
+Displays a paginated navigation to next/previous set of posts, when applicable.
+See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
+  
+###### wp_bootstrap_post_navigation ( array $args = array() )
+
+Displays the navigation to next/previous post, when applicable.
+See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details.
 
 #### Filters
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      bootstrap_pagination_options ( $options )
-    </td>
-    <td>
-      Inject custom options
-    </td>
-  </tr>
-</table>
+###### bootstrap_pagination_options ( $options )
+
+Inject custom options.
 
 #### Options
 
@@ -760,20 +675,10 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Filters
 
-<table>
-  <tr>
-    <th>Signature</th>
-    <th>Description</th>
-  </tr>
-  <tr>
-    <td>
-      bootstrap_widgets_options ( $options )
-    </td>
-    <td>
-      Inject custom options
-    </td>
-  </tr>
-</table>
+###### bootstrap_widgets_options ( array $options = array() )
+
+Inject custom options.
+
 
 #### Options
 
@@ -804,4 +709,3 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
     <td>panel-block</td>
   </tr>
 </table>
-
