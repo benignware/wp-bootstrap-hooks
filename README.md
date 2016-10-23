@@ -71,14 +71,23 @@ The Content-Hook takes care of your post content primarily. It sets proper marku
 In Bootstrap 4, the Tag-component may break Wordpress\` default taxonomy styles. See [here](https://github.com/twbs/bootstrap/issues/20542) for reference. 
 To avoid undesired effects, the `tag` class is replaced with `post-tag` in `body_class`- or `post_class`-methods and also when it's found in the content.  
 
-This module also provides a custom method to replace the edit-link. 
+This module also provides a custom method to handle the edit-post-link. 
 Search your theme for occurrences of `edit_post_link` and replace with `wp_bootstrap_edit_post_link`:
 
 ```php
-wp_bootstrap_edit_post_link( __( 'Edit', 'textdomain' ), '<span class="edit-link">', '</span>' );
+// Edit post link
+wp_bootstrap_edit_post_link( 
+  sprintf(
+    /* translators: %s: Name of current post */
+    __( 'Edit<span class="screen-reader-text"> "%s"</span>', 'textdomain' ),
+    get_the_title()
+  ),
+  '<span class="edit-link">',
+  '</span>'
+) );
 ```
 
-When using Bootstrap Hooks as a plugin, you should definitely check if the method has been loaded by wrapping function call into a conditional `function_exists`-check. See the Recipes-Section for an example.
+When using Bootstrap Hooks as a plugin, you should definitely check if the method has been loaded by wrapping function call into a conditional `function_exists`-check. See the [Recipes](#Recipes)-Section for an example.
 
 ### Forms
 
