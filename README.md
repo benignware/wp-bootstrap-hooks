@@ -281,7 +281,7 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 #### Filters
 
-###### bootstrap_comments_options ( array $options = array() )
+##### bootstrap_comments_options ( array $options = array() )
 
 Inject custom options.
 
@@ -324,14 +324,14 @@ Inject custom options.
 
 #### Methods
 
-###### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
+##### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
 
 Displays the edit post link for post.
 See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
 
 #### Filters
 
-###### bootstrap_content_options ( array $options = array() )
+##### bootstrap_content_options ( array $options = array() )
 
 Inject custom options.
 
@@ -435,7 +435,7 @@ Inject custom options.
 
 #### Filters
 
-###### bootstrap_forms_options ( array $options = array() )
+##### bootstrap_forms_options ( array $options = array() )
 
 Inject custom options.
 
@@ -468,7 +468,7 @@ Inject custom options.
 
 #### Filters
 
-###### bootstrap_gallery_options ( array $options = array() )
+##### bootstrap_gallery_options ( array $options = array() )
 
 Inject custom options
 
@@ -520,7 +520,7 @@ Inject custom options
 
 #### Filters
 
-###### bootstrap_menu_options ( array $options = array() )
+##### bootstrap_menu_options ( array $options = array() )
 
 Inject custom options.
 
@@ -583,19 +583,19 @@ Inject custom options.
 
 #### Methods
 
-###### wp_bootstrap_posts_pagination ( array $args = array() )
+##### wp_bootstrap_posts_pagination ( array $args = array() )
 
 Displays a paginated navigation to next/previous set of posts, when applicable.
 See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
   
-###### wp_bootstrap_post_navigation ( array $args = array() )
+##### wp_bootstrap_post_navigation ( array $args = array() )
 
 Displays the navigation to next/previous post, when applicable.
 See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details.
 
 #### Filters
 
-###### bootstrap_pagination_options ( $options )
+##### bootstrap_pagination_options ( $options )
 
 Inject custom options.
 
@@ -684,7 +684,7 @@ Inject custom options.
 
 #### Filters
 
-###### bootstrap_widgets_options ( array $options = array() )
+##### bootstrap_widgets_options ( array $options = array() )
 
 Inject custom options.
 
