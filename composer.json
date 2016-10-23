@@ -16,7 +16,7 @@
     "wordpress", "wordpress-muplugin"
   ],
   "support": {
-    "issues": "https://github.com/rexblack/wp-bootstrap-hooks/issues"
+    "issues": "https://github.com/benignware/wp-bootstrap-hooks/issues"
   },
   "require": {
     "php": ">=5.3.0",
