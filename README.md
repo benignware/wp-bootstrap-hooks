@@ -3,7 +3,7 @@
 > A collection of filters and actions for bootstrap-based themes
 
 When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not enough to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc. 
-Bootstrap Hooks aims to cover most of these cases and make us start developing immediately after this point.
+Bootstrap Hooks aims to cover most of these cases to make us immediately start implementing the indivudual application rather than hassling with markup incompatibilities. 
     
 Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a filter method.
 
@@ -75,8 +75,10 @@ This module also provides a custom method to replace the edit-link.
 Search your theme for occurrences of `edit_post_link` and replace with `wp_bootstrap_edit_post_link`:
 
 ```php
-edit_post_link( __( 'Edit', 'textdomain' ), '<span class="edit-link">', '</span>' );
+wp_bootstrap_edit_post_link( __( 'Edit', 'textdomain' ), '<span class="edit-link">', '</span>' );
 ```
+
+When using Bootstrap Hooks as a plugin, you should definitely check if the method has been loaded by wrapping function call into a conditional `function_exists`-check. See the Recipes-Section for an example.
 
 ### Forms
 
