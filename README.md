@@ -2,7 +2,7 @@
 
 > A collection of filters and actions for bootstrap-based themes
 
-When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not sufficient to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc. 
+When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not enough to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc. 
 Bootstrap Hooks aims to cover most of these cases and make us start developing immediately after this point.
     
 Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a filter method.
@@ -12,7 +12,7 @@ Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, 
 Either install as a must-use-plugin or copy the desired files directly to your theme and require them in your functions.php.
 
 ### Plugin
-When utilizing the plugin, require all modules from your functions.php as follows:
+When utilizing as plugin, require all modules from your functions.php as follows:
 
 ```php
 if (function_exists('wp_bootstrap_hooks')) {
