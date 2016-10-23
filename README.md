@@ -87,7 +87,7 @@ wp_bootstrap_edit_post_link(
 ) );
 ```
 
-When using Bootstrap Hooks as a plugin, you should definitely check if the method has been loaded by wrapping function call into a conditional `function_exists`-check. See the [Recipes](#Recipes)-Section for an example.
+When using Bootstrap Hooks as a plugin, you should definitely check if the method has been loaded by wrapping function call into a conditional `function_exists`-check. See the [Recipes](#recipes)-Section for an example.
 
 ### Forms
 
