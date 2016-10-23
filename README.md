@@ -129,8 +129,8 @@ add_filter( 'bootstrap_gallery_options', 'bootstrap_gallery_options' );
 
 ### Menu
 
-Bootstrap Hooks provides a Nav Menu Walker based on the work by [Edward McIntyre](https://github.com/twittem/wp-bootstrap-navwalker) which is automatically injected into menus per default. 
-For the primary menu, the `navbar-nav`-class will be added.
+Bootstrap Hooks provides a custom MenuWalker based on the work by [Edward McIntyre](https://github.com/twittem/wp-bootstrap-navwalker) which is injected into menus per default. 
+For the primary menu, the `navbar-nav`-class will automatically be added.
 
 Bootstrap Hooks also adds a script that handles links on dropdown-toggles which are prevented by default from Bootstrap.
 
@@ -171,7 +171,44 @@ register_sidebar( array(
 ) );
 ```
 
-## Bootstrap 4
+
+## Recipes
+
+### Use as Plugin
+
+When intended to use as plugin, you should take care of a situation where the plugin is unistalled and check if the function exists first: 
+
+```php
+// Previous/next page navigation.
+call_user_func_array(function_exists('wp_bootstrap_posts_pagination') ? 'wp_bootstrap_posts_pagination' : 'the_posts_pagination', array( array(
+  'prev_text'          => __( 'Previous page', 'textdomain' ),
+  'next_text'          => __( 'Next page', 'textdomain' ),
+  'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'textdomain' ) . ' </span>',
+) ) );
+
+// Previous/next post navigation.
+call_user_func_array(function_exists('wp_bootstrap_post_nagination') ? 'wp_bootstrap_post_nagination' : 'the_post_navigation', array( array(
+  'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next', 'textdomain' ) . '</span> ' .
+    '<span class="screen-reader-text">' . __( 'Next post:', 'textdomain' ) . '</span> ' .
+    '<span class="post-title">%title</span>',
+  'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous', 'textdomain' ) . '</span> ' .
+    '<span class="screen-reader-text">' . __( 'Previous post:', 'textdomain' ) . '</span> ' .
+    '<span class="post-title">%title</span>',
+) ) );
+
+// Edit post link
+call_user_func_array(function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootstrap_edit_post_link' : 'edit_post_link', array(
+  sprintf(
+    /* translators: %s: Name of current post */
+    __( 'Edit<span class="screen-reader-text"> "%s"</span>', 'textdomain' ),
+    get_the_title()
+  ),
+  '<span class="edit-link">',
+  '</span>'
+) );
+```
+
+### Bootstrap 4
 
 If you're already working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least some options. 
 
@@ -279,6 +316,24 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 </table>
 
 ### Content
+
+#### Methods
+
+<table>
+  <tr>
+    <th>Signature</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      wp_bootstrap_edit_post_link( string $text = null, string $before = '', string $after = '')
+    </td>
+    <td>
+      Displays the edit post link for post.
+      See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
+    </td>
+  </tr>
+</table>
 
 #### Filters
 
@@ -439,7 +494,6 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 
 ### Gallery
 
-
 #### Filters
 
 <table>
@@ -576,6 +630,33 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
 </table>
 
 ### Pagination
+
+#### Methods
+
+<table>
+  <tr>
+    <th>Signature</th>
+    <th>Description</th>
+  </tr>
+  <tr>
+    <td>
+      wp_bootstrap_posts_pagination ( array $args = array() )
+    </td>
+    <td>
+      Displays a paginated navigation to next/previous set of posts, when applicable.
+      See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
+    </td>
+  </tr>
+  <tr>
+    <td>
+      wp_bootstrap_post_navigation ( array $args = array() )
+    </td>
+    <td>
+      Displays the navigation to next/previous post, when applicable.
+      See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details
+    </td>
+  </tr>
+</table>
 
 #### Filters
 
@@ -724,38 +805,3 @@ Bootstrap Hooks is highly customizable. This is mainly required because of manag
   </tr>
 </table>
 
-## Recipes
-
-#### Use as Plugin
-
-When intended to use as plugin, you should take care of a situation where the plugin is unistalled and check if the function exists first: 
-
-```php
-// Previous/next page navigation.
-call_user_func_array(function_exists('wp_bootstrap_posts_pagination') ? 'wp_bootstrap_posts_pagination' : 'the_posts_pagination', array( array(
-  'prev_text'          => __( 'Previous page', 'textdomain' ),
-  'next_text'          => __( 'Next page', 'textdomain' ),
-  'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'textdomain' ) . ' </span>',
-) ) );
-
-// Previous/next post navigation.
-call_user_func_array(function_exists('wp_bootstrap_post_nagination') ? 'wp_bootstrap_post_nagination' : 'the_post_navigation', array( array(
-  'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next', 'textdomain' ) . '</span> ' .
-    '<span class="screen-reader-text">' . __( 'Next post:', 'textdomain' ) . '</span> ' .
-    '<span class="post-title">%title</span>',
-  'prev_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Previous', 'textdomain' ) . '</span> ' .
-    '<span class="screen-reader-text">' . __( 'Previous post:', 'textdomain' ) . '</span> ' .
-    '<span class="post-title">%title</span>',
-) ) );
-
-// Edit post link
-call_user_func_array(function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootstrap_edit_post_link' : 'edit_post_link', array(
-  sprintf(
-    /* translators: %s: Name of current post */
-    __( 'Edit<span class="screen-reader-text"> "%s"</span>', 'textdomain' ),
-    get_the_title()
-  ),
-  '<span class="edit-link">',
-  '</span>'
-) );
-```
