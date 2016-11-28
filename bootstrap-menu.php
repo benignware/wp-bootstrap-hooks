@@ -37,7 +37,7 @@ function wp_bootstrap_nav_menu_args($args) {
   }
   return $args;
 }
-
+add_filter( 'wp_nav_menu_args', 'wp_bootstrap_nav_menu_args', 10, 2 );
 
 /**
  * Nav Menu Args
