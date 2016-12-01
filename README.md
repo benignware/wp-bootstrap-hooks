@@ -203,7 +203,7 @@ call_user_func_array(function_exists('wp_bootstrap_posts_pagination') ? 'wp_boot
 ) ) );
 
 // Previous/next post navigation.
-call_user_func_array(function_exists('wp_bootstrap_post_navination') ? 'wp_bootstrap_post_navination' : 'the_post_navigation', array( array(
+call_user_func_array(function_exists('wp_bootstrap_post_navigation') ? 'wp_bootstrap_post_navigation' : 'the_post_navigation', array( array(
   'next_text' => '<span class="meta-nav" aria-hidden="true">' . __( 'Next', 'textdomain' ) . '</span> ' .
     '<span class="screen-reader-text">' . __( 'Next post:', 'textdomain' ) . '</span> ' .
     '<span class="post-title">%title</span>',
