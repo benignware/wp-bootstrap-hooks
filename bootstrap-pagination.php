@@ -26,9 +26,9 @@ function wp_bootstrap_get_pagination_options() {
  */
 function wp_bootstrap_posts_pagination( $args = array() ) {
   $navigation = '';
-  
+
   extract(wp_bootstrap_get_pagination_options());
- 
+
   // Don't print empty markup if there's only one page.
   if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
     $args = wp_parse_args( $args, array(
@@ -37,12 +37,12 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
       'next_text'          => _x( 'Next', 'next post' ),
       'screen_reader_text' => __( 'Posts navigation' )
     ) );
- 
+
         // Make sure we get a string back. Plain is the next best thing.
     if ( isset( $args['type'] ) && 'array' == $args['type'] ) {
         $args['type'] = 'plain';
     }
- 
+
     // Set up paginated links.
     $links = paginate_links( $args );
     $document = new DOMDocument();
@@ -60,21 +60,21 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
     $links = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $document->saveHTML());
     $navigation = _navigation_markup( $links, 'posts-navigation', $args['screen_reader_text'] );
   }
- 
+
   echo $navigation;
- 
+
   return $navigation;
 }
 
 
 function wp_bootstrap_post_navigation($args = array()) {
-  
+
   extract(wp_bootstrap_get_pagination_options());
   extract($args);
-  
+
   $output = "<$post_nav_tag class=\"navigation post-navigation $post_nav_class\" role=\"navigation\">";
-  
   $prev_post = get_next_post();
+  $prev_post = get_previous_post();
   if ($prev_post) {
     $prev_post_link = get_permalink($prev_post);
     $output.= "<$post_nav_item_tag class=\"$post_nav_item_class nav-previous\">";
@@ -85,7 +85,7 @@ function wp_bootstrap_post_navigation($args = array()) {
     $output.= "</a>";
     $output.= "</$post_nav_item_tag>";
   }
-  
+
   $next_post = get_next_post();
   if ($next_post) {
     $next_post_link = get_permalink($next_post);
@@ -97,8 +97,8 @@ function wp_bootstrap_post_navigation($args = array()) {
     $output.= "</a>";
     $output.= "</$post_nav_item_tag>";
   }
-  
-  
+
+
   $output.= "</$post_nav_tag>";
   echo $output;
 }
@@ -106,25 +106,25 @@ function wp_bootstrap_post_navigation($args = array()) {
 
 // define the wp_link_pages callback 
 function wp_bootstrap_link_pages( $output, $args ) {
-  
+
   if (!$output) {
     return $output;
   }
-  
+
   extract(wp_bootstrap_get_pagination_options());
   extract($args);
-  
+
   // Parse DOM
   $doc = new DOMDocument();
   @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $output );
-  
+
   $element = $doc->createElement($paginated_tag);
   $element->setAttribute('class', $paginated_class);
-  
+
   $body_element = $doc->getElementsByTagName('body')->item(0);
   $link_element = $doc->getElementsByTagName('a')->item(0);
   $container_element = $link_element ? $link_element->parentNode : $body_element;
-  
+
   foreach ($container_element->childNodes as $child_element) {
     $clone = $child_element->cloneNode(true);
     if ($child_element->nodeType == 1 && strtolower($child_element->tagName) == 'a') {
@@ -142,7 +142,7 @@ function wp_bootstrap_link_pages( $output, $args ) {
       //$element->appendChild($clone);
     }
   }
-  
+
   if ($body_element) {
     // Remove all children from body element
     while ($body_element->hasChildNodes()) {
@@ -151,7 +151,7 @@ function wp_bootstrap_link_pages( $output, $args ) {
     // Add paginated element
     $body_element->appendChild($element);
   }
-  
+
   return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 };
 add_filter( 'wp_link_pages', 'wp_bootstrap_link_pages', 10, 2 );
