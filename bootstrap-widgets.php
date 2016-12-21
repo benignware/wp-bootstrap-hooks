@@ -16,28 +16,59 @@ function wp_bootstrap_get_widgets_options() {
  * Dynamic sidebar params
  */
 function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
+  global $wp_registered_widgets;
+
+  if ( is_admin() ) {
+    return $sidebar_params;
+  }
+
   $options = wp_bootstrap_get_widgets_options();
   $widget_class = $options['widget_class'];
   $widget_modifier_class = $options['widget_modifier_class'];
   $widget_header_class = $options['widget_header_class'];
-  if ( is_admin() ) {
-    return $sidebar_params;
-  }
+
+  $wp_defaults =  array(
+    'before_widget' => '<li id="%1$s" class="widget %2$s">',
+    'after_widget'  => '</li>',
+    'before_title'  => '<h2 class="widgettitle">',
+    'after_title'   => '</h2>'
+  );
+
+  $widget_id = $sidebar_params[0]['widget_id'];
+
   foreach($sidebar_params as $index => $widget_params) {
-    $widget_name = isset($widget_params['widget_name']) ? sanitize_title($widget_params['widget_name']) : ''; 
-    $sidebar_params[$index] = array_merge( 
-      $widget_params, 
-      array(
-        //'before_widget' => '<div class="widget">',
+    $widget_name = isset($widget_params['widget_name']) ? sanitize_title($widget_params['widget_name']) : '';
+    foreach ($widget_params as $key => $value) {
+      $wp_bootstrap_defaults = array(
         'before_widget' => "<div class=\"widget widget-$widget_name $widget_class $widget_modifier_class\">",
         'after_widget'  => '</div>',
         'before_title'  => '<div class="' . $widget_header_class . '">',
         'after_title'   => '</div>'
-      )
-    );
+      );
+      // Override default values only
+      if (in_array($key, array_keys($wp_defaults))) {
+        $compare = $wp_defaults[$key];
+        if ($key == 'before_widget') {
+          // Substitute HTML id and class attributes into before_widget
+          $classname_ = '';
+          foreach ( (array) $wp_registered_widgets[$widget_id]['classname'] as $cn ) {
+              if ( is_string($cn) )
+                  $classname_ .= '_' . $cn;
+              elseif ( is_object($cn) )
+                  $classname_ .= '_' . get_class($cn);
+          }
+          $classname_ = ltrim($classname_, '_');
+          $compare = sprintf($wp_defaults[$key], $widget_id, $classname_);
+        }
+        if (trim($compare) == trim($value)) {
+          $widget_params[$key] = $wp_bootstrap_defaults[$key];
+        }
+      }
+    }
+    // print_r($widget_params);
+    $sidebar_params[$index] = $widget_params;
   }
-  global $wp_registered_widgets;
-  $widget_id = $sidebar_params[0]['widget_id'];
+
   $wp_registered_widgets[ $widget_id ]['original_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
   $wp_registered_widgets[ $widget_id ]['callback'] = 'wp_bootstrap_widget_callback_function';
   return $sidebar_params;
@@ -49,12 +80,12 @@ function wp_bootstrap_widget_callback_function() {
   global $wp_registered_widgets;
   $original_callback_params = func_get_args();
   $widget_id = $original_callback_params[0]['widget_id'];
- 
+
   $original_callback = $wp_registered_widgets[ $widget_id ]['original_callback'];
   $wp_registered_widgets[ $widget_id ]['callback'] = $original_callback;
- 
+
   $widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
- 
+
   if ( is_callable( $original_callback ) ) {
     ob_start();
     call_user_func_array( $original_callback, $original_callback_params );
@@ -63,35 +94,37 @@ function wp_bootstrap_widget_callback_function() {
   }
 }
 
-
 /**
  * Override Widget Output
  */
 function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id) {
+
   extract(wp_bootstrap_get_widgets_options());
-  
+
   if ($widget_output) {
-    
+
     if (function_exists('wp_bootstrap_the_content')) {
       $widget_output = wp_bootstrap_the_content( $widget_output );
     }
-    
+
     // Process Widget output
     $widget_id_base_hyphens = preg_replace("~_~Ui", "-", $widget_id_base);
-    
+
     $html = new DOMDocument();
     @$html->loadHTML('<?xml encoding="utf-8" ?>' . $widget_output );
     $html_xpath = new DOMXpath($html);
-    
+
     $body_elem = $html->getElementsByTagName( 'body' )->item(0);
     $widget_root_node = $body_elem->firstChild;
     $panel_body = null;
-    
+
     $content_fragment = $html->createDocumentFragment();
     $elems = array();
+
     if ($widget_root_node) {
 
-      $content_parent = $html_xpath->query("//*[contains(@class, '$widget_class')]")->item(0);
+      $content_parent = $html_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $widget_class ')]")->item(0);
+      // echo "NO CONTENT PARENT: $widget_class -> " . $content_parent->getAttribute('class');
       if (!$content_parent) {
         // If no element with component class is found yet, we'll add it and append with modifier and wrap the actual content in it
         $content_parent = $html->createElement('div');
@@ -105,10 +138,10 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
         }
         $widget_root_node->appendChild($content_parent);
       }
-      
+
       // Setup component extra classes
       $widget_extra_classes = array($widget_id_base_hyphens, "widget");
-      
+
       // Try to find additional classes that specify the widget more further
       $widget_class_elem = $html_xpath->query("//*[contains(@class, '$widget_id_base') or contains(@class, '$widget_id_base_hyphens')]")->item(0);
       if ($widget_class_elem) {
@@ -132,8 +165,9 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
               array_push($widget_extra_classes, $widget_additional_class);
             }
           }
-          }
+        }
       }
+
       $widget_extra_classes = array_unique($widget_extra_classes);
       // Clean up extra classes
       foreach ($widget_extra_classes as $index => $widget_extra_class) {
@@ -145,40 +179,45 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
         $widget_extra_class = preg_replace("~^widget-~Ui", "", $widget_extra_class);
         $widget_extra_classes[$index] = $widget_extra_class;
       }
-      
+
       // Add component widget class
       $content_parent_classes = explode(" ", $content_parent->getAttribute('class'));
       foreach ($widget_extra_classes as $widget_extra_class) {
         array_push($content_parent_classes, $widget_class . "-" . $widget_extra_class);
       }
       $content_parent->setAttribute('class', implode(" ", $content_parent_classes));
-      
+
+
       // Clean up header position in markup
       $content_header = $html_xpath->query("//*[contains(@class, '$widget_header_class')]")->item(0);
+
       if ($content_header && $content_parent->firstChild !== $content_header) {
+
         if ($content_parent->firstChild !== null) {
+
+          // print_r($content_parent);
           $content_parent->insertBefore($content_header, $content_parent->firstChild);
         } else {
           $content_parent->appendChild($content_header);
         }
       }
-      
+
       // Collect content elems
       foreach ($content_parent->childNodes as $child) {
         if ($child !== $content_header) {
           array_push($elems, $child);
         }
       }
-      
+
       $panel_body = null;
       foreach ($elems as $widget_content_node) {
-        
+
         if ($widget_content_node->nodeType === 1 && strpos($widget_content_node->getAttribute('class'), $widget_class . '-header') !== false) {
           $content_fragment->appendChild($widget_content_node);
           $panel_body = null;
-          
+
         } else {
-          
+
           $list_node = $widget_content_node->nodeType === 1 && $widget_content_node->nodeName === 'ul' ? $widget_content_node : $html_xpath->query("//ul", $widget_content_node)->item(0);
           if ( $list_node ) {
             // List Group
@@ -199,15 +238,15 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
               $content_fragment->appendChild($list_node);
             }
           }
-          
+
           // Handle lists
           if ((!$list_node || $widget_content_node !== $list_node) && ($widget_content_node->nodeType === 1 || $widget_content_node->nodeType === 3 && strlen(trim($widget_content_node->nodeType === 1)) > 0)) {
-              
+
             // Content Block
             if ($panel_body == null) {
               $panel_body = $html->createElement( 'div' );
               if ($widget_id_base !== "search") {
-                $panel_body->setAttribute('class', $widget_content_class);              
+                $panel_body->setAttribute('class', $widget_content_class);
               }
               // If a listnode has been extracted before, prepend to the listnode
               if ($list_node && $widget_content_node !== $list_node) {
@@ -217,21 +256,21 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
                 $content_fragment->appendChild($panel_body);
               }
             }
-          
+
             $widget_content_node_class = $widget_content_node->getAttribute('class');
-            
+
             $panel_body->appendChild($widget_content_node);
           } else {
             // Other
           }
         }
       }
-      
+
       if ($content_fragment->hasChildNodes()) {
         $content_parent->appendChild($content_fragment);
       }
     }
-    
+
     $widget_output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $html->saveHTML());
   }
   return $widget_output;
