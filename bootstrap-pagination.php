@@ -69,38 +69,59 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
 
 function wp_bootstrap_post_navigation($args = array()) {
 
-  extract(wp_bootstrap_get_pagination_options());
+  $args = wp_parse_args( $args, array(
+      'prev_text'          => '%title',
+      'next_text'          => '%title',
+      // 'in_same_term'       => false,
+      // 'excluded_terms'     => '',
+      // 'taxonomy'           => 'category',
+      // 'screen_reader_text' => __( 'Post navigation' ),
+  ) );
+
   extract($args);
 
-  $output = "<$post_nav_tag class=\"navigation post-navigation $post_nav_class\" role=\"navigation\">";
-  $prev_post = get_next_post();
+  extract(wp_bootstrap_get_pagination_options());
+
   $prev_post = get_previous_post();
-  if ($prev_post) {
-    $prev_post_link = get_permalink($prev_post);
-    $output.= "<$post_nav_item_tag class=\"$post_nav_item_class nav-previous\">";
-    $output.= "<a class=\"$post_nav_link_class\" href=\"$prev_post_link\" rel=\"prev\">";
+
+  if ( $prev_post ) {
     // Replace %title with post title
-    // TODO: A more general, sprintf-like solution
-    $output.= preg_replace("~%title~", $prev_post->post_title, $prev_text);
-    $output.= "</a>";
-    $output.= "</$post_nav_item_tag>";
+    $prev_text = preg_replace("~%title~", $prev_post->post_title, $prev_text);
+    $prev_text = apply_filters( 'bootstrap_prev_text', $prev_text, $prev_post);
+
+    // Get Previous Post Link
+    $prev_post_link = get_permalink($prev_post);
+    $previous = "<$post_nav_item_tag class=\"$post_nav_item_class nav-previous\"><a class=\"$post_nav_link_class\" href=\"$prev_post_link\" rel=\"prev\">";
+    $previous.= $prev_text;
+    $previous.= "</a></$post_nav_item_tag>";
   }
 
   $next_post = get_next_post();
-  if ($next_post) {
-    $next_post_link = get_permalink($next_post);
-    $output.= "<$post_nav_item_tag class=\"$post_nav_item_class nav-next\">";
-    $output.= "<a class=\"$post_nav_link_class\" href=\"$next_post_link\" rel=\"next\">";
+  if ( $next_post ) {
     // Replace %title with post title
-    // TODO: A more general, sprintf-like solution
-    $output.= preg_replace("~%title~", $next_post->post_title, $next_text);
-    $output.= "</a>";
-    $output.= "</$post_nav_item_tag>";
+    $next_text = preg_replace("~%title~", $next_post->post_title, $next_text);
+    $next_text = apply_filters( 'bootstrap_next_text', $next_text, $next_post);
+    // Get Next Post Link
+    $next_post_link = get_permalink($next_post);
+    $next = "<$post_nav_item_tag class=\"$post_nav_item_class nav-next\"><a class=\"$post_nav_link_class\" href=\"$next_post_link\" rel=\"next\">";
+    $next.= $next_text;
+    $next.= "</a></$post_nav_item_tag>";
   }
 
+  // Only add markup if there's somewhere to navigate to.
+  if ( $previous || $next ) {
+    $output = "<$post_nav_tag class=\"navigation post-navigation $post_nav_class\" role=\"navigation\">";
+    if ( $previous ) {
+      $output.= $previous;
+    }
+    if ( $next ) {
+      $output.= $next;
+    }
+    $output.= "</$post_nav_tag>";
 
-  $output.= "</$post_nav_tag>";
-  echo $output;
+    echo $output;
+  }
+
 }
 
 
