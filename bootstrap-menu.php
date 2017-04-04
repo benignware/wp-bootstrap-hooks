@@ -176,18 +176,17 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
         $atts['class'].= ' ' . $menu_item_link_class;
       } else {
         $atts['class'].= ' ' . $sub_menu_item_link_class;
+        if ( in_array( 'current-menu-item', $classes ) )
+          $atts['class'] .= ' active';
       }
 
       $atts['href'] = ! empty( $item->url ) ? $item->url : '';
 
       // If item has_children add atts to a.
       if ( $args->has_children && $depth === 0 ) {
-        //$atts['href']       = '#';
         $atts['data-toggle']  = 'dropdown';
         $atts['class'].= ' dropdown-toggle';
-      }/* else {
-
-      }*/
+      }
 
       $atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args );
 
