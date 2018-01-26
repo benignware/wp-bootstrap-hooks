@@ -2,9 +2,9 @@
 
 > A collection of filters and actions for bootstrap-based themes
 
-When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not enough to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc. 
-Bootstrap Hooks aims to cover most of these cases to make us immediately start implementing the indivudual application rather than hassling with markup incompatibilities. 
-    
+When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not enough to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc.
+Bootstrap Hooks aims to cover most of these cases to make us immediately start implementing the indivudual application rather than hassling with markup incompatibilities.
+
 Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a filter method.
 
 ## Install
@@ -50,7 +50,7 @@ With few exceptions, Bootstrap Hooks works out-of-the-box by injecting magic via
 
 ### Comments
 
-Comments are rendered as nested media-objects. 
+Comments are rendered as nested media-objects.
 
 You can customize the label 'Comment' by utilizing the `bootstrap_comments_options`-filter:
 
@@ -68,15 +68,15 @@ add_filter( 'bootstrap_comments_options', 'bootstrap_comments_options' );
 
 The Content-Hook takes care of your post content primarily. It sets proper markup and classes to images, captions, blockquotes and tables. It also handles the post thumbnail to add the responsive image class.
 
-In Bootstrap 4, the Tag-component may break Wordpress\` default taxonomy styles. See [here](https://github.com/twbs/bootstrap/issues/20542) for reference. 
+In Bootstrap 4, the Tag-component may break Wordpress\` default taxonomy styles. See [here](https://github.com/twbs/bootstrap/issues/20542) for reference.
 To avoid undesired effects, the `tag` class is replaced with `post-tag` in `body_class`- or `post_class`-methods and also when it's found in the content.  
 
-This module also provides a custom method to handle the edit-post-link. 
+This module also provides a custom method to handle the edit-post-link.
 Search your theme for occurrences of `edit_post_link` and replace with `wp_bootstrap_edit_post_link`:
 
 ```php
 // Edit post link
-wp_bootstrap_edit_post_link( 
+wp_bootstrap_edit_post_link(
   sprintf(
     /* translators: %s: Name of current post */
     __( 'Edit<span class="screen-reader-text"> "%s"</span>', 'textdomain' ),
@@ -93,8 +93,8 @@ When using Bootstrap Hooks as a plugin, you should definitely check if the metho
 
 This module handles search- and password-forms.
 
-A search-form is rendered as input-group. 
-You can customize the button's icon by passing arguments from a filter. This example shows how to integrate font-awesome: 
+A search-form is rendered as input-group.
+You can customize the button's icon by passing arguments from a filter. This example shows how to integrate font-awesome:
 
 ```php
 // Show Font-Awesome search icon in Searchform
@@ -111,7 +111,7 @@ add_filter( 'bootstrap_forms_options', 'bootstrap_forms_options' );
 
 The gallery hook uses a grid of thumbnails in combination with a carousel inside a modal for zoom view.
 
-In typical Bootstrap-driven layout, column sizes may differ from Wordpress default thumbnail size. 
+In typical Bootstrap-driven layout, column sizes may differ from Wordpress default thumbnail size.
 You may update thumbnail size to your needs in order to fit thumbnail images into at least three columns:
 
 ```php
@@ -119,7 +119,7 @@ You may update thumbnail size to your needs in order to fit thumbnail images int
 update_option( 'thumbnail_size_w', 230 );
 update_option( 'thumbnail_size_h', 230 );
 update_option( 'thumbnail_crop', 1 );
-``` 
+```
 
 The implementation does not handle different zoom-image heights. An easy way to fix this, is to register a custom image size with cropping enabled and apply to the Gallery Hook:
 
@@ -138,7 +138,7 @@ add_filter( 'bootstrap_gallery_options', 'bootstrap_gallery_options' );
 
 ### Menu
 
-Bootstrap Hooks provides a custom MenuWalker based on the work by [Edward McIntyre](https://github.com/twittem/wp-bootstrap-navwalker) which is injected into menus per default. 
+Bootstrap Hooks provides a custom MenuWalker based on the work by [Edward McIntyre](https://github.com/twittem/wp-bootstrap-navwalker) which is injected into menus per default.
 For the primary menu, the `navbar-nav`-class will automatically be added.
 
 Bootstrap Hooks also adds a script that handles links on dropdown-toggles which are prevented by default from Bootstrap.
@@ -175,7 +175,7 @@ wp_bootstrap_post_navigation( array(
 
 ### Widgets
 
-Widgets are rendered as panels. Some manipulations take care of third-party widgets, such as applying list-groups to unordered lists. 
+Widgets are rendered as panels. Some manipulations take care of third-party widgets, such as applying list-groups to unordered lists.
 Make sure that you registered any widget areas in your `functions.php`:
 
 ```php
@@ -192,7 +192,7 @@ register_sidebar( array(
 
 ### Use as Plugin
 
-When intended to use as plugin, you should take care of a situation where the plugin is unistalled and check if the function exists first: 
+When intended to use as plugin, you should take care of a situation where the plugin is unistalled and check if the function exists first:
 
 ```php
 // Previous/next page navigation.
@@ -224,9 +224,9 @@ call_user_func_array(function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootst
 ) );
 ```
 
-### Bootstrap 4
+### TODO: Bootstrap 3
 
-If you're already working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least some options. 
+If you're already working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least some options.
 
 ```php
 // Bootstrap 4 Content Options
@@ -587,7 +587,7 @@ Inject custom options.
 
 Displays a paginated navigation to next/previous set of posts, when applicable.
 See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
-  
+
 ##### wp_bootstrap_post_navigation ( array $args = array() )
 
 Displays the navigation to next/previous post, when applicable.
@@ -718,3 +718,51 @@ Inject custom options.
     <td>panel-block</td>
   </tr>
 </table>
+
+## Development
+
+Download docker for your OS.
+
+#### Server
+
+Point terminal to your project root and start up the container. You may omit the `-d`-flag for verbose output.
+
+#### Startup services
+
+```cli
+docker-compose up -d
+```
+
+#### Shutdown services
+
+In order to shutdown services, issue the following command
+
+```cli
+docker-compose down
+```
+
+#### List containers
+
+```cli
+docker-compose ps
+```
+
+#### Remove containers
+
+```cli
+docker-compose rm
+```
+
+#### Open bash
+
+Open bash at wordpress directory
+
+```cli
+docker-compose exec wordpress bash
+```
+
+#### Update composer dependencies
+
+```cli
+docker-compose run composer update
+```

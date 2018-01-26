@@ -1,18 +1,6 @@
 <?php
 
 /**
- * Get or set Bootstrap Widgets Args
- */
-function wp_bootstrap_get_widgets_options() {
-  return apply_filters( 'bootstrap_widgets_options', array(
-    'widget_class' => 'panel',
-    'widget_modifier_class' => 'panel-default',
-    'widget_header_class' => 'panel-heading',
-    'widget_content_class' => 'panel-body'
-  ));
-}
-
-/**
  * Dynamic sidebar params
  */
 function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
@@ -22,7 +10,7 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
     return $sidebar_params;
   }
 
-  $options = wp_bootstrap_get_widgets_options();
+  $options = wp_bootstrap_options();
   $widget_class = $options['widget_class'];
   $widget_modifier_class = $options['widget_modifier_class'];
   $widget_header_class = $options['widget_header_class'];
@@ -99,7 +87,7 @@ function wp_bootstrap_widget_callback_function() {
  */
 function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id) {
 
-  extract(wp_bootstrap_get_widgets_options());
+  extract(wp_bootstrap_options());
 
   if ($widget_output) {
 
@@ -298,7 +286,7 @@ add_filter( 'widget_categories_dropdown_args', 'wp_bootstrap_widget_categories_d
  * Custom Styles
  */
 function wp_bootstrap_widget_styles() {
-  $options = wp_bootstrap_get_widgets_options();
+  $options = wp_bootstrap_options();
   $widget_class = $options['widget_class'];
   $widget_header_class = $options['widget_header_class'];
   echo

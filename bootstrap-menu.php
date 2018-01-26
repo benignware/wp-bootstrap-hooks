@@ -1,39 +1,26 @@
 <?php
 
 /**
- * Get Bootstrap Menu Options
- */
-function wp_bootstrap_get_menu_options() {
-  return apply_filters( 'bootstrap_menu_options', array(
-    'menu_item_class' => 'nav-item',
-    'menu_item_link_class' => 'nav-link',
-    'sub_menu_tag' => 'ul',
-    'sub_menu_class' => 'dropdown-menu',
-    'sub_menu_header_class' => 'dropdown-header',
-    'sub_menu_item_tag' => 'li',
-    'sub_menu_item_class' => '',
-    'sub_menu_item_link_class' => 'dropdown-item',
-    'divider_class' => 'divider',
-    'caret' => '<span class="caret"></span>'
-  ));
-}
-
-/**
  * Nav Menu Args
  */
 function wp_bootstrap_nav_menu_args($args) {
+  $options = wp_bootstrap_options();
   $menu_class = isset($args['menu_class']) ? $args['menu_class'] : '';
   $is_default_menu_class = $menu_class === 'menu' ? true : false;
 
   $args['menu_class'].= ' nav';
 
+  $navbar_locations = array(
+    'primary', 'top'
+  );
+
   // Apply .navbar-nav only if primary-menu and no custom class has been set
-  if ($is_default_menu_class && isset($args['theme_location']) && trim($args['theme_location']) === 'primary') {
+  if ($is_default_menu_class && isset($args['theme_location']) && in_array($args['theme_location'], $navbar_locations)) {
     $args['menu_class'] = $args['menu_class'] . " navbar-nav";
   }
   if (empty($args['walker'])) {
     $args['fallback_cb'] = 'wp_bootstrap_navwalker::fallback';
-    $args['walker'] = new wp_bootstrap_navwalker(wp_bootstrap_get_menu_options());
+    $args['walker'] = new wp_bootstrap_navwalker($options);
   }
   return $args;
 }
@@ -264,7 +251,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
    */
   public static function fallback( $args ) {
 
-    $options = wp_bootstrap_get_menu_options();
+    $options = wp_bootstrap_options();
 
     if ( current_user_can( 'manage_options' ) ) {
 

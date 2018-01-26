@@ -1,27 +1,16 @@
 <?php
 /**
- * Get or set Bootstrap Search Form Args
- */
-function wp_bootstrap_get_forms_options() {
-  return apply_filters( 'bootstrap_forms_options', array(
-    'search_form_class' => '',
-    'search_submit_label' => '<i class="glyphicon glyphicon-search"></i>',
-    'text_input_class' => 'form-control',
-    'submit_button_class' => 'btn btn-primary'
-  ));
-}
-
-/**
  * Get Search Form
+ * TODO: Template
  */
 function wp_bootstrap_get_search_form( $form ) {
-  extract(wp_bootstrap_get_forms_options());
+  extract(wp_bootstrap_options());
   $form = '<form role="search" method="get" id="searchform" class="searchform ' . $search_form_class . '" action="' . home_url( '/' ) . '" >
   <label class="screen-reader-text" for="s">' . __( 'Search for:' ) . '</label>
   <div class="form-group">
-    <div class="input-group">
+    <div class="' . $input_group_class . '">
       <input class="' . $text_input_class . '" type="text" value="' . get_search_query() . '" name="s" id="s" placeholder="'. esc_attr__( 'Search' ) .'..."/>
-      <span class="input-group-btn">
+      <span class="' . $input_group_append_class . '">
         <button class="' . $submit_button_class . '" type="submit" id="searchsubmit" title="' . esc_attr_x( 'Search', 'submit button' ) . '">' . $search_submit_label . '</button>
       </span>
     </div>
@@ -33,9 +22,10 @@ add_filter( 'get_search_form', 'wp_bootstrap_get_search_form' );
 
 /**
  * Password Form
+* TODO: Template
  */
-function custom_password_form($output) {
-  extract(wp_bootstrap_get_forms_options());
+function wp_bootstrap_password_form($output) {
+  extract(wp_bootstrap_options());
   global $post;
   $post = get_post();
   $label = 'pwbox-' . ( empty($post->ID) ? rand() : $post->ID );
@@ -50,6 +40,6 @@ function custom_password_form($output) {
   </form>';
   return $form;
 }
-add_filter( 'the_password_form', 'custom_password_form', 10, 1 );
+add_filter( 'the_password_form', 'wp_bootstrap_password_form', 10, 1 );
 
 ?>

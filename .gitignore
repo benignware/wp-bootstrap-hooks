@@ -10,14 +10,10 @@
 
 # Composer
 composer.phar
-composer.lock
 
 # Build
 tmp
 dist
-
-# Test
-test
 
 # Vendor
 vendor

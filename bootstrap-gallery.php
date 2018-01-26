@@ -1,35 +1,19 @@
 <?php
 
-/**
- * Get Bootstrap Gallery Options
- */
-function wp_bootstrap_get_gallery_options() {
-  return apply_filters( 'bootstrap_gallery_options', array(
-    'gallery_thumbnail_size' => 'thumbnail',
-    'gallery_thumbnail_class' => '',
-    'gallery_thumbnail_img_class' => 'img-thumbnail',
-    'gallery_zoom_size' => 'large',
-    'close_button_class' => 'btn btn-default',
-    'close_button_label' => __('Close'),
-    'carousel_item_class' => 'item'
-  ));
-}
 
 /**
  * Post Gallery
  */
 function wp_bootstrap_post_gallery($output, $atts) {
-  
   global $post;
-  
-  extract(wp_bootstrap_get_gallery_options());
+  extract(wp_bootstrap_options());
 
   if (isset($atts['orderby'])) {
       $atts['orderby'] = sanitize_sql_orderby($atts['orderby']);
       if (!$atts['orderby'])
           unset($atts['orderby']);
   }
-  
+
   $gallery_thumbnail_size = isset($atts['size']) ? $atts['size'] : $gallery_thumbnail_size;
 
   $atts = shortcode_atts(array(
@@ -44,7 +28,7 @@ function wp_bootstrap_post_gallery($output, $atts) {
       'include' => '',
       'exclude' => ''
   ), $atts);
-  
+
   $id = intval($atts['id']);-
   $columns = intval($atts['columns']);
 
@@ -61,22 +45,22 @@ function wp_bootstrap_post_gallery($output, $atts) {
   }
 
   if (empty($attachments)) return '';
-  
-  
+
   // get image size
   $image_size = null;
   global $_wp_additional_image_sizes;
-  
-  
+
+
   $gallery_id = uniqid();
-  
+
   $col_value = floor(12 / $columns);
-  
-  
+
+
+  // TODO: Template
   // Start generating output
   $output = "<div class=\"gallery\" id=\"gallery-$gallery_id\">\n";
   $output.= "  <div class=\"row\">\n";
-  
+
   // Loop through each attachment and create thumbnails
   foreach ($attachments as $id => $attachment) {
     $img_thumb = wp_get_attachment_image_src($id, $gallery_thumbnail_size);
@@ -89,7 +73,7 @@ function wp_bootstrap_post_gallery($output, $atts) {
   }
   $output .= "  </div>\n";
   $output .= "</div>\n";
-  
+
   $output.= "<div class=\"modal modal-carousel modal-gallery fade modal-fullscreen force-fullscreen\" id=\"modal-gallery-$gallery_id\" role=\"dialog\">";
   $output.= '  <div class="modal-dialog modal-lg">';
   $output.= '    <div class="modal-content">';
@@ -108,11 +92,11 @@ function wp_bootstrap_post_gallery($output, $atts) {
   $output.= '          </ol>';
   $output.= '          <div class="carousel-inner">';
   $image_index = 0;
-  
+
   foreach ($attachments as $id => $attachment) {
-    
+
     $img_large = wp_get_attachment_image_src($id, $gallery_zoom_size);
-    
+
     $active = $image_index === 0 ? 'active' : '';
     $output.= "          <div class=\"$carousel_item_class $active\" data-id=\"$id\">";
     $output.= "            <img src=\"{$img_large[0]}\" title=\"{$attachment->post_excerpt}\" alt=\"{$attachment->post_excerpt}\" />\n";
@@ -147,7 +131,7 @@ function wp_bootstrap_post_gallery($output, $atts) {
   $output.= "      \$carousel.find('.carousel-item').removeClass('left');\n";
   $output.= "      \$carousel.find('.carousel-indicators li').removeClass('active');\n";
   $output.= "      var\n";
-  $output.= "        itemId = $(this).data('id');\n"; 
+  $output.= "        itemId = $(this).data('id');\n";
   $output.= "        \$carousel.find(\".carousel-item[data-id='\" + itemId + \"']\").addClass('active');\n";
   $output.= "        \$carousel.find(\".carousel-indicators li[data-id='\" + itemId + \"']\").addClass('active');\n";
   //$output.= "      \$modal.find('.modal-title').html(\$carousel.find('.active img').attr('title'));";
@@ -159,7 +143,7 @@ function wp_bootstrap_post_gallery($output, $atts) {
   $output.= "    console.log('xxx script: ', \$gallery, \$modal, \$carousel);";
   $output.= "})(jQuery)";
   $output.= "</script>";
-  
+
   return $output;
 }
 add_filter( 'post_gallery', 'wp_bootstrap_post_gallery', 1, 2 );

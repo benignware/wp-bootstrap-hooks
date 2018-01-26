@@ -1,0 +1,108 @@
+/*
+Theme Name: Bootstrap Hooks
+Theme URI: https://github.com/benignware/wp-bootstrap-hooks
+Author: Rafael Nowrotek
+Author URI: http://benignware.com/
+Description: Plain twenty-seventeen with bootstrap-hooks enabled
+Version: 1.0
+License: GNU General Public License v2 or later
+License URI: http://www.gnu.org/licenses/gpl-2.0.html
+Text Domain: twentyseventeen
+Tags: bootstrap, twentyseventeen, bootstrap-hooks
+
+This theme, like WordPress, is licensed under the GPL.
+Use it to make something cool, have fun, and share what you've learned with others.
+*/
+
+
+/*--------------------------------------------------------------
+1.0 Accessibility
+--------------------------------------------------------------*/
+
+/* Text meant only for screen readers. */
+
+.screen-reader-text {
+	clip: rect(1px, 1px, 1px, 1px);
+	height: 1px;
+	overflow: hidden;
+	position: absolute !important;
+	width: 1px;
+	word-wrap: normal !important; /* Many screen reader and browser combinations announce broken words as they would appear visually. */
+}
+
+.screen-reader-text:focus {
+	background-color: #f1f1f1;
+	-webkit-border-radius: 3px;
+	border-radius: 3px;
+	-webkit-box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+	clip: auto !important;
+	color: #21759b;
+	display: block;
+	font-size: 14px;
+	font-size: 0.875rem;
+	font-weight: 700;
+	height: auto;
+	left: 5px;
+	line-height: normal;
+	padding: 15px 23px 14px;
+	text-decoration: none;
+	top: 5px;
+	width: auto;
+	z-index: 100000; /* Above WP toolbar. */
+}
+
+/*--------------------------------------------------------------
+2.0 Basic Layout
+--------------------------------------------------------------*/
+
+/* Few directives for a very basic sticky footer layout */
+
+:root {
+	height: 100%;
+	margin-top: 0 !important;
+}
+
+body {
+	height: 100%;
+}
+
+body.admin-bar {
+	height: calc(100% - 32px);
+	margin-top: 32px;
+}
+
+.site {
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+}
+
+.site-header {
+	flex-grow: 1;
+}
+
+.site-content-contain {
+	flex-grow: 1;
+	display: flex;
+	flex-direction: column;
+}
+
+.site-content {
+	flex-grow: 1;
+}
+
+.site-footer {
+	flex-grow: 0;
+}
+
+/*--------------------------------------------------------------
+3.0 Icons
+--------------------------------------------------------------*/
+
+/* Handle twentyseventeen svg icons */
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	height: 1em;
+}

@@ -1,33 +1,11 @@
 <?php
 /**
- * Get Bootstrap Search Form Options
- */
-function wp_bootstrap_get_pagination_options() {
-  return apply_filters( 'bootstrap_pagination_options', array(
-    'pagination_class' => 'pagination',
-    'page_item_class' => 'page-item',
-    'page_item_active_class' => 'active',
-    'page_link_class' => 'page-link',
-    'post_nav_class' => 'nav',
-    'post_nav_tag' => 'ul',
-    'post_nav_item_class' => 'nav-item',
-    'post_nav_item_tag' => 'li',
-    'post_nav_link_class' => 'nav-link',
-    'paginated_class' => 'pagination pagination-sm',
-    'paginated_tag' => 'ul',
-    'paginated_item_class' => 'page-item',
-    'paginated_item_tag' => 'li',
-    'paginated_link_class' => 'page-link'
-  ));
-}
-
-/**
  * Posts Pagination
  */
 function wp_bootstrap_posts_pagination( $args = array() ) {
   $navigation = '';
 
-  extract(wp_bootstrap_get_pagination_options());
+  extract(wp_bootstrap_options());
 
   // Don't print empty markup if there's only one page.
   if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
@@ -80,7 +58,7 @@ function wp_bootstrap_post_navigation($args = array()) {
 
   extract($args);
 
-  extract(wp_bootstrap_get_pagination_options());
+  extract(wp_bootstrap_options());
 
   $prev_post = get_previous_post();
 
@@ -132,7 +110,7 @@ function wp_bootstrap_link_pages( $output, $args ) {
     return $output;
   }
 
-  extract(wp_bootstrap_get_pagination_options());
+  extract(wp_bootstrap_options());
   extract($args);
 
   // Parse DOM
@@ -176,3 +154,10 @@ function wp_bootstrap_link_pages( $output, $args ) {
   return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 };
 add_filter( 'wp_link_pages', 'wp_bootstrap_link_pages', 10, 2 );
+
+
+// function wp_bootstrap_paginate_links($link) {
+//   return $link;
+// }
+//
+// add_filter( 'paginate_links', 'wp_bootstrap_paginate_links', 10, 2 );
