@@ -257,24 +257,24 @@ Bootstrap Hooks is highly customizable. That's mostly required because of managi
 
 ### Methods
 
-###### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
+##### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
 
 Displays the edit post link for post.
 See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
 
-###### wp_bootstrap_posts_pagination ( array $args = array() )
+##### wp_bootstrap_posts_pagination ( array $args = array() )
 
 Displays a paginated navigation to next/previous set of posts, when applicable.
 See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
 
-###### wp_bootstrap_post_navigation ( array $args = array() )
+##### wp_bootstrap_post_navigation ( array $args = array() )
 
 Displays the navigation to next/previous post, when applicable.
 See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details.
 
 ### Filters
 
-###### bootstrap_options ( array $options = array() )
+##### bootstrap_options ( array $options = array() )
 
 Inject custom options.
 
@@ -288,12 +288,12 @@ Inject custom options.
   </tr>
   <tr>
     <td>field_class</td>
-    <td>Sets the field class used in comment form</td>
+    <td>Sets the field class used in forms</td>
     <td>form-group</td>
   </tr>
   <tr>
     <td>text_input_class</td>
-    <td>Sets the text input class used comment form</td>
+    <td>Sets the text input class used in forms</td>
     <td>form-control</td>
   </tr>
   <tr>
@@ -564,22 +564,22 @@ Inject custom options.
   <tr>
     <td>widget_class</td>
     <td>Sets the widget class</td>
-    <td>panel</td>
+    <td>card</td>
   </tr>
   <tr>
     <td>widget_modifier_class</td>
     <td>Sets the widget modifier class</td>
-    <td>panel-default</td>
+    <td>card-widget</td>
   </tr>
   <tr>
     <td>widget_header_class</td>
     <td>Sets the widget header class</td>
-    <td>panel-heading</td>
+    <td>card-header</td>
   </tr>
   <tr>
     <td>widget_content_class</td>
     <td>Sets the widget content class</td>
-    <td>panel-block</td>
+    <td>card-body</td>
   </tr>
 </table>
 
