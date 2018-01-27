@@ -251,21 +251,34 @@ function my_bootstrap_options($options) {
 add_filter( 'bootstrap_options', 'my_bootstrap_options', 1 );
 ```  
 
-Please note that as soon as Bootstrap 4 is finally released, the default configuration will change.
-
 ## API
 
 Bootstrap Hooks is highly customizable. That's mostly required because of managing different Bootstrap versions without splitting up the codebase. Normally there should be no need to change a lot.
 
-### Comments
+### Methods
 
-#### Filters
+###### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
 
-##### bootstrap_options ( array $options = array() )
+Displays the edit post link for post.
+See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
+
+###### wp_bootstrap_posts_pagination ( array $args = array() )
+
+Displays a paginated navigation to next/previous set of posts, when applicable.
+See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
+
+###### wp_bootstrap_post_navigation ( array $args = array() )
+
+Displays the navigation to next/previous post, when applicable.
+See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details.
+
+### Filters
+
+###### bootstrap_options ( array $options = array() )
 
 Inject custom options.
 
-#### Options
+### Options
 
 <table>
   <tr>
@@ -570,31 +583,6 @@ Inject custom options.
   </tr>
 </table>
 
-### Content
-
-#### Methods
-
-##### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
-
-Displays the edit post link for post.
-See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
-
-##### wp_bootstrap_posts_pagination ( array $args = array() )
-
-Displays a paginated navigation to next/previous set of posts, when applicable.
-See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
-
-##### wp_bootstrap_post_navigation ( array $args = array() )
-
-Displays the navigation to next/previous post, when applicable.
-See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details.
-
-
-#### Filters
-
-##### bootstrap_options ( array $options = array() )
-
-Customize options
 
 ## Development
 
