@@ -586,7 +586,7 @@ Inject custom options.
 
 ## Development
 
-Download docker for your OS.
+Download [Docker CE](https://www.docker.com/get-docker) for your OS.
 
 #### Server
 
