@@ -588,15 +588,26 @@ Inject custom options.
 
 Download [Docker CE](https://www.docker.com/get-docker) for your OS.
 
-#### Server
+### Development Server
 
-Point terminal to your project root and start up the container. You may omit the `-d`-flag for verbose output.
+Point terminal to your project root and start up the container.
+
+```cli
+docker-compose up -d
+```
+
+Open your browser at [http://localhost:3010](http://localhost:3010).
+
+Go through Wordpress installation and activate the demo theme.
+
+### Useful commands
 
 #### Startup services
 
 ```cli
 docker-compose up -d
 ```
+You may omit the `-d`-flag for verbose output.
 
 #### Shutdown services
 
