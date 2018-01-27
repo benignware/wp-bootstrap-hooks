@@ -328,8 +328,8 @@ Inject custom options.
   </tr>
   <tr>
     <td>align_center_class</td>
-    <td>Aligns an image to right</td>
-    <td>center-block</td>
+    <td>Center an image</td>
+    <td>mx-auto</td>
   </tr>
   <tr>
     <td>img_caption_tag</td>
