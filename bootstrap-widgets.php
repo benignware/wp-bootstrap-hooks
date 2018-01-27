@@ -40,10 +40,10 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
           // Substitute HTML id and class attributes into before_widget
           $classname_ = '';
           foreach ( (array) $wp_registered_widgets[$widget_id]['classname'] as $cn ) {
-              if ( is_string($cn) )
-                  $classname_ .= '_' . $cn;
-              elseif ( is_object($cn) )
-                  $classname_ .= '_' . get_class($cn);
+            if ( is_string($cn) )
+                $classname_ .= '_' . $cn;
+            elseif ( is_object($cn) )
+                $classname_ .= '_' . get_class($cn);
           }
           $classname_ = ltrim($classname_, '_');
           $compare = sprintf($wp_defaults[$key], $widget_id, $classname_);
