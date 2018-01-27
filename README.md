@@ -7,7 +7,7 @@ Bootstrap Hooks aims to cover most of these cases to make us immediately start i
 
 Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a central filter method.
 
-Bootstrap Hooks has been optimized for Bootstrap 4, though it can be adjusted to also support Bootstrap 3. See [Recipes](./#Recipes) section for more details on how to do this.
+Bootstrap Hooks has been optimized for Bootstrap 4, though it can be adjusted to also support Bootstrap 3. See [Recipes](#recipes) for more details on how to do this.
 
 ## Install
 
@@ -89,7 +89,7 @@ wp_bootstrap_edit_post_link(
 ) );
 ```
 
-When using Bootstrap Hooks as a plugin, you should definitely check if the method has been loaded by wrapping function call into a conditional `function_exists`-check. See the [Recipes](#recipes)-Section for an example.
+When using Bootstrap Hooks as a plugin, you should definitely check if the method has been loaded by wrapping function call into a conditional `function_exists`-check. See the [Recipes](#recipes) section for an example.
 
 ### Forms
 
