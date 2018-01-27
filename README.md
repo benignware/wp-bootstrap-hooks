@@ -7,6 +7,8 @@ Bootstrap Hooks aims to cover most of these cases to make us immediately start i
 
 Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a central filter method.
 
+Bootstrap Hooks has been optimized for Bootstrap 4, though it can be adjusted to also support Bootstrap 3. See [Recipes](./#Recipes) section for more details on how to do this.
+
 ## Install
 
 Either install as a must-use-plugin or copy the desired files directly to your theme and require them in your functions.php.
@@ -46,13 +48,13 @@ require_once 'inc/wp-bootstrap-hooks/bootstrap-widgets.php';
 
 ## Usage
 
-With few exceptions, Bootstrap Hooks works out-of-the-box by injecting magic via actions and filters. Read further to learn more about the distict modules.
+With few exceptions, Bootstrap Hooks works out-of-the-box by injecting its magic via actions and filters. Read further to learn more about the distinct modules.
 
 ### Comments
 
 Comments are rendered as nested media-objects.
 
-You can customize the label 'Comment' by utilizing the `bootstrap_options`-filter:
+You can customize the label 'Comment' by making use of the `bootstrap_options`-filter:
 
 ```php
 // Customize Comment Label
@@ -192,7 +194,7 @@ register_sidebar( array(
 
 ### Use as Plugin
 
-When intended to use as plugin, you should take care of a situation where the plugin is unistalled and check if the function exists first:
+When intended to use as plugin or must-use plugin, you should also take care of the situation where the plugin is unistalled and check if any of the functions exist first:
 
 ```php
 // Previous/next page navigation.
@@ -224,9 +226,9 @@ call_user_func_array(function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootst
 ) );
 ```
 
-### TODO: Bootstrap 3
+### Bootstrap 3
 
-If you're still working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least some options.
+If you're still working with [Bootstrap 3](http://getbootstrap.com/docs/3.3/), you need to override at least some options.
 
 ```php
 // Bootstrap 3 Options
