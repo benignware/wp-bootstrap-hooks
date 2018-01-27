@@ -2,10 +2,10 @@
 
 > A collection of filters and actions for bootstrap-based themes
 
-When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not enough to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc.
-Bootstrap Hooks aims to cover most of these cases to make us immediately start implementing the indivudual application rather than hassling with markup incompatibilities.
+When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not sufficient to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc.
+Bootstrap Hooks aims to cover most of these cases to make us immediately start implementing the individual application rather than getting hassled by markup incompatibilities.
 
-Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a filter method.
+Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a central filter method.
 
 ## Install
 
@@ -28,7 +28,7 @@ wp_bootstrap_hooks('menu', 'widgets', ...);
 
 Please note that it's recommended to install Bootstrap Hooks as a Must-Use-Plugin instead of a regular plugin and should only be updated manually by theme developers.
 
-### Template
+### Theme
 
 When used from inside a theme, all hooks can be required by including only the main file:
 
@@ -52,16 +52,16 @@ With few exceptions, Bootstrap Hooks works out-of-the-box by injecting magic via
 
 Comments are rendered as nested media-objects.
 
-You can customize the label 'Comment' by utilizing the `bootstrap_comments_options`-filter:
+You can customize the label 'Comment' by utilizing the `bootstrap_options`-filter:
 
 ```php
 // Customize Comment Label
-function bootstrap_comments_options($args) {
+function my_bootstrap_options($args) {
   return array_merge($args, array(
     'comment_label' => ('Comment' , 'textdomain');
   ));
 }
-add_filter( 'bootstrap_comments_options', 'bootstrap_comments_options' );
+add_filter( 'bootstrap_options', 'my_bootstrap_options' );
 ```
 
 ### Content
@@ -98,14 +98,13 @@ You can customize the button's icon by passing arguments from a filter. This exa
 
 ```php
 // Show Font-Awesome search icon in Searchform
-function bootstrap_forms_options($options) {
+function my_bootstrap_options($options) {
   return array_merge($options, array(
     'search_submit_label' => '<i class="fa fa-search"></i>'
   ));
 }
-add_filter( 'bootstrap_forms_options', 'bootstrap_forms_options' );
+add_filter( 'bootstrap_options', 'my_bootstrap_options' );
 ```
-
 
 ### Gallery
 
@@ -121,25 +120,26 @@ update_option( 'thumbnail_size_h', 230 );
 update_option( 'thumbnail_crop', 1 );
 ```
 
-The implementation does not handle different zoom-image heights. An easy way to fix this, is to register a custom image size with cropping enabled and apply to the Gallery Hook:
+The implementation does not handle different zoom-image heights. An easy way to fix this, is to register a custom image size with cropping enabled and apply to the gallery hook:
 
 ```php
-// Register custom image sizes
+// Register custom gallery image size
 add_image_size( 'gallery-zoom', 900, 500, true );
+
 // Apply custom image size to gallery zoom
-function bootstrap_gallery_options($options) {
+function my_bootstrap_options($options) {
   return array_merge($options, array(
     'gallery_zoom_size' => 'gallery-zoom'
   ));
 }
-add_filter( 'bootstrap_gallery_options', 'bootstrap_gallery_options' );
+add_filter( 'bootstrap_options', 'my_bootstrap_options' );
 ```
 
 
 ### Menu
 
 Bootstrap Hooks provides a custom MenuWalker based on the work by [Edward McIntyre](https://github.com/twittem/wp-bootstrap-navwalker) which is injected into menus per default.
-For the primary menu, the `navbar-nav`-class will automatically be added.
+For the menus being in primary or top location, the `navbar-nav`-class will automatically be added.
 
 Bootstrap Hooks also adds a script that handles links on dropdown-toggles which are prevented by default from Bootstrap.
 
@@ -175,7 +175,7 @@ wp_bootstrap_post_navigation( array(
 
 ### Widgets
 
-Widgets are rendered as panels. Some manipulations take care of third-party widgets, such as applying list-groups to unordered lists.
+Widgets are rendered as cards. Some manipulations take care of content that's common to widgets, such as applying list-groups to unordered lists.
 Make sure that you registered any widget areas in your `functions.php`:
 
 ```php
@@ -226,62 +226,40 @@ call_user_func_array(function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootst
 
 ### TODO: Bootstrap 3
 
-If you're already working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least some options.
+If you're still working with [Bootstrap 4](https://v4-alpha.getbootstrap.com/), you need to override at least some options.
 
 ```php
-// Bootstrap 4 Content Options
-function bootstrap4_content_options($options) {
+// Bootstrap 3 Options
+function my_bootstrap_options($options) {
   return array_merge($options, array(
-    'img_class' => 'img-fluid',
-    'align_center_class' => 'mx-auto',
-    'edit_post_link_class' => 'btn btn-secondary'
-  ));
-}
-add_filter( 'bootstrap_content_options', 'bootstrap4_content_options', 1 );
-
-// Bootstrap 4 Forms Options
-function bootstrap4_forms_options($options) {
-  return array_merge($options, array(
-    'search_submit_label' => '<i>🔎</i>'
-  ));
-}
-add_filter( 'bootstrap_forms_options', 'bootstrap4_forms_options', 1 );
-
-// Bootstrap 4 Gallery Options
-function bootstrap4_gallery_options($options) {
-  return array_merge($options, array(
+    'img_class' => 'img-responsive',
+    'align_center_class' => 'center-block',
+    'edit_post_link_class' => 'btn btn-default',
+    'search_submit_label' => '<i>🔎</i>',
     'gallery_thumbnail_class' => '',
     'gallery_thumbnail_img_class' => 'img-thumbnail mb-2',
-    'close_button_class' => 'btn btn-secondary',
-    'carousel_item_class' => 'carousel-item'
+    'close_button_class' => 'btn btn-default',
+    'carousel_item_class' => 'item',
+    'widget_class' => 'panel',
+    'widget_modifier_class' => 'panel-default',
+    'widget_header_class' => 'panel-heading',
+    'widget_content_class' => 'panel-block'
   ));
 }
-add_filter( 'bootstrap_gallery_options', 'bootstrap4_gallery_options', 1 );
-
-// Bootstrap 4 Widget Options
-function bootstrap4_widgets_options($options) {
-  return array_merge($options, array(
-    'widget_class' => 'card',
-    'widget_modifier_class' => '',
-    'widget_header_class' => 'card-header',
-    'widget_content_class' => 'card-block'
-  ));
-}
-add_filter( 'bootstrap_widgets_options', 'bootstrap4_widgets_options', 1 );
+add_filter( 'bootstrap_options', 'my_bootstrap_options', 1 );
 ```  
 
 Please note that as soon as Bootstrap 4 is finally released, the default configuration will change.
 
 ## API
 
-Bootstrap Hooks is highly customizable. This is mainly required because of managing different Bootstrap versions without splitting up the codebase. Normally there should be no need to change a lot.  
-
+Bootstrap Hooks is highly customizable. That's mostly required because of managing different Bootstrap versions without splitting up the codebase. Normally there should be no need to change a lot.
 
 ### Comments
 
 #### Filters
 
-##### bootstrap_comments_options ( array $options = array() )
+##### bootstrap_options ( array $options = array() )
 
 Inject custom options.
 
@@ -317,31 +295,6 @@ Inject custom options.
     <td>comment_label</td>
     <td>Sets the comment label</td>
     <td>Comment</td>
-  </tr>
-</table>
-
-### Content
-
-#### Methods
-
-##### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
-
-Displays the edit post link for post.
-See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
-
-#### Filters
-
-##### bootstrap_content_options ( array $options = array() )
-
-Inject custom options.
-
-#### Options
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Default</th>
   </tr>
   <tr>
     <td>img_class</td>
@@ -428,25 +381,6 @@ Inject custom options.
     <td>Sets the edit post link container css class</td>
     <td>form-group btn-group btn-group-sm</td>
   </tr>
-</table>
-
-### Forms
-
-
-#### Filters
-
-##### bootstrap_forms_options ( array $options = array() )
-
-Inject custom options.
-
-#### Options
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
   <tr>
     <td>search_submit_label</td>
     <td>Sets the searchfield's submit label</td>
@@ -461,23 +395,6 @@ Inject custom options.
     <td>submit_button_class</td>
     <td>Sets the class of submit buttons used in search- and password-forms</td>
     <td>btn btn-primary</td>
-  </tr>
-</table>
-
-### Gallery
-
-#### Filters
-
-##### bootstrap_gallery_options ( array $options = array() )
-
-Inject custom options
-
-#### Options
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Default</th>
   </tr>
   <tr>
     <td>gallery_thumbnail_size</td>
@@ -507,30 +424,12 @@ Inject custom options
   <tr>
     <td>close_button_label</td>
     <td>Sets the modal's close button label</td>
-    <td>Close</td>
+    <td>__('Close')</td>
   </tr>
   <tr>
     <td>carousel_item_class</td>
     <td>Sets the carousel's item class</td>
     <td>_item</td>
-  </tr>
-</table>
-
-### Menu
-
-#### Filters
-
-##### bootstrap_menu_options ( array $options = array() )
-
-Inject custom options.
-
-#### Options
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Default</th>
   </tr>
   <tr>
     <td>menu_item_class</td>
@@ -576,36 +475,6 @@ Inject custom options.
     <td>caret</td>
     <td>Sets the menu item caret class</td>
     <td>&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;</td>
-  </tr>
-</table>
-
-### Pagination
-
-#### Methods
-
-##### wp_bootstrap_posts_pagination ( array $args = array() )
-
-Displays a paginated navigation to next/previous set of posts, when applicable.
-See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
-
-##### wp_bootstrap_post_navigation ( array $args = array() )
-
-Displays the navigation to next/previous post, when applicable.
-See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details.
-
-#### Filters
-
-##### bootstrap_pagination_options ( $options )
-
-Inject custom options.
-
-#### Options
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Default</th>
   </tr>
   <tr>
     <td>pagination_class</td>
@@ -677,26 +546,6 @@ Inject custom options.
     <td>Sets the paginated link tag</td>
     <td>page-link</td>
   </tr>
-</table>
-
-
-### Widgets
-
-#### Filters
-
-##### bootstrap_widgets_options ( array $options = array() )
-
-Inject custom options.
-
-
-#### Options
-
-<table>
-  <tr>
-    <th>Name</th>
-    <th>Description</th>
-    <th>Default</th>
-  </tr>
   <tr>
     <td>widget_class</td>
     <td>Sets the widget class</td>
@@ -718,6 +567,32 @@ Inject custom options.
     <td>panel-block</td>
   </tr>
 </table>
+
+### Content
+
+#### Methods
+
+##### edit_post_link( string $text = null, string $before = '', string $after = '', int $id, string $class = 'post-edit-link' )
+
+Displays the edit post link for post.
+See [edit_post_link](https://developer.wordpress.org/reference/functions/edit_post_link/) for further details.
+
+##### wp_bootstrap_posts_pagination ( array $args = array() )
+
+Displays a paginated navigation to next/previous set of posts, when applicable.
+See [the_posts_pagination](https://developer.wordpress.org/reference/functions/the_posts_pagination/) for further details.
+
+##### wp_bootstrap_post_navigation ( array $args = array() )
+
+Displays the navigation to next/previous post, when applicable.
+See [the_post_navigation](https://developer.wordpress.org/reference/functions/the_post_navigation/) for further details.
+
+
+#### Filters
+
+##### bootstrap_options ( array $options = array() )
+
+Customize options
 
 ## Development
 

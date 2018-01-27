@@ -24,7 +24,7 @@ function wp_bootstrap_options() {
   $defaults = array(
     // Forms
     'search_form_class' => '',
-    'search_submit_label' => 'Search',
+    'search_submit_label' => '<i>🔎</i>',
     'text_input_class' => 'form-control',
     'input_group_class' => 'input-group',
     'input_group_append_class' => 'input-group-append',
@@ -37,7 +37,7 @@ function wp_bootstrap_options() {
     // Content
     'align_left_class' => 'pull-left',
     'align_right_class' => 'pull-right',
-    'align_center_class' => 'center-block',
+    'align_center_class' => 'mx-auto',
     'img_class' => 'img-fluid',
     'img_caption_tag' => 'figure',
     'img_caption_class' => 'figure',
@@ -50,6 +50,12 @@ function wp_bootstrap_options() {
     'blockquote_class' => 'blockquote',
     'blockquote_footer_tag' => 'footer',
     'blockquote_footer_class' => 'blockquote-footer',
+    // Embeds
+    'embed_class' => 'embed-responsive-item',
+    'embed_container_class' => 'embed-responsive',
+    'embed_preset_ratios' => array('21:9', '16:9', '4:3', '1:1'),
+    'embed_ratio_class_prefix' => $embed_container_class . '-',
+    'embed_ratio_class_divider' => 'by',
     // TODO: Move Edit post link out of content section
     'edit_post_link_class' => 'btn btn-xs btn-secondary',
     'edit_post_link_container_class' => 'form-group btn-group btn-group-sm',
@@ -58,9 +64,9 @@ function wp_bootstrap_options() {
     // Gallery
     'gallery_thumbnail_size' => 'thumbnail',
     'gallery_thumbnail_class' => '',
-    'gallery_thumbnail_img_class' => 'img-thumbnail',
+    'gallery_thumbnail_img_class' => 'img-thumbnail mb-2',
     'gallery_zoom_size' => 'large',
-    'carousel_item_class' => 'item',
+    'carousel_item_class' => 'carousel-item',
     // TODO: Modals
     'close_button_class' => 'btn btn-secondary',
     'close_button_label' => __('Close'),
@@ -108,7 +114,6 @@ function wp_bootstrap_options() {
 
   return $result;
 }
-
 
 // If file resides in template directory, require all immediately
 if (preg_match("~^" . preg_quote(get_template_directory(), "~") . "~", __FILE__)) {

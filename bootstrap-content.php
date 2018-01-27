@@ -1,5 +1,7 @@
 <?php
 
+require_once 'bootstrap-helpers.php';
+
 /**
  * Add bootstrap classes to content images
  */
@@ -35,12 +37,67 @@ if(!function_exists('wp_bootstrap_the_content')) {
     }
 
     // Embeds
+
+    // Get ratio items and sort by their ratios
+    $embed_preset_ratios_sorted = array();
+    foreach ($embed_preset_ratios as $preset_ratio_string) {
+      $preset_dimensions = explode(':', $preset_ratio_string);
+      $preset_width = intval($preset_dimensions[0]);
+      $preset_height = intval($preset_dimensions[1]);
+      $preset_ratio = intval($preset_height / $preset_width * 100);
+      $embed_preset_ratios_sorted[] = array(
+        'string' => $preset_ratio_string,
+        'width' => $preset_width,
+        'height' => $preset_height,
+        'ratio' => $preset_ratio,
+        'orientation' => $preset_width < $preset_height ? 'portrait' : 'landscape'
+      );
+    }
+    usort($embed_preset_ratios_sorted, function($a, $b) {
+      return $a["ratio"] > $b["ratio"];
+    });
+
     $iframe_elements = $doc->getElementsByTagName( 'iframe' );
     foreach ($iframe_elements as $iframe_element) {
       // Adjust class
-      $iframe_element_class = $iframe_element->getAttribute('class');
-      $iframe_element_class = trim($iframe_element_class . " " . $embed_responsive_item_class);
-      $iframe_element->setAttribute('class', $iframe_element_class);
+      wp_bootstrap_dom_set_class($iframe_element, $embed_class);
+
+      // Setup container
+      $iframe_parent = $iframe_element->parentNode;
+      if (!wp_bootstrap_dom_has_class($iframe_element, $embed_container_class)) {
+        // Create wrapper
+        $iframe_wrapper = wp_bootstrap_dom_wrap($iframe_element, 'div');
+
+        // Set embed container class
+        wp_bootstrap_dom_set_class($iframe_wrapper, $embed_container_class);
+
+        // Resolve dimensions
+        $width = $iframe_parent->getAttribute('width');
+        $height = $iframe_element->getAttribute('height');
+        $width = is_numeric($width) ? intval($width) : 525;
+        $height = is_numeric($height) ? intval($height) : 295;
+        $orientation = $width < $height ? 'portrait' : 'landscape';
+        $ratio = intval($height / $width * 100);
+
+        // Match against preset ratios
+        $matched_preset_item = null;
+        foreach($embed_preset_ratios_sorted as $embed_preset_item) {
+          if ($orientation === $embed_preset_item['orientation'] && $ratio === $embed_preset_item['ratio']) {
+            $matched_preset_item = $embed_preset_item;
+            break;
+          }
+        }
+        if ($matched_preset_item) {
+          // Generate embed ratio class
+          $embed_ratio_class = $embed_ratio_class_prefix
+            . $matched_preset_item['width']
+            . $embed_ratio_class_divider
+            . $matched_preset_item['height'];
+
+          // Apply embed ratio class
+          wp_bootstrap_dom_set_class($iframe_wrapper, $embed_ratio_class);
+        }
+      }
     }
 
     // Blockquotes
@@ -103,10 +160,29 @@ if(!function_exists('wp_bootstrap_the_content')) {
       $tag_element->setAttribute('class', implode(" ", $classes));
     }
 
-    return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+    $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+    // echo "<textarea>" . $output . "</textarea>";
+    return $output;
   }
-  add_filter( 'the_content', 'wp_bootstrap_the_content', 11 );
+  add_filter( 'the_content', 'wp_bootstrap_the_content', 100, 1 );
 
+
+  function div_wrapper($content) {
+      // match any iframes
+      $pattern = '~<iframe.*</iframe>|<embed.*</embed>~';
+      preg_match_all($pattern, $content, $matches);
+
+      foreach ($matches[0] as $match) {
+        // wrap matched iframe with div
+        $wrappedframe = '<div>' . $match . '</div>';
+
+        //replace original iframe with new in content
+        $content = str_replace($match, $wrappedframe, $content);
+      }
+
+      return $content;
+  }
+  add_filter('the_content', 'div_wrapper');
 
   /**
    * Img Caption
@@ -242,7 +318,6 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
   $doc_xpath = new DOMXpath($doc);
 
   // Container Element
-  //$body_element = $doc->getElementByTagName( 'body' );
   $container_element = $doc_xpath->query('body/*[1]')->item(0);
 
   if ($container_element) {
@@ -250,7 +325,6 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
     $container_element_class.= " $edit_post_link_container_class";
     $container_element->setAttribute('class', trim($container_element_class));
   }
-
 
   // Links
   $link_elements = $doc->getElementsByTagName( 'a' );
@@ -263,34 +337,6 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
   echo preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
   return;
-
-
-
-  //edit_post_link($link, $before, $after, $id, $class);
-  //return;
-  // Extract options
-  extract(wp_bootstrap_options());
-  // Set the default class
-  if (!$class) {
-    $class = 'edit-post-link';
-  }
-
-  // Container start
-  if ($edit_post_link_container_tag) {
-    echo "<$edit_post_link_container_tag class=\"edit-link $edit_post_link_container_class\">";
-  }
-
-  // Add class to link
-  $class = $class . " " . $edit_post_link_class;
-
-  // Render Link
-  ob_start();
-
-
-  // Container End
-  if ($edit_post_link_container_tag) {
-    echo "</$edit_post_link_container_tag>";
-  }
 }
 
 
