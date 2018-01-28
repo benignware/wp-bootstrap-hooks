@@ -236,10 +236,10 @@ function my_bootstrap_options($options) {
   return array_merge($options, array(
     'img_class' => 'img-responsive',
     'align_center_class' => 'center-block',
-    'edit_post_link_class' => 'btn btn-default',
-    'search_submit_label' => '<i>🔎</i>',
+    'edit_post_link_class' => 'btn btn-default btn-xs',
+    'search_submit_label' => '<i class="glyphicon glyphicon-search"></i>',
     'gallery_thumbnail_class' => '',
-    'gallery_thumbnail_img_class' => 'img-thumbnail mb-2',
+    'gallery_thumbnail_img_class' => 'img-thumbnail',
     'close_button_class' => 'btn btn-default',
     'carousel_item_class' => 'item',
     'widget_class' => 'panel',
