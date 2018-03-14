@@ -4,7 +4,7 @@
  Plugin Name: Bootstrap Hooks
  Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  Description: A collection of action and filters for bootstrap based themes
- Version: 0.0.1
+ Version: 0.1.0
  Author: Rafael Nowrotek, Benignware
  Author URI: http://benignware.com
  License: MIT
@@ -54,7 +54,7 @@ function wp_bootstrap_options() {
     'embed_class' => 'embed-responsive-item',
     'embed_container_class' => 'embed-responsive',
     'embed_preset_ratios' => array('21:9', '16:9', '4:3', '1:1'),
-    'embed_ratio_class_prefix' => $embed_container_class . '-',
+    'embed_ratio_class_prefix' => 'embed-responsive-',
     'embed_ratio_class_divider' => 'by',
     // TODO: Move Edit post link out of content section
     'edit_post_link_class' => 'btn btn-xs btn-secondary',

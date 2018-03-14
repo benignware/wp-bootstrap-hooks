@@ -65,15 +65,17 @@ if(!function_exists('wp_bootstrap_the_content')) {
       // Setup container
       $iframe_parent = $iframe_element->parentNode;
       if (!wp_bootstrap_dom_has_class($iframe_element, $embed_container_class)) {
+
+        // Resolve dimensions
+        $width = $iframe_element->getAttribute('width');
+        $height = $iframe_element->getAttribute('height');
+
         // Create wrapper
         $iframe_wrapper = wp_bootstrap_dom_wrap($iframe_element, 'div');
 
         // Set embed container class
         wp_bootstrap_dom_set_class($iframe_wrapper, $embed_container_class);
 
-        // Resolve dimensions
-        $width = $iframe_parent->getAttribute('width');
-        $height = $iframe_element->getAttribute('height');
         $width = is_numeric($width) ? intval($width) : 525;
         $height = is_numeric($height) ? intval($height) : 295;
         $orientation = $width < $height ? 'portrait' : 'landscape';
@@ -87,16 +89,31 @@ if(!function_exists('wp_bootstrap_the_content')) {
             break;
           }
         }
-        if ($matched_preset_item) {
-          // Generate embed ratio class
-          $embed_ratio_class = $embed_ratio_class_prefix
-            . $matched_preset_item['width']
-            . $embed_ratio_class_divider
-            . $matched_preset_item['height'];
 
-          // Apply embed ratio class
-          wp_bootstrap_dom_set_class($iframe_wrapper, $embed_ratio_class);
+        if ($matched_preset_item) {
+          $matched_width = $matched_preset_item['width'];
+          $matched_height = $matched_preset_item['height'];
+        } else {
+          $gcd_ratio = wp_bootstrap_ratio($width, $height);
+          $matched_width = $gcd_ratio[0];
+          $matched_height = $gcd_ratio[1];
         }
+
+        // Generate embed ratio class
+        $embed_ratio_class = $embed_ratio_class_prefix
+          . $matched_width
+          . $embed_ratio_class_divider
+          . $matched_height;
+
+        if (!$matched_preset_item) {
+          // For custom sizes, create an inline style element
+          $style_element = $doc->createElement('style');
+          $style_element->appendChild($doc->createTextNode(".$embed_ratio_class:before { padding: $ratio%; }"));
+          $iframe_element->parentNode->insertBefore($style_element, $iframe_element);
+        }
+
+        // Apply embed ratio class
+        wp_bootstrap_dom_set_class($iframe_wrapper, $embed_ratio_class);
       }
     }
 
