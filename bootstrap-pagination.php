@@ -56,8 +56,8 @@ function wp_bootstrap_post_navigation($args = array()) {
       // 'screen_reader_text' => __( 'Post navigation' ),
   ) );
 
+  // FIXME: Safe extract
   extract($args);
-
   extract(wp_bootstrap_options());
 
   $prev_post = get_previous_post();
@@ -110,6 +110,7 @@ function wp_bootstrap_link_pages( $output, $args ) {
     return $output;
   }
 
+  // FIXME: Safe extract
   extract(wp_bootstrap_options());
   extract($args);
 
@@ -154,10 +155,3 @@ function wp_bootstrap_link_pages( $output, $args ) {
   return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 };
 add_filter( 'wp_link_pages', 'wp_bootstrap_link_pages', 10, 2 );
-
-
-// function wp_bootstrap_paginate_links($link) {
-//   return $link;
-// }
-//
-// add_filter( 'paginate_links', 'wp_bootstrap_paginate_links', 10, 2 );
