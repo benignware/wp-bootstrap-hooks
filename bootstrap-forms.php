@@ -5,6 +5,7 @@
  */
 function wp_bootstrap_get_search_form( $form ) {
   extract(wp_bootstrap_options());
+
   $form = '<form role="search" method="get" id="searchform" class="searchform ' . $search_form_class . '" action="' . home_url( '/' ) . '" >
   <label class="screen-reader-text" for="s">' . __( 'Search for:' ) . '</label>
   <div class="form-group">
