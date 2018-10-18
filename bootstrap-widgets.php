@@ -25,10 +25,12 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
   $widget_id = $sidebar_params[0]['widget_id'];
 
   foreach($sidebar_params as $index => $widget_params) {
-    $widget_name = isset($widget_params['widget_name']) ? sanitize_title($widget_params['widget_name']) : '';
+    $widget_name = isset($widget_params['widget_id']) ? sanitize_title($widget_params['widget_id']) : '';
+    $widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
+
     foreach ($widget_params as $key => $value) {
       $wp_bootstrap_defaults = array(
-        'before_widget' => "<div class=\"widget widget-$widget_name $widget_class $widget_modifier_class\">",
+        'before_widget' => "<div class=\"widget widget-$widget_id_base $widget_class $widget_modifier_class\">",
         'after_widget'  => '</div>',
         'before_title'  => '<div class="' . $widget_header_class . '">',
         'after_title'   => '</div>'
