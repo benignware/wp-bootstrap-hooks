@@ -222,9 +222,9 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
                   }
                 }
               }
-              // Rest
-              $content_fragment->appendChild($list_node);
             }
+            // Rest
+            $content_fragment->appendChild($list_node);
           }
 
           // Handle lists
@@ -320,4 +320,26 @@ EOT;
 }
 add_action('wp_head', 'wp_bootstrap_widget_styles', 0);
 
+
+// Tag cloud widget
+add_filter( 'widget_tag_cloud_args', function ($args) {
+  $tagcloud_class = 'test';
+
+  return array_merge($args, array(
+    'format' => 'flat'
+  ));
+});
+
+add_filter( 'wp_generate_tag_cloud_data', function ($tags_data) {
+  $options = wp_bootstrap_options();
+  $post_tag_class = $options['post_tag_class'];
+
+  foreach ($tags_data as $index => $tag_data) {
+    $tags_data[$index] = array_merge($tag_data, array(
+      'class' => isset($tag_data['class']) ? $tag_data['class'] . ' ' . $post_tag_class : $post_tag_class
+    ));
+  }
+
+  return $tags_data;
+}, 10, 1 );
 ?>

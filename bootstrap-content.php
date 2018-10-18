@@ -357,10 +357,12 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
 }
 
 
-add_filter( 'body_class', 'wp_bootstrap_post_tag_class' );
-add_filter( 'post_class', 'wp_bootstrap_post_tag_class' );
+// add_filter( 'body_class', 'wp_bootstrap_post_tag_class' );
+// add_filter( 'post_class', 'wp_bootstrap_post_tag_class' );
 function wp_bootstrap_post_tag_class( $classes ) {
-  extract(wp_bootstrap_options());
+  $options = wp_bootstrap_options();
+  $post_tag_class = $options['post_tag_class'];
+
   foreach ($classes as $index => $class) {
     $class = preg_replace("~^tag\b~", "$post_tag_class", $class);
     $classes[$index] = $class;

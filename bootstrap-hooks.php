@@ -56,11 +56,11 @@ function wp_bootstrap_options() {
     'embed_preset_ratios' => array('21:9', '16:9', '4:3', '1:1'),
     'embed_ratio_class_prefix' => 'embed-responsive-',
     'embed_ratio_class_divider' => 'by',
-    // TODO: Move Edit post link out of content section
-    'edit_post_link_class' => 'btn btn-xs btn-secondary',
-    'edit_post_link_container_class' => 'form-group btn-group btn-group-sm',
-    // TODO: Did tags finally land in bs4?
-    'post_tag_class' => 'post-tag',
+    // Edit post link
+    'edit_post_link_class' => 'btn btn-sm btn-secondary',
+    'edit_post_link_container_class' => 'form-group btn-group btn-group-sm d-block my-2',
+    // Tags
+    'post_tag_class' => 'badge badge-primary mb-1',
     // Gallery
     'gallery_thumbnail_size' => 'thumbnail',
     'gallery_thumbnail_class' => '',
@@ -82,7 +82,7 @@ function wp_bootstrap_options() {
     'divider_class' => 'divider',
     'caret' => '<span class="caret"></span>',
     // Pagination
-    'pagination_class' => 'pagination',
+    'pagination_class' => 'pagination pagination-sm',
     'page_item_class' => 'page-item',
     'page_item_active_class' => 'active',
     'page_link_class' => 'page-link',
@@ -97,7 +97,7 @@ function wp_bootstrap_options() {
     'paginated_item_tag' => 'li',
     'paginated_link_class' => 'page-link',
     // Widgets
-    'widget_class' => 'card',
+    'widget_class' => 'card mb-3',
     'widget_modifier_class' => 'card-widget',
     'widget_header_class' => 'card-header',
     'widget_content_class' => 'card-body'
