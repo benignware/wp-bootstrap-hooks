@@ -39,12 +39,23 @@
 			the_title( '<h2 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
 		}
 		?>
+		<?php
+	    $tags = get_tags();
+	    if ( $tags ) : ?>
+				<div class="tags mb-3">
+	       <?php foreach ( $tags as $tag ) : ?>
+	         <a class="badge badge-secondary" href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" title="<?php echo esc_attr( $tag->name ); ?>"><?php echo esc_html( $tag->name ); ?></a>
+	       <?php endforeach; ?>
+			 	</div>
+	    <?php endif;
+		?>
+
 	</header><!-- .entry-header -->
 
 	<?php if ( '' !== get_the_post_thumbnail() && ! is_single() ) : ?>
-		<div class="post-thumbnail">
+		<div class="post-thumbnail figure">
 			<a href="<?php the_permalink(); ?>">
-				<?php the_post_thumbnail( 'twentyseventeen-featured-image' ); ?>
+				<?php the_post_thumbnail( 'twentyseventeen-featured-image', array('class' => 'figure-img') ); ?>
 			</a>
 		</div><!-- .post-thumbnail -->
 	<?php endif; ?>
