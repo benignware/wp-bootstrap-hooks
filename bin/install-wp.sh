@@ -4,7 +4,7 @@
 
 # Install WordPress.
 wp core install \
-  --title="Project" \
+  --title="My Wordpress Site" \
   --admin_user="wordpress" \
   --admin_password="wordpress" \
   --admin_email="admin@example.com" \
