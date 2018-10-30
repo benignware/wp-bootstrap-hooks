@@ -235,9 +235,8 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
             // Content Block
             if ($panel_body == null) {
               $panel_body = $html->createElement( 'div' );
-              if ($widget_id_base !== "search") {
-                $panel_body->setAttribute('class', $widget_content_class);
-              }
+              $panel_body->setAttribute('class', $widget_content_class);
+
               // If a listnode has been extracted before, prepend to the listnode
               if ($list_node && $widget_content_node !== $list_node) {
                 $content_fragment->insertBefore($panel_body, $list_node);
