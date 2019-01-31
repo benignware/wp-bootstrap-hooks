@@ -8,7 +8,7 @@ wp core install \
   --admin_user="wordpress" \
   --admin_password="wordpress" \
   --admin_email="admin@example.com" \
-  --url="http://localhost:9030" \
+  --url="http://localhost:8030" \
   --skip-email
 
 # Update permalink structure.
