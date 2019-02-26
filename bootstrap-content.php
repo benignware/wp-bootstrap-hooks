@@ -215,7 +215,8 @@ if(!function_exists('wp_bootstrap_the_content')) {
       'id' => '',
       'align' => 'alignnone',
       'width' => '',
-      'caption' => ''
+      'caption' => '',
+      'class' => $img_caption_img_class
     ), $attributes));
 
     // Skip if caption text is empty
@@ -252,8 +253,23 @@ if(!function_exists('wp_bootstrap_the_content')) {
     // Get content
     $content = do_shortcode( $content );
 
-    return
+    // Parse content for actual image
+    $doc = new DOMDocument();
+    @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $content );
+    $doc_xpath = new DOMXpath($doc);
 
+    // Images
+    $image_elements = $doc->getElementsByTagName( 'img' );
+    foreach ($image_elements as $image_element) {
+      // Adjust class
+      $image_element_classes = explode(' ', $image_element->getAttribute('class'));
+      $image_element_classes[] = $img_caption_img_class;
+      $image_element->setAttribute('class', implode(' ', $image_element_classes));
+    }
+
+    $content = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+
+    return
 <<<EOT
     <$img_caption_tag$attr_string class="$caption_element_class">
       $content
@@ -270,7 +286,9 @@ EOT;
    */
   function wp_bootstrap_post_thumbnail_html($html, $post_id, $post_thumbnail_id, $size, $attr) {
     // Extract options
-    extract(wp_bootstrap_options());
+    $options = wp_bootstrap_options();
+    $img_class = $options['img_class'];
+
     // Parse DOM
     $doc = new DOMDocument();
     @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html );
@@ -318,9 +336,13 @@ EOT;
 /**
  * Edit Post Link
  */
+// @deprecated in favor of `edit_post_link`-hook.
 function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null, $id = null, $class = "") {
   // Extract options
-  extract(wp_bootstrap_options());
+  $options = wp_bootstrap_options();
+
+  $edit_post_link_class = $options['edit_post_link_class'];
+  $edit_post_link_container_class = $options['edit_post_link_container_class'];
 
   // Capture edit post link html
   ob_start();
@@ -355,6 +377,26 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
 
   return;
 }
+
+add_filter('edit_post_link', function($link = null, $post_id = null, $text = '') {
+  $edit_post_link_class = $options['edit_post_link_class'];
+	// Parse DOM
+	$doc = new DOMDocument();
+	@$doc->loadHTML('<?xml encoding="utf-8" ?>' . $link );
+	$links = $doc->getElementsByTagName('a');
+
+	foreach($links as $link) {
+		$classes = explode(' ', $link->getAttribute('class'));
+		$classes[]= $edit_post_link_class;
+		$classes = array_unique($classes);
+
+		$link->setAttribute('class', implode(' ', $classes));
+	}
+
+	$link = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+
+	return $link;
+}, 3, 10);
 
 
 // add_filter( 'body_class', 'wp_bootstrap_post_tag_class' );

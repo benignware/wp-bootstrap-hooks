@@ -1,6 +1,6 @@
 {
   "name": "benignware/wp-bootstrap-hooks",
-  "version": "0.1.0-beta.7",
+  "version": "0.1.0-beta.8",
   "type": "wordpress-muplugin",
   "license": "MIT",
   "description": "A collection of action and filters for bootstrap based themes",
@@ -22,6 +22,9 @@
     "vendor-dir": "vendor/lib"
   },
   "repositories": [{
+    "type": "composer",
+    "url": "https://wpackagist.org"
+  }, {
     "type":"package",
     "package": {
       "name": "wptrt/theme-unit-test",
@@ -39,6 +42,7 @@
   },
   "require-dev": {
     "wemakecustom/wp-mu-loader": "*",
+    "wpackagist-plugin/wordpress-importer": ">=0.6.4",
     "wptrt/theme-unit-test": "dev-master"
   },
   "scripts": {

@@ -54,6 +54,9 @@ get_header(); ?>
 							'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyseventeen' ) . ' </span>',
 						) ) );
 
+						echo get_previous_posts_link();
+						echo get_next_posts_link();
+
 					else :
 
 						get_template_part( 'template-parts/post/content', 'none' );

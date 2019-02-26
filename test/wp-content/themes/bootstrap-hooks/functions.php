@@ -590,10 +590,10 @@ require get_parent_theme_file_path( '/inc/icon-functions.php' );
  * Get Bootstrap from cdn
 */
 
-wp_register_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css' );
+wp_register_style( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' );
 wp_enqueue_style( 'bootstrap' );
 
-wp_register_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js', array( 'jquery' ), null, true );
+wp_register_script( 'bootstrap', 'https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js', array( 'jquery' ), null, true );
 wp_enqueue_script( 'bootstrap' );
 
 

@@ -155,3 +155,32 @@ function wp_bootstrap_link_pages( $output, $args ) {
   return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 };
 add_filter( 'wp_link_pages', 'wp_bootstrap_link_pages', 10, 2 );
+
+
+// Next posts link class
+add_filter('next_posts_link_attributes', function($attrs = '') {
+  $options = wp_bootstrap_options();
+  $next_posts_link_class = $options['next_posts_link_class'];
+
+  if (strpos($attrs, "class=") !== FALSE) {
+    $attrs = preg_replace('~class=["\']([^"\']*)~', '$1' . $next_posts_link_class);
+  } else {
+    $attrs.= ' class="' . $next_posts_link_class . '"';
+  }
+
+  return trim($attrs);
+});
+
+// Previous posts link class
+add_filter('previous_posts_link_attributes', function($attrs = array()) {
+  $options = wp_bootstrap_options();
+  $previous_posts_link_class = $options['previous_posts_link_class'];
+
+  if (strpos($attrs, "class=") !== FALSE) {
+    $attrs = preg_replace('~class=["\']([^"\']*)~', '$1' . $previous_posts_link_class);
+  } else {
+    $attrs.= ' class="' . $previous_posts_link_class . '"';
+  }
+
+  return trim($attrs);
+});

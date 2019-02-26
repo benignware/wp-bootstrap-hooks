@@ -57,8 +57,8 @@ function wp_bootstrap_options() {
     'embed_ratio_class_prefix' => 'embed-responsive-',
     'embed_ratio_class_divider' => 'by',
     // Edit post link
-    'edit_post_link_class' => 'btn btn-sm btn-secondary',
-    'edit_post_link_container_class' => 'form-group btn-group btn-group-sm d-block my-2',
+    'edit_post_link_class' => 'btn btn-sm btn-outline-secondary',
+    'edit_post_link_container_class' => 'btn-group btn-group-sm d-block my-2',
     // Tags
     'post_tag_class' => 'badge badge-primary mb-1',
     // Gallery
@@ -96,6 +96,8 @@ function wp_bootstrap_options() {
     'paginated_item_class' => 'page-item',
     'paginated_item_tag' => 'li',
     'paginated_link_class' => 'page-link',
+    'next_posts_link_class' => 'btn btn-outline-secondary btn-sm float-right',
+    'previous_posts_link_class' => 'btn btn-outline-secondary btn-sm float-left',
     // Widgets
     'widget_class' => 'card mb-3',
     'widget_modifier_class' => 'card-widget',

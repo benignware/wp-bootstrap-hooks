@@ -562,6 +562,16 @@ Inject custom options.
     <td>page-link</td>
   </tr>
   <tr>
+    <td>next_posts_link_class</td>
+    <td>Specify next posts link class</td>
+    <td>btn btn-sm btn-secondary</td>
+  </tr>
+  <tr>
+    <td>previous_posts_link_class</td>
+    <td>Specify previous posts link class</td>
+    <td>btn btn-sm btn-secondary</td>
+  </tr>
+  <tr>
     <td>widget_class</td>
     <td>Sets the widget class</td>
     <td>card</td>

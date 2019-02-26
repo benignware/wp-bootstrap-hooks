@@ -96,6 +96,16 @@ body.admin-bar {
 	flex-grow: 0;
 }
 
+.entry-title,
+.entry-content,
+.entry-summary {
+	-ms-word-wrap: break-word;
+	word-wrap: break-word;
+	ms-hyphens: auto;
+	hyphens: auto;
+}
+
+
 /*--------------------------------------------------------------
 3.0 Icons
 --------------------------------------------------------------*/
