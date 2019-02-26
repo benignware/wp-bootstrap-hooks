@@ -1,6 +1,6 @@
 #!/usr/bin/env sh
 
-# docker-compose run --rm wp-cli install-wp
+# docker-compose run --rm wp install-wp
 
 # Install WordPress.
 wp core install \
