@@ -336,6 +336,32 @@ EOT;
 /**
  * Edit Post Link
  */
+add_filter('edit_post_link', function($link = null, $post_id = null, $text = '') {
+  $edit_post_link_class = $options['edit_post_link_class'];
+	// Parse DOM
+	$doc = new DOMDocument();
+	@$doc->loadHTML('<?xml encoding="utf-8" ?>' . $link);
+
+  // Container Element
+  $container_element = $doc_xpath->query('body/*[1]')->item(0);
+  if ($container_element) {
+    $container_element_class = $container_element->getAttribute('class');
+    $container_element_class.= " $edit_post_link_container_class";
+    $container_element->setAttribute('class', trim($container_element_class));
+  }
+
+  // Links
+	$links = $doc->getElementsByTagName('a');
+ 	foreach($links as $link) {
+		$classes = explode(' ', $link->getAttribute('class'));
+		$classes[]= $edit_post_link_class;
+		$classes = array_unique($classes);
+ 		$link->setAttribute('class', implode(' ', $classes));
+	}
+ 	$link = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+ 	return $link;
+}, 3, 10);
+
 // @deprecated in favor of `edit_post_link`-hook.
 function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null, $id = null, $class = "") {
   // Extract options
