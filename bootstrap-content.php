@@ -342,6 +342,8 @@ add_filter('edit_post_link', function($link = null, $post_id = null, $text = '')
 	$doc = new DOMDocument();
 	@$doc->loadHTML('<?xml encoding="utf-8" ?>' . $link);
 
+  $doc_xpath = new DOMXpath($doc);
+
   // Container Element
   $container_element = $doc_xpath->query('body/*[1]')->item(0);
   if ($container_element) {
