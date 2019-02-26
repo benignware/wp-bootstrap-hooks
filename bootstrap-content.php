@@ -378,37 +378,4 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
   return;
 }
 
-add_filter('edit_post_link', function($link = null, $post_id = null, $text = '') {
-  $edit_post_link_class = $options['edit_post_link_class'];
-	// Parse DOM
-	$doc = new DOMDocument();
-	@$doc->loadHTML('<?xml encoding="utf-8" ?>' . $link );
-	$links = $doc->getElementsByTagName('a');
-
-	foreach($links as $link) {
-		$classes = explode(' ', $link->getAttribute('class'));
-		$classes[]= $edit_post_link_class;
-		$classes = array_unique($classes);
-
-		$link->setAttribute('class', implode(' ', $classes));
-	}
-
-	$link = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
-
-	return $link;
-}, 3, 10);
-
-
-// add_filter( 'body_class', 'wp_bootstrap_post_tag_class' );
-// add_filter( 'post_class', 'wp_bootstrap_post_tag_class' );
-function wp_bootstrap_post_tag_class( $classes ) {
-  $options = wp_bootstrap_options();
-  $post_tag_class = $options['post_tag_class'];
-
-  foreach ($classes as $index => $class) {
-    $class = preg_replace("~^tag\b~", "$post_tag_class", $class);
-    $classes[$index] = $class;
-  }
-  return $classes;
-}
 ?>
