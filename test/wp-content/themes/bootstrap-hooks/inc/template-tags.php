@@ -110,7 +110,7 @@ if ( ! function_exists( 'twentyseventeen_edit_link' ) ) :
  * layout with multiple posts/pages shown gets confusing.
  */
 function twentyseventeen_edit_link() {
-	call_user_func_array(function_exists('wp_bootstrap_edit_post_link') ? 'wp_bootstrap_edit_post_link' : 'edit_post_link', array(
+	edit_post_link(
 	  sprintf(
 	    /* translators: %s: Name of current post */
 	    __( 'Edit<span class="screen-reader-text"> "%s"</span>', 'twentyseventeen' ),
@@ -118,7 +118,7 @@ function twentyseventeen_edit_link() {
 	  ),
 	  '<span class="edit-link">',
 	  '</span>'
-	) );
+	);
 }
 endif;
 
