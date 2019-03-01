@@ -163,7 +163,7 @@ add_filter('next_posts_link_attributes', function($attrs = '') {
   $next_posts_link_class = $options['next_posts_link_class'];
 
   if (strpos($attrs, "class=") !== FALSE) {
-    $attrs = preg_replace('~class=["\']([^"\']*)~', '$1' . $next_posts_link_class);
+    $attrs = preg_replace('~class=["\']([^"\']*)~', '$1 ' . $next_posts_link_class);
   } else {
     $attrs.= ' class="' . $next_posts_link_class . '"';
   }
