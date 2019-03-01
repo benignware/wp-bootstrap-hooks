@@ -177,7 +177,7 @@ add_filter('previous_posts_link_attributes', function($attrs = array()) {
   $previous_posts_link_class = $options['previous_posts_link_class'];
 
   if (strpos($attrs, "class=") !== FALSE) {
-    $attrs = preg_replace('~class=["\']([^"\']*)~', '$1' . $previous_posts_link_class);
+    $attrs = preg_replace('~class=["\']([^"\']*)~', '$1 ' . $previous_posts_link_class);
   } else {
     $attrs.= ' class="' . $previous_posts_link_class . '"';
   }

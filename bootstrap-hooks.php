@@ -10,13 +10,15 @@
  License: MIT
 */
 
+require_once 'bootstrap-helpers.php';
+
 function wp_bootstrap_hooks() {
   $args = func_get_args();
   if (!count($args)) {
-    $args = array('comments', 'content', 'forms', 'gallery', 'menu', 'pagination', 'widgets');
+    $args = array('comments', 'content', 'forms', 'gallery', 'menu', 'pagination', 'widgets', 'yoast');
   }
   foreach ($args as $arg) {
-    require_once "bootstrap-$arg.php";
+    require_once "features/bootstrap-$arg.php";
   }
 }
 

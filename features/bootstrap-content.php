@@ -1,7 +1,5 @@
 <?php
 
-require_once 'bootstrap-helpers.php';
-
 /**
  * Add bootstrap classes to content images
  */
