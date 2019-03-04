@@ -391,4 +391,15 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
    return;
 }
 
+// FIXME: Get rid of it
+function wp_bootstrap_post_tag_class( $classes ) {
+  $options = wp_bootstrap_options();
+  $post_tag_class = $options['post_tag_class'];
+  foreach ($classes as $index => $class) {
+    $class = preg_replace("~^tag\b~", "$post_tag_class", $class);
+    $classes[$index] = $class;
+  }
+  return $classes;
+}
+
 ?>
