@@ -114,7 +114,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
     if ($widget_root_node) {
 
       $content_parent = $html_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $widget_class ')]")->item(0);
-      // echo "NO CONTENT PARENT: $widget_class -> " . $content_parent->getAttribute('class');
+
       if (!$content_parent) {
         // If no element with component class is found yet, we'll add it and append with modifier and wrap the actual content in it
         $content_parent = $html->createElement('div');
@@ -159,6 +159,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
       }
 
       $widget_extra_classes = array_unique($widget_extra_classes);
+
       // Clean up extra classes
       foreach ($widget_extra_classes as $index => $widget_extra_class) {
         // FIXME: Remove null-prefix, i.e. Instagram widget
@@ -175,6 +176,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
       foreach ($widget_extra_classes as $widget_extra_class) {
         array_push($content_parent_classes, $widget_class . "-" . $widget_extra_class);
       }
+
       $content_parent->setAttribute('class', implode(" ", $content_parent_classes));
 
 
@@ -203,6 +205,8 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
       foreach ($elems as $widget_content_node) {
 
         if ($widget_content_node->nodeType === 1 && strpos($widget_content_node->getAttribute('class'), $widget_class . '-header') !== false) {
+
+
           $content_fragment->appendChild($widget_content_node);
           $panel_body = null;
 
@@ -235,7 +239,13 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
             // Content Block
             if ($panel_body == null) {
               $panel_body = $html->createElement( 'div' );
-              $panel_body->setAttribute('class', $widget_content_class);
+
+              // Regular content
+              $length = strlen(trim($widget_content_node->textContent));
+
+              if ($length > 0) {
+                $panel_body->setAttribute('class', $widget_content_class);
+              }
 
               // If a listnode has been extracted before, prepend to the listnode
               if ($list_node && $widget_content_node !== $list_node) {

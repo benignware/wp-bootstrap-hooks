@@ -4,21 +4,32 @@
  Plugin Name: Bootstrap Hooks
  Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  Description: A collection of action and filters for bootstrap based themes
- Version: 0.1.0-beta.16
+ Version: 0.1.0-beta.17
  Author: Rafael Nowrotek, Benignware
  Author URI: http://benignware.com
  License: MIT
 */
 
-require_once 'bootstrap-helpers.php';
+require_once 'lib/helpers.php';
 
 function wp_bootstrap_hooks() {
   $args = func_get_args();
+
   if (!count($args)) {
-    $args = array('comments', 'content', 'forms', 'gallery', 'menu', 'pagination', 'widgets', 'yoast');
+    $args = array(
+      'comments',
+      'content',
+      'forms',
+      'gallery',
+      'navigation',
+      'pagination',
+      'widgets',
+      'integration/wordpress-seo'
+    );
   }
+
   foreach ($args as $arg) {
-    require_once "features/bootstrap-$arg.php";
+    require_once "features/$arg.php";
   }
 }
 
@@ -112,6 +123,7 @@ function wp_bootstrap_options() {
 
   // Sanitize options
   $result = array();
+
   foreach ( $options as $key => $value ) {
     $result[$key] = $value;
   }

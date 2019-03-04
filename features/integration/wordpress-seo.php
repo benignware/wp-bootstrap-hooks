@@ -83,5 +83,4 @@ add_filter('wpseo_breadcrumb_output', function($output) {
 add_filter('wpseo_breadcrumb_separator', function($separator = '') {
 	return '';
 });
-
 ?>

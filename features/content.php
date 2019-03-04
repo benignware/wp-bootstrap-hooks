@@ -175,6 +175,13 @@ if(!function_exists('wp_bootstrap_the_content')) {
       $tag_element->setAttribute('class', implode(" ", $classes));
     }
 
+    $input_elements = $doc_xpath->query("//select|textarea|input[not(@type='checkbox') and not(@type='radio')]");
+    foreach ($input_elements as $input_element) {
+      $classes = preg_split('/\s+/', $input_element->getAttribute('class'));
+      $classes[]= $text_input_class;
+      $input_element->setAttribute('class', implode(" ", $classes));
+    }
+
     $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
     // echo "<textarea>" . $output . "</textarea>";
     return $output;
@@ -324,6 +331,14 @@ EOT;
       }
       .figure.aligncenter {
         display: block;
+      }
+      .list-group-item {
+        margin-bottom: 0;
+        border-bottom: 0;
+      }
+
+      .card-header + :not(.card-body) + .list-group .list-group-item:first-child {
+        border-top: 0;
       }
     </style>
 EOT;

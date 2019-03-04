@@ -1,6 +1,6 @@
 {
   "name": "benignware/wp-bootstrap-hooks",
-  "version": "0.1.0-beta.16",
+  "version": "0.1.0-beta.17",
   "type": "wordpress-muplugin",
   "license": "MIT",
   "description": "A collection of action and filters for bootstrap based themes",
@@ -44,6 +44,8 @@
     "wemakecustom/wp-mu-loader": "*",
     "wpackagist-plugin/wordpress-importer": ">=0.6.4",
     "wpackagist-plugin/wordpress-seo": ">=9.7",
+    "wpackagist-plugin/advanced-random-posts-widget": ">=2.1.1",
+    "wpackagist-plugin/recent-posts-widget-extended": ">=0.9.9.7",
     "wptrt/theme-unit-test": "dev-master"
   },
   "scripts": {

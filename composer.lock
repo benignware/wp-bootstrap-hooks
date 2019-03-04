@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6ea695e6ab99be1b0de021c436e58557",
+    "content-hash": "dd0bfd1fdea913409443265b04ba50ae",
     "packages": [
         {
             "name": "composer/installers",
@@ -169,6 +169,46 @@
                 "wordpress"
             ],
             "time": "2015-01-21T14:32:26+00:00"
+        },
+        {
+            "name": "wpackagist-plugin/advanced-random-posts-widget",
+            "version": "2.1.1",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/advanced-random-posts-widget/",
+                "reference": "tags/2.1.1"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/advanced-random-posts-widget.2.1.1.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/advanced-random-posts-widget/"
+        },
+        {
+            "name": "wpackagist-plugin/recent-posts-widget-extended",
+            "version": "0.9.9.7",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/recent-posts-widget-extended/",
+                "reference": "tags/0.9.9.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/recent-posts-widget-extended.0.9.9.7.zip",
+                "reference": null,
+                "shasum": null
+            },
+            "require": {
+                "composer/installers": "~1.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/recent-posts-widget-extended/"
         },
         {
             "name": "wpackagist-plugin/wordpress-importer",

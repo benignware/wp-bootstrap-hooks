@@ -25,6 +25,7 @@ services:
     restart: always
     volumes:
     - wordpress:/var/www/html
+    - ./.uploads:/var/www/html/wp-content/uploads
     - .:/var/www/html/wp-content/mu-plugins/bootstrap-hooks
     - ./test/wp-content/themes/bootstrap-hooks:/var/www/html/wp-content/themes/bootstrap-hooks
     working_dir: /var/www/html
