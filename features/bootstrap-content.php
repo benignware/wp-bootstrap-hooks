@@ -358,4 +358,37 @@ add_filter('edit_post_link', function($link = '', $post_id = null, $text = '') {
  	return $link;
 }, 3, 10);
 
+// TODO: Get rid of it in favor of hook
+function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null, $id = null, $class = "") {
+  // Extract options
+  $options = wp_bootstrap_options();
+   $edit_post_link_class = $options['edit_post_link_class'];
+  $edit_post_link_container_class = $options['edit_post_link_container_class'];
+   // Capture edit post link html
+  ob_start();
+  edit_post_link($link, $before, $after, $id, $class);
+  $html = ob_get_contents();
+  ob_end_clean();
+   // Parse DOM
+  $doc = new DOMDocument();
+  @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html );
+   $doc_xpath = new DOMXpath($doc);
+   // Container Element
+  $container_element = $doc_xpath->query('body/*[1]')->item(0);
+   if ($container_element) {
+    $container_element_class = $container_element->getAttribute('class');
+    $container_element_class.= " $edit_post_link_container_class";
+    $container_element->setAttribute('class', trim($container_element_class));
+  }
+   // Links
+  $link_elements = $doc->getElementsByTagName( 'a' );
+  foreach ($link_elements as $link_element) {
+    $link_element_class = $link_element->getAttribute('class');
+    $link_element_class.= " $edit_post_link_class";
+    $link_element->setAttribute('class', trim($link_element_class));
+  }
+   echo preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+   return;
+}
+
 ?>
