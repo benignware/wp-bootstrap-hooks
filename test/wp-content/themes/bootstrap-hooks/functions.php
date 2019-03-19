@@ -606,3 +606,57 @@ wp_enqueue_script( 'popper' );
 if (function_exists( 'wp_bootstrap_hooks' )) {
 	wp_bootstrap_hooks();
 }
+
+
+add_filter( 'dynamic_sidebar_params', function( $sidebar_params ) {
+    if ( is_admin() ) {
+        return $sidebar_params;
+    }
+
+    global $wp_registered_widgets;
+    $widget_id = $sidebar_params[0]['widget_id'];
+
+    $wp_registered_widgets[ $widget_id ]['original_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
+    $wp_registered_widgets[ $widget_id ]['callback'] = 'dfl_intranet_custom_widget_callback_function';
+
+    return $sidebar_params;
+}, 2);
+
+function dfl_intranet_custom_widget_callback_function() {
+
+    global $wp_registered_widgets;
+    $original_callback_params = func_get_args();
+    $widget_id = $original_callback_params[0]['widget_id'];
+
+    $original_callback = $wp_registered_widgets[ $widget_id ]['original_callback'];
+		// $wp_registered_widgets[ $widget_id ]['original_callback'] = null;
+    $wp_registered_widgets[ $widget_id ]['callback'] = $original_callback;
+
+    $widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
+
+		// echo "CUSTOM CALL";
+
+    if ( is_callable( $original_callback ) ) {
+				// echo "CUSTOM CALL ORIGINAL CALLBACK" . $original_callback;
+        ob_start();
+        call_user_func_array( $original_callback, $original_callback_params );
+        $widget_output = ob_get_contents();
+				ob_end_clean();
+        echo apply_filters( 'my_widget_output', $widget_output, $widget_id_base, $widget_id );
+    }
+}
+
+add_filter( 'my_widget_output', function( $widget_output, $widget_id_base, $widget_id ) {
+  // To target a specific widget ID:
+  if ( 'target_widget_id' == $widget_id ) {
+      // Apply your desired search and replace operations here
+  }
+
+  // To target all widgets of a particular type:
+  if ( 'archives' == $widget_id_base ) {
+    // Apply your desired search and replace operations here
+		return 'ARCHIVES WIDGET';
+  }
+
+  return $widget_output;
+}, 99, 3 );

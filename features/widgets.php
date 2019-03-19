@@ -59,7 +59,7 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
     $sidebar_params[$index] = $widget_params;
   }
 
-  $wp_registered_widgets[ $widget_id ]['original_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
+  $wp_registered_widgets[ $widget_id ]['bootstrap_hooks_original_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
   $wp_registered_widgets[ $widget_id ]['callback'] = 'wp_bootstrap_widget_callback_function';
   return $sidebar_params;
 }
@@ -71,7 +71,7 @@ function wp_bootstrap_widget_callback_function() {
   $original_callback_params = func_get_args();
   $widget_id = $original_callback_params[0]['widget_id'];
 
-  $original_callback = $wp_registered_widgets[ $widget_id ]['original_callback'];
+  $original_callback = $wp_registered_widgets[ $widget_id ]['bootstrap_hooks_original_callback'];
   $wp_registered_widgets[ $widget_id ]['callback'] = $original_callback;
 
   $widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
@@ -79,8 +79,9 @@ function wp_bootstrap_widget_callback_function() {
   if ( is_callable( $original_callback ) ) {
     ob_start();
     call_user_func_array( $original_callback, $original_callback_params );
-    $widget_output = ob_get_clean();
-    echo apply_filters( 'widget_output', $widget_output, $widget_id_base, $widget_id );
+    $widget_output = ob_get_contents();
+    ob_end_clean();
+    echo apply_filters( 'bootstrap_widget_output', $widget_output, $widget_id_base, $widget_id );
   }
 }
 
@@ -274,7 +275,7 @@ function wp_bootstrap_widget_output( $widget_output, $widget_id_base, $widget_id
   }
   return $widget_output;
 }
-add_filter( 'widget_output', 'wp_bootstrap_widget_output', 10, 3 );
+add_filter( 'bootstrap_widget_output', 'wp_bootstrap_widget_output', 10, 3 );
 
 
 /**
