@@ -629,12 +629,7 @@ function dfl_intranet_custom_widget_callback_function() {
     $widget_id = $original_callback_params[0]['widget_id'];
 
     $original_callback = $wp_registered_widgets[ $widget_id ]['original_callback'];
-		// $wp_registered_widgets[ $widget_id ]['original_callback'] = null;
     $wp_registered_widgets[ $widget_id ]['callback'] = $original_callback;
-
-    $widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
-
-		// echo "CUSTOM CALL";
 
     if ( is_callable( $original_callback ) ) {
 				// echo "CUSTOM CALL ORIGINAL CALLBACK" . $original_callback;
@@ -642,6 +637,8 @@ function dfl_intranet_custom_widget_callback_function() {
         call_user_func_array( $original_callback, $original_callback_params );
         $widget_output = ob_get_contents();
 				ob_end_clean();
+
+				$widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
         echo apply_filters( 'my_widget_output', $widget_output, $widget_id_base, $widget_id );
     }
 }
