@@ -74,13 +74,14 @@ function wp_bootstrap_widget_callback_function() {
   $original_callback = $wp_registered_widgets[ $widget_id ]['bootstrap_hooks_original_callback'];
   $wp_registered_widgets[ $widget_id ]['callback'] = $original_callback;
 
-  $widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
-
   if ( is_callable( $original_callback ) ) {
     ob_start();
     call_user_func_array( $original_callback, $original_callback_params );
     $widget_output = ob_get_contents();
     ob_end_clean();
+
+    $widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
+
     echo apply_filters( 'bootstrap_widget_output', $widget_output, $widget_id_base, $widget_id );
   }
 }
