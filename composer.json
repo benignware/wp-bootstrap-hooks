@@ -13,7 +13,9 @@
     }
   ],
   "keywords": [
-    "wordpress", "wordpress-muplugin"
+    "wordpress",
+    "wordpress-muplugin",
+    "bootstrap"
   ],
   "support": {
     "issues": "https://github.com/benignware/wp-bootstrap-hooks/issues"
