@@ -48,8 +48,8 @@ function wp_bootstrap_options() {
     'reply_link_class' => 'btn btn-primary btn-xs',
     'comment_label' => 'Comment',
     // Content
-    'align_left_class' => 'pull-left',
-    'align_right_class' => 'pull-right',
+    'align_left_class' => 'float-left',
+    'align_right_class' => 'float-right',
     'align_center_class' => 'mx-auto',
     'img_class' => 'img-fluid',
     'img_caption_tag' => 'figure',
