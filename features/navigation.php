@@ -175,7 +175,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
         $atts['class'].= ' dropdown-toggle';
       }
 
-      $atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args );
+      $atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
 
       $attributes = '';
       foreach ( $atts as $attr => $value ) {
