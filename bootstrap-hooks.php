@@ -24,6 +24,7 @@ function wp_bootstrap_hooks() {
       'navigation',
       'pagination',
       'widgets',
+      'header',
       'integration/wordpress-seo'
     );
   }

@@ -597,6 +597,23 @@ Inject custom options.
 ## Development
 
 Download [Docker CE](https://www.docker.com/get-docker) for your OS.
+Download [NodeJS](https://nodejs.org) for your OS.
+
+### Install
+
+#### Install wordpress
+
+```cli
+docker-compose run --rm wp install-wp
+```
+
+After installation you can log in with user `wordpress` and password `wordpress`.
+
+#### Install front-end dependencies
+
+```cli
+npm i
+```
 
 ### Development Server
 
@@ -606,49 +623,33 @@ Point terminal to your project root and start up the container.
 docker-compose up -d
 ```
 
-Open your browser at [http://localhost:3010](http://localhost:3010).
+Point your browser to [http://localhost:8030](http://localhost:8030).
 
-Go through Wordpress installation and activate the demo theme.
 
-### Useful commands
-
-#### Startup services
+#### Watch front-end dependencies
 
 ```cli
-docker-compose up -d
-```
-You may omit the `-d`-flag for verbose output.
-
-#### Shutdown services
-
-In order to shutdown services, issue the following command
-
-```cli
-docker-compose down
+npm run watch
 ```
 
-#### List containers
+### Docker
 
-```cli
-docker-compose ps
-```
-
-#### Remove containers
-
-```cli
-docker-compose rm
-```
-
-#### Open bash
-
-Open bash at wordpress directory
-
-```cli
-docker-compose exec wordpress bash
-```
-
-#### Update composer dependencies
+##### Update composer dependencies
 
 ```cli
 docker-compose run composer update
+```
+
+##### Globally stop all running docker containers
+
+```cli
+docker stop $(docker ps -a -q)
+```
+
+## Production
+
+Create a build for production
+
+```cli
+npm run build
 ```

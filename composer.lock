@@ -232,15 +232,15 @@
         },
         {
             "name": "wpackagist-plugin/wordpress-seo",
-            "version": "11.1.1",
+            "version": "11.2",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wordpress-seo/",
-                "reference": "tags/11.1.1"
+                "reference": "tags/11.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.11.1.1.zip",
+                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.11.2.zip",
                 "reference": null,
                 "shasum": null
             },
@@ -259,7 +259,7 @@
                 "reference": "master"
             },
             "type": "library",
-            "time": "2018-10-21T05:52:56+00:00"
+            "time": "2019-05-12T05:00:52+00:00"
         }
     ],
     "aliases": [],

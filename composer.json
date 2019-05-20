@@ -20,9 +20,6 @@
   "support": {
     "issues": "https://github.com/benignware/wp-bootstrap-hooks/issues"
   },
-  "config": {
-    "vendor-dir": "vendor/lib"
-  },
   "repositories": [{
     "type": "composer",
     "url": "https://wpackagist.org"

@@ -1,6 +1,8 @@
 #!/usr/bin/env sh
 
-# docker-compose run --rm wp install-wp
+# docker-compose run --rm wp-cli install-wp
+
+# command: sh -c "sleep 20 && wp core install --path=/var/www/html --url=localhost --title=test --admin_user=test --admin_password=test --admin_email=test@example.com"
 
 # Install WordPress.
 wp core install \
@@ -14,6 +16,9 @@ wp core install \
 # Update permalink structure.
 wp option update permalink_structure "/%year%/%monthnum%/%postname%/" --skip-themes --skip-plugins
 
-# Activate plugins
+# Activate plugin.
 wp plugin activate wordpress-importer
-wp plugin activate wordpress-seo
+wp plugin activate bootstrap-hooks
+
+# Import demo content
+# wp import vendor/wptrt/theme-unit-test --authors=skip
