@@ -149,6 +149,8 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 
       if ($depth === 0) {
         $output .= $indent . '<li' . $id . $value . $class_names .'>';
+      } else {
+        $output .= $indent . "<$sub_menu_item_tag class=\"$sub_menu_item_class\" data-depth=\"$depth\">";
       }
 
       $atts = array();
@@ -185,21 +187,13 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
         }
       }
 
-      $item_output = $args->before;
+      $item_output = '';
 
-      if ($depth > 0 && $sub_menu_item_tag) {
-        $item_output.= "<$sub_menu_item_tag class=\"$sub_menu_item_class\">";
-      }
-
+      $item_output .= $args->before;
       $item_output .= '<a'. $attributes .'>';
-
       $item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID ) . $args->link_after;
       $item_output .= ( $caret && $args->has_children && 0 === $depth ) ? '&nbsp;' . $caret . '</a>' : '</a>';
       $item_output .= $args->after;
-
-      if ($depth > 0 && $sub_menu_item_tag) {
-        $item_output.= "</$sub_menu_item_tag>";
-      }
 
       $output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
     }
