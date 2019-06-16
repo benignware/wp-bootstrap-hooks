@@ -11,9 +11,13 @@ const { InnerBlocks } = wp.editor;
 export default function save( { attributes } ) {
 	const { columns, verticalAlignment } = attributes;
 
-	const wrapperClasses = classnames( `has-${ columns }-columns`, {
-		[ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
-	} );
+	const wrapperClasses = classnames(
+		'row',
+		`has-${ columns }-columns`,
+		{
+			[ `are-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+		}
+	);
 
 	return (
 		<div className={ wrapperClasses }>
