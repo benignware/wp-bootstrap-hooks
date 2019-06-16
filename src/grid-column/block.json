@@ -1,0 +1,23 @@
+{
+	"name": "bootstrap-hooks/grid-column",
+	"category": "bootstrap",
+	"attributes": {
+		"verticalAlignment": {
+			"type": "string"
+		},
+		"width": {
+			"type": "number",
+			"min": 0,
+			"max": 100
+		},
+		"size": {
+			"type": "object",
+			"default": {
+				"sm": 12,
+				"md": 12,
+				"lg": 6,
+				"xl": 6
+			}
+		}
+	}
+}

@@ -1,0 +1,11 @@
+.wp-block-bootstrap-hooks-card {
+	.editor-block-list__block {
+		.edit-post-visual-editor & {
+			color: inherit;
+		}
+
+		.editor-rich-text__editable {
+			color: inherit;
+		}
+	}
+}

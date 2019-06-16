@@ -1,0 +1,38 @@
+{
+	"name": "bootstrap-hooks/button",
+	"category": "bootstrap",
+	"attributes": {
+		"url": {
+			"type": "string",
+			"source": "attribute",
+			"selector": "a",
+			"attribute": "href"
+		},
+		"title": {
+			"type": "string",
+			"source": "attribute",
+			"selector": "a",
+			"attribute": "title"
+		},
+		"text": {
+			"type": "string",
+			"source": "html",
+			"selector": "a"
+		},
+		"backgroundColor": {
+			"type": "string"
+		},
+		"textColor": {
+			"type": "string"
+		},
+		"customBackgroundColor": {
+			"type": "string"
+		},
+		"customTextColor": {
+			"type": "string"
+		},
+		"outline": {
+			"type": "boolean"
+		}
+	}
+}

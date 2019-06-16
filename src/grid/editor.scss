@@ -1,0 +1,6 @@
+.wp-block-bootstrap-hooks-grid {
+	*[class*="col-"] > .editor-block-list__block-edit {
+		margin-right: 0;
+		margin-left: 0;
+	}
+}

@@ -1,14 +1,5 @@
 <?php
 
-/**
- Plugin Name: Bootstrap Hooks
- Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
- Description: A collection of action and filters for bootstrap based themes
- Version: 0.1.0-beta.20
- Author: Rafael Nowrotek, Benignware
- Author URI: http://benignware.com
- License: MIT
-*/
 
 require_once 'lib/helpers.php';
 
@@ -25,6 +16,7 @@ function wp_bootstrap_hooks() {
       'pagination',
       'widgets',
       'header',
+      'editor',
       'integration/wordpress-seo'
     );
   }
@@ -36,6 +28,9 @@ function wp_bootstrap_hooks() {
 
 function wp_bootstrap_options() {
   $defaults = array(
+    // Button class
+    'button_base_class' => 'btn',
+    'button_modifier_outline' => 'outline',
     // Forms
     'search_form_class' => '',
     'search_submit_label' => '<i>🔎</i>',
@@ -129,10 +124,20 @@ function wp_bootstrap_options() {
     $result[$key] = $value;
   }
 
+  // wp_enqueue_style('bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css');
+
   return $result;
 }
 
 // If file resides in template directory, require all immediately
 if (preg_match("~^" . preg_quote(get_template_directory(), "~") . "~", __FILE__)) {
   wp_bootstrap_hooks();
+}
+
+
+// Blocks
+
+// Exit if accessed directly.
+if ( ! defined( 'ABSPATH' ) ) {
+	// exit;
 }

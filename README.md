@@ -646,6 +646,26 @@ docker-compose run composer update
 docker stop $(docker ps -a -q)
 ```
 
+##### Update Wordpress
+
+Due to some permission issues, you need to chmod your container's web-root prior to running the updater:
+
+```cli
+docker-compose exec wordpress bash
+```
+
+From the container shell, change permissons all down the tree.
+```cli
+chmod -R 777 .
+```
+
+After `CTRL+D`, you're ready to update Wordpress, either from the admin-interface or using wp-cli:
+
+```
+docker-compose run wp core update
+```
+
+
 ## Production
 
 Create a build for production

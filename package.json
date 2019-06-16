@@ -1,0 +1,26 @@
+{
+  "name": "wp-bootstrap-hooks",
+  "version": "0.1.0-alpha.1",
+  "private": true,
+  "scripts": {
+    "start": "cgb-scripts start",
+    "build": "cgb-scripts build",
+    "eject": "cgb-scripts eject",
+    "bootstrap": "node-sass src/bootstrap-editor.scss dist/bootstrap-editor.css --output-style expanded --include-path node_modules/bootstrap/scss && postcss -r dist/bootstrap-editor.css"
+  },
+  "dependencies": {
+    "bootstrap": "^4.3.1",
+    "classnames": "^2.2.6",
+    "humanize-string": "^2.1.0",
+    "humps": "^2.0.1",
+    "lodash": "^4.17.11",
+    "memize": "^1.0.5"
+  },
+  "devDependencies": {
+    "autoprefixer": "^9.6.0",
+    "cgb-scripts": "1.18.1",
+    "node-sass": "^4.12.0",
+    "postcss": "^7.0.17",
+    "postcss-cli": "^6.1.2"
+  }
+}

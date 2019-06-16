@@ -1,0 +1,13 @@
+{
+	"name": "bootstrap-hooks/grid",
+	"category": "bootstrap",
+	"attributes": {
+		"columns": {
+			"type": "number",
+			"default": 2
+		},
+		"verticalAlignment": {
+			"type": "string"
+		}
+	}
+}
