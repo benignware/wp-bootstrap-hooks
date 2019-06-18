@@ -170,11 +170,14 @@ class MediaTextEdit extends Component {
 			mediaSizes,
 			mediaSize,
 			imageFill,
-			focalPoint
+			focalPoint,
+			parent
 		} = attributes;
 
+		console.log('parent', parent);
+
 		const temporaryMediaWidth = this.state.mediaWidth;
-		const classes = classnames(
+		const classes = !parent ? classnames(
 			className,
 			'card',
 			{
@@ -187,7 +190,9 @@ class MediaTextEdit extends Component {
 				// [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
 				// 'is-image-fill': imageFill,
 			}
-		);
+		) : className;
+
+
 		const widthString = `${ temporaryMediaWidth || mediaWidth }%`;
 		const style = {
 			gridTemplateColumns: 'right' === mediaPosition ? `auto ${ widthString }` : `${ widthString } auto`,
@@ -295,7 +300,7 @@ class MediaTextEdit extends Component {
 						value={ verticalAlignment }
 					/>*/}
 				</BlockControls>
-				<div className={ classes } style={ style } >
+				<div className={ classes } >
 					{ this.renderMediaArea() }
 					<div className="card-body">
 						<InnerBlocks

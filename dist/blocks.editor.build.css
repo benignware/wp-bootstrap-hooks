@@ -4,6 +4,15 @@
  * Can include things like variables and mixins
  * that are used across the project.
 */
+.wp-block-bootstrap-hooks-card-deck .card > .editor-block-list__block-edit {
+  margin-right: -32px;
+  margin-left: -32px; }
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
 .edit-post-visual-editor .wp-block-bootstrap-hooks-card .editor-block-list__block {
   color: inherit; }
 

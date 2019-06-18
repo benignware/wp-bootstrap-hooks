@@ -1,0 +1,13 @@
+{
+	"name": "bootstrap-hooks/card-deck",
+	"category": "bootstrap",
+	"attributes": {
+		"columns": {
+			"type": "number",
+			"default": 2
+		},
+		"verticalAlignment": {
+			"type": "string"
+		}
+	}
+}

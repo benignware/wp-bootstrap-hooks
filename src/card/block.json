@@ -2,6 +2,9 @@
 	"name": "bootstrap-hooks/card",
 	"category": "bootstrap",
 	"attributes": {
+		"parent": {
+			"type": "number"
+		},
 		"align": {
 			"type": "string",
 			"default": "wide"

@@ -1,3 +1,5 @@
+import classnames from 'classnames';
+
 /**
  * WordPress dependencies
  */
@@ -21,6 +23,7 @@ export { metadata, name };
 export const settings = {
 	title: __( 'Card' ),
 	description: __( 'Set media and words side-by-side for a richer layout.' ),
+	parent: 'bootstrap-hooks/card-deck',
 	icon,
 	keywords: [ __( 'image' ), __( 'video' ) ],
 	supports: {
@@ -31,6 +34,44 @@ export const settings = {
 	edit,
 	save,
 	// deprecated,
+	getEditWrapperProps( attributes ) {
+		const { backgroundColor, textColor, parent } = attributes;
+
+		console.log('edit wrapper attributes', attributes, parent);
+
+		if (!parent) {
+			return null;
+		}
+
+		const classes = classnames(
+			// className,
+			'card',
+			{
+				[ backgroundColor && `bg-${backgroundColor}` ]: backgroundColor,
+				[ textColor && `text-${textColor}` ]: textColor,
+				// 'has-media-on-the-right': 'right' === mediaPosition,
+				// 'is-selected': isSelected,
+				// [ backgroundColor.class ]: backgroundColor.class,
+				// 'is-stacked-on-mobile': isStackedOnMobile,
+				// [ `is-vertically-aligned-${ verticalAlignment }` ]: verticalAlignment,
+				// 'is-image-fill': imageFill,
+			}
+		);
+
+		return {
+			className: classes,
+		};
+		/*
+		const { width } = attributes;
+		if ( Number.isFinite( width ) ) {
+			return {
+				style: {
+					flexBasis: width + '%',
+				},
+			};
+		}
+		*/
+	},
 };
 
 registerBlockType(name, {

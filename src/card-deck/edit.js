@@ -42,18 +42,18 @@ import {
  * Allowed blocks constant is passed to InnerBlocks precisely as specified here.
  * The contents of the array should never change.
  * The array should contain the name of each block that is allowed.
- * In columns block, the only block we allow is 'bootstrap-hooks/grid-column'.
+ * In columns block, the only block we allow is 'bootstrap-hooks/card'.
  *
  * @constant
  * @type {string[]}
 */
-const ALLOWED_BLOCKS = [ 'bootstrap-hooks/grid-column' ];
+const ALLOWED_BLOCKS = [ 'bootstrap-hooks/card' ];
 
 class ColumnsEdit extends Component {
 
 	static defaultProps = {
 		blockListSelector: '.editor-block-list__layout',
-		containerClass: 'row'
+		containerClass: 'card-deck'
 	}
 
 	constructor() {
@@ -83,6 +83,7 @@ class ColumnsEdit extends Component {
 
 	render() {
 		const {
+			clientId,
 			attributes,
 			className,
 			updateAlignment,
@@ -119,7 +120,7 @@ class ColumnsEdit extends Component {
 				*/}
 				<div className={ classes } ref={this.ref}>
 					<InnerBlocks
-						template={ getColumnsTemplate( columns ) }
+						template={ getColumnsTemplate( columns, clientId ) }
 						templateLock="all"
 						allowedBlocks={ ALLOWED_BLOCKS } />
 				</div>
@@ -187,8 +188,9 @@ export default withDispatch( ( dispatch, ownProps, registry ) => ( {
 
 			innerBlocks = [
 				...getMappedColumnWidths( innerBlocks, widths ),
-				createBlock( 'bootstrap-hooks/grid-column', {
+				createBlock( 'bootstrap-hooks/card', {
 					width: newColumnWidth,
+					parent: clientId
 				} ),
 			];
 		} else {
