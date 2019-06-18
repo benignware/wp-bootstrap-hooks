@@ -129,7 +129,7 @@ class MediaTextEdit extends Component {
 
 		let src = mediaUrl;
 
-		if (mediaType === 'image' && mediaSize && mediaSizes) {
+		if (mediaType === 'image' && mediaSize && mediaSizes && mediaSizes[mediaSize]) {
 			src = mediaSizes[mediaSize].url || mediaUrl;
 		}
 

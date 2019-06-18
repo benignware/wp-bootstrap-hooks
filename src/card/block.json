@@ -57,7 +57,7 @@
 		},
 		"mediaSize": {
 			"type": "string",
-			"default": "large"
+			"default": "thumbnail"
 		},
 		"mediaSizes": {
 			"type": "object",
