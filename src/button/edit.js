@@ -4,6 +4,7 @@
 import classnames from 'classnames';
 import { camelizeKeys } from 'humps';
 
+
 const options = camelizeKeys(JSON.parse(BootstrapHooks.data));
 
 /**
@@ -90,6 +91,7 @@ class ButtonEdit extends Component {
 								'has-background': backgroundColor.color,
 								// [ backgroundColor.class ]: backgroundColor.class,
 								[ `btn${outline ? '-outline' : ''}-${backgroundColor && backgroundColor.slug}` ]: backgroundColor,
+								[ `text-${textColor && textColor.slug}` ]: textColor,
 								// 'has-text-color': textColor.color,
 								// [ textColor.class ]: textColor.class,
 							}
@@ -109,11 +111,11 @@ class ButtonEdit extends Component {
 									onChange: setBackgroundColor,
 									label: __( 'Background Color' ),
 								},
-								/*{
+								{
 									value: textColor.color,
 									onChange: setTextColor,
 									label: __( 'Text Color' ),
-								},*/
+								},
 							] }
 						>
 							{/*

@@ -26,14 +26,16 @@ export default function save( { attributes } ) {
 	const textClass = getColorClassName( 'color', textColor );
 	const backgroundClass = getColorClassName( 'background-color', backgroundColor );
 
-	const buttonClasses = classnames( 'btn', {
-		'has-text-color': textColor || customTextColor,
-		[ textClass ]: textClass,
-		'has-background': backgroundColor || customBackgroundColor,
-		// [ backgroundClass ]: backgroundClass,
-		//[ `btn-${backgroundColor && backgroundColor.slug}` ]: backgroundColor,
-		[ `btn${outline ? '-outline' : ''}-${backgroundColor && backgroundColor.slug}` ]: backgroundColor,
-	} );
+	const buttonClasses = classnames(
+		'btn', {
+			'has-background': backgroundColor.color,
+			// [ backgroundColor.class ]: backgroundColor.class,
+			[ `btn${outline ? '-outline' : ''}-${backgroundColor}` ]: backgroundColor,
+			[ `text-${textColor}` ]: textColor,
+			// 'has-text-color': textColor.color,
+			// [ textColor.class ]: textColor.class,
+		}
+	);
 
 	const buttonStyle = {
 		backgroundColor: backgroundClass ? undefined : customBackgroundColor,

@@ -64,14 +64,15 @@ class MediaContainer extends Component {
 						/>
 					</Toolbar>
 				</BlockControls>
+
 			</Fragment>
 		);
 	}
 
 	renderImage() {
-		const { mediaAlt, mediaUrl, className, imageFill, focalPoint } = this.props;
+		const { mediaAlt, mediaUrl, mediaId, className, imageFill, focalPoint } = this.props;
 		const backgroundStyles = imageFill ? imageFillStyles( mediaUrl, focalPoint ) : {};
-		const classes = classnames('card-img-top', className);
+		const classes = classnames('img-fluid', className);
 
 		return (
 			<Fragment>
@@ -79,7 +80,8 @@ class MediaContainer extends Component {
 				<img
 					src={ mediaUrl }
 					alt={ mediaAlt }
-					className="card-img-top"
+					className={ `wp-image-${ mediaId } img-fluid w-100` }
+					style={{ objectFit: 'cover' }}
 				/>
 			</Fragment>
 		);
@@ -87,7 +89,7 @@ class MediaContainer extends Component {
 
 	renderVideo() {
 		const { mediaUrl, className } = this.props;
-		const classes = classnames('card-img-top', className);
+		const classes = classnames('img-fluid w-100 h-100', className);
 
 		return (
 			<Fragment>
@@ -100,7 +102,7 @@ class MediaContainer extends Component {
 	renderPlaceholder() {
 		const { onSelectMedia, className } = this.props;
 		const classes = classnames(
-			'card-img-top',
+			'img-fluid',
 			className
 		);
 
@@ -145,22 +147,27 @@ class MediaContainer extends Component {
 			return mediaElement;
 
 			return (
-				<ResizableBox
-					className="editor-media-container__resizer"
-					size={ { width: mediaWidth + '%' } }
-					minWidth="10%"
-					maxWidth="100%"
-					enable={ enablePositions }
-					onResize={ onResize }
-					onResizeStop={ onResizeStop }
-					axis="x"
-				>
-					{ mediaElement }
-				</ResizableBox>
+				<Fragment>
+
+					<ResizableBox
+						className="editor-media-container__resizer"
+						size={ { width: mediaWidth + '%' } }
+						minWidth="10%"
+						maxWidth="100%"
+						enable={ enablePositions }
+						onResize={ onResize }
+						onResizeStop={ onResizeStop }
+						axis="x"
+					>
+						{ mediaElement }
+					</ResizableBox>
+				</Fragment>
 			);
 		}
 
-		return this.renderPlaceholder();
+		// return this.renderPlaceholder();
+
+		return <div></div>;
 	}
 }
 

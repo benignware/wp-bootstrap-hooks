@@ -20,7 +20,7 @@ body,
 .icon {
   height: 1.1em;
   width: 1.1em;
-  vertical-align: middle;
+  vertical-align: text-top;
   display: inline-block;
   fill: currentcolor;
 }

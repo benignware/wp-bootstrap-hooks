@@ -20,7 +20,8 @@
 			"selector": "a"
 		},
 		"backgroundColor": {
-			"type": "string"
+			"type": "string",
+			"default": "primary"
 		},
 		"textColor": {
 			"type": "string"

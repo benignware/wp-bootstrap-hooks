@@ -10,7 +10,8 @@ function wp_bootstrap_hooks() {
     $args = array(
       'comments',
       'content',
-      'forms',
+      // 'searchform',
+      // 'loginform',
       'gallery',
       'navigation',
       'pagination',

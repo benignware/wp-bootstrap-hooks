@@ -1,9 +1,4 @@
 /**
- * WordPress dependencies
- */
-const { __, _x } = wp.i18n;
-const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
-/**
  * Internal dependencies
  */
 import deprecated from './deprecated';
@@ -11,6 +6,18 @@ import edit from './edit';
 import icon from './icon';
 import metadata from './block.json';
 import save from './save';
+
+
+import './editor.scss';
+import './style.scss';
+
+/**
+ * WordPress dependencies
+ */
+const { __, _x } = wp.i18n;
+const { registerBlockType } = wp.blocks; // Import registerBlockType() from wp.blocks
+
+
 
 const { name } = metadata;
 

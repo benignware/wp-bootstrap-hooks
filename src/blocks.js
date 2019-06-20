@@ -14,3 +14,4 @@ import './card-deck/index';
 import './card/index';
 import './grid/index';
 import './grid-column/index';
+import './jumbotron/index';

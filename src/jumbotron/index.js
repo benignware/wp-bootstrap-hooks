@@ -1,5 +1,7 @@
 import classnames from 'classnames';
 
+import './style.scss';
+
 /**
  * WordPress dependencies
  */
@@ -21,9 +23,8 @@ const { name } = metadata;
 export { metadata, name };
 
 export const settings = {
-	title: __( 'Card' ),
-	description: __( 'Flexible and extensible content container with multiple variants and options.' ),
-	parent: 'bootstrap-hooks/card-deck',
+	title: __( 'Jumbotron' ),
+	description: __( 'Lightweight, flexible component for showcasing hero unit style content.' ),
 	icon,
 	keywords: [ __( 'image' ), __( 'video' ) ],
 	supports: {
@@ -45,7 +46,7 @@ export const settings = {
 
 		const classes = classnames(
 			// className,
-			'card',
+			'jumbotron',
 			{
 				[ backgroundColor && `bg-${backgroundColor}` ]: backgroundColor,
 				[ textColor && `text-${textColor}` ]: textColor,

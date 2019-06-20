@@ -4,6 +4,16 @@
  * Can include things like variables and mixins
  * that are used across the project.
 */
+.wp-block-bootstrap-hooks-button .components-autocomplete {
+  display: -ms-inline-flexbox;
+  display: inline-flex;
+  position: relative; }
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
 .wp-block-bootstrap-hooks-card-deck .card > .editor-block-list__block-edit {
   margin-right: -32px;
   margin-left: -32px; }
@@ -27,3 +37,14 @@
 .wp-block-bootstrap-hooks-grid *[class*="col-"] > .editor-block-list__block-edit {
   margin-right: 0;
   margin-left: 0; }
+/**
+ * #.# Common SCSS
+ *
+ * Can include things like variables and mixins
+ * that are used across the project.
+*/
+.edit-post-visual-editor .wp-block-bootstrap-hooks-jumbotron .editor-block-list__block {
+  color: inherit; }
+
+.wp-block-bootstrap-hooks-jumbotron .editor-block-list__block .editor-rich-text__editable {
+  color: inherit; }
