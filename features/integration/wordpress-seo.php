@@ -12,6 +12,7 @@ add_filter('wpseo_breadcrumb_output', function($output) {
 	$doc_xpath = new DOMXpath($doc);
 
 	$items = $doc_xpath->query('.//a');
+	$level = $items->length;
 
 	$last_item = $items->item($items->length - 1);
 
@@ -42,9 +43,16 @@ add_filter('wpseo_breadcrumb_output', function($output) {
 	$child = $items[0] ?: $current;
 	$parent_node =$child->parentNode->parentNode;
 
-	foreach ($items as $item) {
+	$breadcrumb_divider = WPSEO_Options::get( 'breadcrumbs-sep' );
+
+	foreach ($items as $index => $item) {
 		$li = $doc->createElement('li');
 		$li->setAttribute('class', $breadcrumb_item_class);
+
+		if ($index > 0) {
+			$li->setAttribute('data-breadcrumb-divider', $breadcrumb_divider);
+		}
+
 		$li->appendChild($item);
 		$fragment->appendChild($li);
 	}
@@ -52,6 +60,11 @@ add_filter('wpseo_breadcrumb_output', function($output) {
 	if ($current) {
 		$li = $doc->createElement('li');
 		$li->setAttribute('class', $breadcrumb_item_class . ' ' . $breadcrumb_item_active_class);
+
+		if ($level > 0) {
+			$li->setAttribute('data-breadcrumb-divider', $breadcrumb_divider);
+		}
+
 		$li->appendChild($current);
 		$fragment->appendChild($li);
 	}
@@ -81,6 +94,17 @@ add_filter('wpseo_breadcrumb_output', function($output) {
 
 
 add_filter('wpseo_breadcrumb_separator', function($separator = '') {
-	return '';
+	$options = wp_bootstrap_options();
+
+	return $separator ?: $options['breadcrumb-divider'];
 });
+
+add_action('wp_enqueue_scripts', function() {
+	wp_register_style( 'dummy-handle', false );
+	wp_enqueue_style( 'dummy-handle' );
+
+	wp_add_inline_style( 'dummy-handle', '.breadcrumb-item[data-breadcrumb-divider]:before { color: blue !important; content: attr(data-breadcrumb-divider) " "; }' );
+}, 100);
+
+
 ?>

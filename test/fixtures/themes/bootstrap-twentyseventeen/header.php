@@ -58,4 +58,9 @@
 	?>
 
 	<div class="site-content-contain">
+		<?php if ( function_exists('yoast_breadcrumb') ): ?>
+			<div class="container">
+				<?php yoast_breadcrumb( '<p id="breadcrumbs">','</p>' ); ?>
+			</div>
+		<?php endif; ?>
 		<div id="content" class="site-content">
