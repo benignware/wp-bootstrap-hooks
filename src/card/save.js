@@ -28,6 +28,7 @@ class ColumnSave extends Component {
 		const {
 			backgroundColor,
 			textColor,
+			overlayTextColor,
 			customBackgroundColor,
 			isStackedOnMobile,
 			mediaAlt,
@@ -40,18 +41,23 @@ class ColumnSave extends Component {
 			imageFill,
 			focalPoint,
 			mediaSize,
-			mediaSizes
+			mediaSizes,
+			mediaOverlay
 		} = attributes;
 
 		let src = mediaUrl;
 
-		if (mediaType === 'image' && mediaSize) {
+		if (mediaType === 'image' && mediaSize && mediaSizes[mediaSize]) {
 			src = mediaSizes[mediaSize].url || mediaUrl;
 		}
 
 		const mediaTypeRenders = {
 			image: () => (
-				<img src={ src } alt={ mediaAlt } className={ ( mediaId && mediaType === 'image' ) ? `wp-image-${ mediaId } card-img-top` : null } />
+				<img
+					src={ src }
+					alt={ mediaAlt }
+					className={ ( mediaId && mediaType === 'image' ) ? `wp-image-${ mediaId } ${mediaOverlay ? 'card-img' : 'card-img-top'}` : null }
+				/>
 			),
 			video: () => <video controls src={ mediaUrl } />,
 		};
@@ -62,7 +68,7 @@ class ColumnSave extends Component {
 			'card',
 			{
 				[ `bg-${backgroundColor}` ]: backgroundColor,
-				[ textColor && `text-${textColor}` ]: textColor,
+				[ textColor && `text-${textColor}` ]: textColor
 				// 'has-media-on-the-right': 'right' === mediaPosition,
 				// 'is-selected': isSelected,
 				// [ backgroundColor.class ]: backgroundColor.class,
@@ -71,6 +77,7 @@ class ColumnSave extends Component {
 				// 'is-image-fill': imageFill,
 			}
 		);
+
 		/*
 		const className = classnames( {
 			'has-media-on-the-right': 'right' === mediaPosition,
@@ -90,11 +97,18 @@ class ColumnSave extends Component {
 			backgroundColor: backgroundClass ? undefined : customBackgroundColor,
 			gridTemplateColumns,
 		};
-		//  style={ style }
+
+		const contentClasses = classnames(
+			mediaOverlay ? 'card-img-overlay' : 'card-body',
+			{
+				[ mediaOverlay && overlayTextColor && `text-${overlayTextColor}` ]: mediaOverlay && overlayTextColor
+			}
+		);
+
 		return (
 			<div className={ classes }>
 				{ mediaType && ( mediaTypeRenders[ mediaType ] || noop )() }
-				<div className="card-body">
+				<div className={contentClasses}>
 					<InnerBlocks.Content />
 				</div>
 			</div>

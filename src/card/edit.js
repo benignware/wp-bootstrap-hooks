@@ -8,6 +8,10 @@ import { get } from 'lodash';
 import humanizeString from 'humanize-string';
 import { camelizeKeys } from 'humps';
 
+import icon from './media-container-icon';
+
+const ALLOWED_MEDIA_TYPES = [ 'image', 'video' ];
+
 /**
  * WordPress dependencies
  */
@@ -18,6 +22,8 @@ const {
 	InnerBlocks,
 	InspectorControls,
 	PanelColorSettings,
+	BlockIcon,
+	MediaPlaceholder,
 	withColors,
 } = wp.editor;
 const { Component, Fragment } = wp.element;
@@ -151,10 +157,12 @@ class MediaTextEdit extends Component {
 			className = 'card',
 			backgroundColor,
 			textColor,
+			overlayTextColor,
 			isSelected,
 			setAttributes,
 			setBackgroundColor,
 			setTextColor,
+			setOverlayTextColor,
 			image
 		} = this.props;
 
@@ -171,10 +179,9 @@ class MediaTextEdit extends Component {
 			mediaSize,
 			imageFill,
 			focalPoint,
-			parent
+			parent,
+			mediaOverlay
 		} = attributes;
-
-		console.log('parent', parent);
 
 		const temporaryMediaWidth = this.state.mediaWidth;
 		const classes = !parent ? classnames(
@@ -183,6 +190,7 @@ class MediaTextEdit extends Component {
 			{
 				[ backgroundColor && `bg-${backgroundColor.slug}` ]: backgroundColor,
 				[ textColor && `text-${textColor.slug}` ]: textColor,
+				// [ mediaOverlay && overlayTextColor && `text-${overlayTextColor.slug}` ]: overlayTextColor,
 				// 'has-media-on-the-right': 'right' === mediaPosition,
 				// 'is-selected': isSelected,
 				// [ backgroundColor.class ]: backgroundColor.class,
@@ -202,11 +210,17 @@ class MediaTextEdit extends Component {
 			value: backgroundColor.color,
 			onChange: setBackgroundColor,
 			label: __( 'Background Color' ),
-		}, {
+		},
+		...(mediaOverlay ? [{
+			value: overlayTextColor.color,
+			onChange: setOverlayTextColor,
+			label: __( 'Overlay Text Color' ),
+		}] : [{
 			value: textColor.color,
 			onChange: setTextColor,
 			label: __( 'Text Color' ),
-		} ];
+		}])];
+
 		const toolbarControls = [ {
 			icon: 'align-pull-left',
 			title: __( 'Show media on left' ),
@@ -264,32 +278,57 @@ class MediaTextEdit extends Component {
 			</PanelBody>
 		);
 
+		const contentClasses = classnames(
+			mediaOverlay ? 'card-img-overlay' : 'card-body',
+			{
+				[ mediaOverlay && overlayTextColor && `text-${overlayTextColor.slug}` ]: mediaOverlay && overlayTextColor,
+			}
+		);
+
 		return (
 			<Fragment>
 				<InspectorControls>
-					{ mediaTextGeneralSettings }
-					<PanelColorSettings
-						title={ __( 'Color Settings' ) }
-						initialOpen={ false }
-						colorSettings={ colorSettings }
-					/>
-					<PanelBody title={ __( 'Media Settings' ) }>
-						{image && (
-							<SelectControl
-								label={__( 'Image Size' )}
-								value={ attributes.mediaSize }
-								options={ Object.keys(image.media_details.sizes).map((size) => ({
-									label: __(humanizeString(size)),
-									value: size
-								})) }
-								onChange={ ( value ) => this.props.setAttributes({
-									...attributes,
-									mediaSize: value
-								})}
+						{ mediaTextGeneralSettings }
+						<PanelColorSettings
+							title={ __( 'Color Settings' ) }
+							initialOpen={ false }
+							colorSettings={ colorSettings }
+						/>
+						<PanelBody title={ __( 'Media Settings' ) }>
+							<MediaPlaceholder
+								icon={ <BlockIcon icon={ icon } /> }
+								labels={ {
+									title: __( 'Media area' ),
+								} }
+								onSelect={ this.onSelectMedia }
+								accept="image/*,video/*"
+								allowedTypes={ ALLOWED_MEDIA_TYPES }
 							/>
-						)}
-					</PanelBody>
-				</InspectorControls>
+							{image && (
+								<Fragment>
+									<SelectControl
+										label={__( 'Image Size' )}
+										value={ attributes.mediaSize }
+										options={ Object.keys(image.media_details.sizes).map((size) => ({
+											label: __(humanizeString(size)),
+											value: size
+										})) }
+										onChange={ ( value ) => this.props.setAttributes({
+											...attributes,
+											mediaSize: value
+										})}
+									/>
+									<ToggleControl
+										label={ __( 'Image Overlay' ) }
+										checked={ mediaOverlay }
+										onChange={ (value) => setAttributes({
+											mediaOverlay: value,
+										}) }
+									/>
+								</Fragment>
+							)}
+						</PanelBody>
+					</InspectorControls>
 				<BlockControls>
 					<Toolbar
 						controls={ toolbarControls }
@@ -302,7 +341,7 @@ class MediaTextEdit extends Component {
 				</BlockControls>
 				<div className={ classes } >
 					{ this.renderMediaArea() }
-					<div className="card-body">
+					<div className={contentClasses}>
 						<InnerBlocks
 							// allowedBlocks={ ALLOWED_BLOCKS }
 							template={ TEMPLATE }
@@ -323,4 +362,4 @@ export default withSelect( ( select, ownProps ) => {
 	return {
 		image: mediaId ? getMedia( mediaId ) : null,
 	};
-} )( withColors( 'backgroundColor', 'textColor' )( MediaTextEdit ) );
+} )( withColors( 'backgroundColor', 'textColor', 'overlayTextColor' )( MediaTextEdit ) );

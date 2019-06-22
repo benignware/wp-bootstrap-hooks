@@ -69,9 +69,12 @@ class MediaContainer extends Component {
 	}
 
 	renderImage() {
-		const { mediaAlt, mediaUrl, className, imageFill, focalPoint } = this.props;
+		const { mediaAlt, mediaUrl, className, imageFill, focalPoint, imageOverlay } = this.props;
 		const backgroundStyles = imageFill ? imageFillStyles( mediaUrl, focalPoint ) : {};
-		const classes = classnames('card-img-top', className);
+		const classes = classnames(
+			imageOverlay ? 'card-img' : 'card-img-top',
+			className
+		);
 
 		return (
 			<Fragment>
@@ -160,7 +163,8 @@ class MediaContainer extends Component {
 			);
 		}
 
-		return this.renderPlaceholder();
+		return <div></div>;
+		// return this.renderPlaceholder();
 	}
 }
 

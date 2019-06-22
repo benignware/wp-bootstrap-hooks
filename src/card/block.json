@@ -65,6 +65,13 @@
 		},
 		"focalPoint": {
 			"type": "object"
+		},
+		"mediaOverlay": {
+			"type": "boolean"
+		},
+		"overlayTextColor": {
+			"type": "string",
+			"default": "light"
 		}
 	}
 }

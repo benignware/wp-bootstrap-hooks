@@ -37,8 +37,6 @@ export const settings = {
 	getEditWrapperProps( attributes ) {
 		const { backgroundColor, textColor, parent } = attributes;
 
-		console.log('edit wrapper attributes', attributes, parent);
-
 		if (!parent) {
 			return null;
 		}

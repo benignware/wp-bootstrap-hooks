@@ -23,11 +23,12 @@
  * Can include things like variables and mixins
  * that are used across the project.
 */
-.edit-post-visual-editor .wp-block-bootstrap-hooks-card .editor-block-list__block {
-  color: inherit; }
-
-.wp-block-bootstrap-hooks-card .editor-block-list__block .editor-rich-text__editable {
-  color: inherit; }
+.wp-block-bootstrap-hooks-card {
+  padding: 0; }
+  .edit-post-visual-editor .wp-block-bootstrap-hooks-card .editor-block-list__block {
+    color: inherit; }
+  .wp-block-bootstrap-hooks-card .editor-block-list__block .editor-rich-text__editable {
+    color: inherit; }
 /**
  * #.# Common SCSS
  *
