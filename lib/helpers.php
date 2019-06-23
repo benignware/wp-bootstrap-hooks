@@ -54,8 +54,8 @@ function wp_bootstrap_ratio($a, $b) {
 }
 
 function wp_bootstrap_tag_add_class($tag, $class, $html) {
-  if (preg_match('/(<' . $tag . '.*?)(class *= *"|\')(.*)("|\')(.*>)/', $html)) {
-    $html = preg_replace('/(<' . $tag . '.*?)(class *= *"|\')(.*)("|\')(.*>)/', '$1$2$3 ' . $class . '$4$5', $html);
+  if (preg_match('/(<' . $tag . '[^>]*?)(class\s*=\s*"|\')(.*)("|\')(.*>)/', $html)) {
+    $html = preg_replace('/(<' . $tag . '[^>]*?)(class\s*=\s*"|\')(.*)("|\')([^>]*>)/', '$1$2$3 ' . $class . '$4$5', $html);
   } elseif (preg_match('/(<' . $tag . '.*?)(>)/', $html)) {
     $html = preg_replace('/(<' . $tag . '.*?)(>)/', '$1 class ="' . $class . '">', $html);
   }

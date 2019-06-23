@@ -108,6 +108,8 @@ function wp_bootstrap_options() {
     'paginated_link_class' => 'page-link',
     'next_posts_link_class' => 'btn btn-outline-secondary btn-sm float-right',
     'previous_posts_link_class' => 'btn btn-outline-secondary btn-sm float-left',
+    'next_post_link_class' => 'btn btn-outline-secondary btn-sm',
+    'previous_post_link_class' => 'btn btn-outline-secondary btn-sm',
     // Widgets
     'widget_class' => 'card mb-3',
     'widget_modifier_class' => 'card-widget',

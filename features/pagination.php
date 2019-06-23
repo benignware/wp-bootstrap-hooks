@@ -184,3 +184,18 @@ add_filter('previous_posts_link_attributes', function($attrs = array()) {
 
   return trim($attrs);
 });
+
+
+add_filter( "next_post_link", function($output, $format, $link, $post) {
+  $options = wp_bootstrap_options();
+  $output = wp_bootstrap_tag_add_class('a', $options['next_post_link_class'], $output);
+
+  return $output;
+}, 11, 4);
+
+add_filter( "previous_post_link", function($output, $format, $link, $post) {
+  $options = wp_bootstrap_options();
+  $output = wp_bootstrap_tag_add_class('a', $options['previous_post_link_class'], $output);
+
+  return $output;
+}, 11, 4);
