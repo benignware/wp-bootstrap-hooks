@@ -37,6 +37,36 @@ if (function_exists( 'wp_bootstrap_hooks' )) {
 }
 
 /*
+ * Create wrapper for card img
+ * @example
+ */
+add_filter('bootstrap_card_html', function($html, $attributes) {
+  if ($attributes['media_overlay']) {
+    $card_img_class = 'card-img';
+
+    $doc = new DOMDocument();
+    @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html );
+    $doc_xpath = new DOMXpath($doc);
+
+    $card_img_element = $doc_xpath->query("//img[contains(concat(' ', normalize-space(@class), ' '), '" . $card_img_class . "')]")->item(0);
+
+    if ($card_img_element) {
+      $wrapper = $doc->createElement('div');
+      $wrapper->setAttribute('class', 'gradient-overlay');
+
+      $card_img_element->parentNode->insertBefore($wrapper, $card_img_element);
+      $wrapper->appendChild($card_img_element);
+    }
+
+    $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+
+    return $html;
+  }
+
+  return $html;
+}, 10, 2);
+
+/*
 add_action('after_setup_theme', function() {
   $last_included_file = array_pop((array_slice(get_included_files(), -1)));
   // echo $last_included_file;

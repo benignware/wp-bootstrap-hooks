@@ -20,5 +20,8 @@ wp option update permalink_structure "/%year%/%monthnum%/%postname%/" --skip-the
 wp plugin activate wordpress-importer
 wp plugin activate bootstrap-hooks
 
+# Activate theme.
+wp theme activate bootstrap-hooks
+
 # Import demo content
 # wp import vendor/wptrt/theme-unit-test --authors=skip

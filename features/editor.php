@@ -90,6 +90,11 @@ add_action( 'init', function() { // phpcs:ignore
 			'editor_script' => 'bootstrap-hooks-js',
 			// Enqueue blocks.editor.build.css in the editor only.
 			'editor_style'  => 'bootstrap-hooks-editor-css',
+			'render_callback' => function($attributes, $content) {
+				$attributes = bootstrap_hooks_snakeify_keys($attributes);
+
+				return apply_filters('bootstrap_card_html', $content, $attributes);
+			}
 		)
 	);
 
@@ -101,6 +106,11 @@ add_action( 'init', function() { // phpcs:ignore
 			'editor_script' => 'bootstrap-hooks-js',
 			// Enqueue blocks.editor.build.css in the editor only.
 			'editor_style'  => 'bootstrap-hooks-editor-css',
+			'render_callback' => function($attributes, $content) {
+				$attributes = bootstrap_hooks_snakeify_keys($attributes);
+
+				return apply_filters('bootstrap_grid_html', $content, $attributes);
+			}
 		)
 	);
 
@@ -112,6 +122,11 @@ add_action( 'init', function() { // phpcs:ignore
 			'editor_script' => 'bootstrap-hooks-js',
 			// Enqueue blocks.editor.build.css in the editor only.
 			'editor_style'  => 'bootstrap-hooks-editor-css',
+			'render_callback' => function($attributes, $content) {
+				$attributes = bootstrap_hooks_snakeify_keys($attributes);
+
+				return apply_filters('bootstrap_button_html', $content, $attributes);
+			}
 		)
 	);
 
