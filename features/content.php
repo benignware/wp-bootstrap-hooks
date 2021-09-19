@@ -119,9 +119,9 @@ if(!function_exists('wp_bootstrap_the_content')) {
     $blockquote_elements = $doc->getElementsByTagName( 'blockquote' );
     foreach ($blockquote_elements as $blockquote_element) {
       // Add blockquote class
-      $blockquote_element_class = $blockquote_element->getAttribute('class');
-      $blockquote_element_class = trim($blockquote_element_class . " " . $blockquote_class);
-      $blockquote_element->setAttribute('class', $blockquote_element_class);
+      $classes = preg_split('/\s+/', $blockquote_element->getAttribute('class'));
+      $classes[] = $blockquote_class;
+      $blockquote_element->setAttribute('class', implode(" ", $classes));
       // Find next element sibing
       $sibling = $blockquote_element;
       $next_element_sibling = null;
@@ -134,21 +134,21 @@ if(!function_exists('wp_bootstrap_the_content')) {
       }
       if ($next_element_sibling) {
         // Find cite
-        $cite_element = $next_element_sibling->getElementsByTagName( 'cite' )->item(0);
-        if ($cite_element) {
-          // Create footer
-          $blockquote_footer_element = $doc->createElement($blockquote_footer_tag);
-          // Add blockquote-footer class
-          $blockquote_footer_element->setAttribute('class', $blockquote_footer_class);
-          // Copy children
-          foreach ($next_element_sibling->childNodes as $child) {
-            $blockquote_footer_element->appendChild($child->cloneNode(true));
-          }
-          // Insert before original element
-          $blockquote_element->appendChild($blockquote_footer_element);
-          // Remove original element
-          $next_element_sibling->parentNode->removeChild($next_element_sibling);
-        }
+        // $cite_element = $next_element_sibling->getElementsByTagName( 'cite' )->item(0);
+        // if ($cite_element) {
+        //   // Create footer
+        //   $blockquote_footer_element = $doc->createElement($blockquote_footer_tag);
+        //   // Add blockquote-footer class
+        //   $blockquote_footer_element->setAttribute('class', $blockquote_footer_class);
+        //   // Copy children
+        //   foreach ($next_element_sibling->childNodes as $child) {
+        //     $blockquote_footer_element->appendChild($child->cloneNode(true));
+        //   }
+        //   // Insert before original element
+        //   $blockquote_element->appendChild($blockquote_footer_element);
+        //   // Remove original element
+        //   $next_element_sibling->parentNode->removeChild($next_element_sibling);
+        // }
       }
     }
 
@@ -298,13 +298,14 @@ EOT;
     $doc = new DOMDocument();
     @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html );
     // Handle image
-    $image_elements = $doc->getElementsByTagName( 'img' );
-    foreach ($image_elements as $image_element) {
-      // Add configured image class
-      $image_element_class = $image_element->getAttribute('class');
-      $image_element_class = trim($image_element_class . " " . $img_class);
-      $image_element->setAttribute('class', $image_element_class);
+    $elements = $doc->getElementsByTagName( 'img' );
+
+    foreach ($elements as $element) {
+      $classes = preg_split('/\s+/', $element->getAttribute('class'));
+      $classes[] = $options['img_class'];
+      $element->setAttribute('class', implode(" ", array_unique($classes)));
     }
+  
     return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
   }
 

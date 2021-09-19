@@ -21,7 +21,7 @@ services:
       - db
     image: wordpress
     ports:
-      - 8030:80
+      - 3070:80
     restart: always
     volumes:
       - wordpress:/var/www/html
@@ -52,7 +52,7 @@ services:
       - PMA_ARBITRARY=1
     restart: always
     ports:
-      - 8031:80
+      - 3071:80
     volumes:
       - /sessions
   composer:

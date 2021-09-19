@@ -10,6 +10,7 @@
  License: MIT
 */
 
+require_once 'lib/util/dom.php';
 require_once 'lib/helpers.php';
 
 function wp_bootstrap_hooks() {
@@ -17,8 +18,9 @@ function wp_bootstrap_hooks() {
 
   if (!count($args)) {
     $args = array(
-      'comments',
       'content',
+      'comments',
+      'blocks',
       'forms',
       'gallery',
       'navigation',
@@ -36,6 +38,8 @@ function wp_bootstrap_hooks() {
 
 function wp_bootstrap_options() {
   $defaults = array(
+    // Buttons
+    'button_class' => 'btn btn-primary',
     // Forms
     'search_form_class' => '',
     'search_submit_label' => '<i>🔎</i>',
@@ -81,6 +85,9 @@ function wp_bootstrap_options() {
     'gallery_thumbnail_img_class' => 'img-thumbnail mb-2',
     'gallery_zoom_size' => 'large',
     'carousel_item_class' => 'carousel-item',
+    // Grid
+    'columns_class' => 'row',
+    'column_class' => 'col col-%2$s-%1$s',
     // TODO: Modals
     'close_button_class' => 'btn btn-secondary',
     'close_button_label' => __('Close'),
@@ -133,6 +140,6 @@ function wp_bootstrap_options() {
 }
 
 // If file resides in template directory, require all immediately
-if (preg_match("~^" . preg_quote(get_template_directory(), "~") . "~", __FILE__)) {
-  wp_bootstrap_hooks();
-}
+// if (preg_match("~^" . preg_quote(get_template_directory(), "~") . "~", __FILE__)) {
+//   wp_bootstrap_hooks();
+// }

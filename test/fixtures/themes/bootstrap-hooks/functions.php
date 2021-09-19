@@ -590,14 +590,16 @@ require get_parent_theme_file_path( '/inc/icon-functions.php' );
  * Get Bootstrap from cdn
 */
 
-wp_register_style( 'bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' );
-wp_enqueue_style( 'bootstrap' );
-
-wp_register_script( 'bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js', array( 'jquery' ), null, true );
-wp_enqueue_script( 'bootstrap' );
-
-wp_register_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', array( 'jquery' ), null, true );
-wp_enqueue_script( 'popper' );
+add_action('wp_enqueue_scripts', function() {
+	wp_register_style( 'bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' );
+	wp_enqueue_style( 'bootstrap' );
+	
+	wp_register_script( 'bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js', array( 'jquery' ), null, true );
+	wp_enqueue_script( 'bootstrap' );
+	
+	wp_register_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', array( 'jquery' ), null, true );
+	wp_enqueue_script( 'popper' );
+});
 
 /**
  * Init Bootstrap Hooks
@@ -608,52 +610,52 @@ if (function_exists( 'wp_bootstrap_hooks' )) {
 }
 
 
-add_filter( 'dynamic_sidebar_params', function( $sidebar_params ) {
-    if ( is_admin() ) {
-        return $sidebar_params;
-    }
+// add_filter( 'dynamic_sidebar_params', function( $sidebar_params ) {
+//     if ( is_admin() ) {
+//         return $sidebar_params;
+//     }
 
-    global $wp_registered_widgets;
-    $widget_id = $sidebar_params[0]['widget_id'];
+//     global $wp_registered_widgets;
+//     $widget_id = $sidebar_params[0]['widget_id'];
 
-    $wp_registered_widgets[ $widget_id ]['original_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
-    $wp_registered_widgets[ $widget_id ]['callback'] = 'dfl_intranet_custom_widget_callback_function';
+//     $wp_registered_widgets[ $widget_id ]['original_callback'] = $wp_registered_widgets[ $widget_id ]['callback'];
+//     $wp_registered_widgets[ $widget_id ]['callback'] = 'my_custom_widget_callback_function';
 
-    return $sidebar_params;
-}, 2);
+//     return $sidebar_params;
+// }, 2);
 
-function dfl_intranet_custom_widget_callback_function() {
+// function my_custom_widget_callback_function() {
 
-    global $wp_registered_widgets;
-    $original_callback_params = func_get_args();
-    $widget_id = $original_callback_params[0]['widget_id'];
+//     global $wp_registered_widgets;
+//     $original_callback_params = func_get_args();
+//     $widget_id = $original_callback_params[0]['widget_id'];
 
-    $original_callback = $wp_registered_widgets[ $widget_id ]['original_callback'];
-    $wp_registered_widgets[ $widget_id ]['callback'] = $original_callback;
+//     $original_callback = $wp_registered_widgets[ $widget_id ]['original_callback'];
+//     $wp_registered_widgets[ $widget_id ]['callback'] = $original_callback;
 
-    if ( is_callable( $original_callback ) ) {
-				// echo "CUSTOM CALL ORIGINAL CALLBACK" . $original_callback;
-        ob_start();
-        call_user_func_array( $original_callback, $original_callback_params );
-        $widget_output = ob_get_contents();
-				ob_end_clean();
+//     if ( is_callable( $original_callback ) ) {
+// 				// echo "CUSTOM CALL ORIGINAL CALLBACK" . $original_callback;
+//         ob_start();
+//         call_user_func_array( $original_callback, $original_callback_params );
+//         $widget_output = ob_get_contents();
+// 				ob_end_clean();
 
-				$widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
-        echo apply_filters( 'my_widget_output', $widget_output, $widget_id_base, $widget_id );
-    }
-}
+// 				$widget_id_base = $wp_registered_widgets[ $widget_id ]['callback'][0]->id_base;
+//         echo apply_filters( 'my_widget_output', $widget_output, $widget_id_base, $widget_id );
+//     }
+// }
 
-add_filter( 'my_widget_output', function( $widget_output, $widget_id_base, $widget_id ) {
-  // To target a specific widget ID:
-  if ( 'target_widget_id' == $widget_id ) {
-      // Apply your desired search and replace operations here
-  }
+// add_filter( 'my_widget_output', function( $widget_output, $widget_id_base, $widget_id ) {
+//   // To target a specific widget ID:
+//   if ( 'target_widget_id' == $widget_id ) {
+//       // Apply your desired search and replace operations here
+//   }
 
-  // To target all widgets of a particular type:
-  if ( 'archives' == $widget_id_base ) {
-    // Apply your desired search and replace operations here
-		return 'ARCHIVES WIDGET';
-  }
+//   // To target all widgets of a particular type:
+//   if ( 'archives' == $widget_id_base ) {
+//     // Apply your desired search and replace operations here
+// 		return 'ARCHIVES WIDGET';
+//   }
 
-  return $widget_output;
-}, 99, 3 );
+//   return $widget_output;
+// }, 99, 3 );
