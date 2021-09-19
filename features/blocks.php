@@ -4,7 +4,11 @@ use function util\dom\add_class;
 use function util\dom\remove_class;
 use function util\dom\remove_style;
 
-add_filter('render_block', function($content, $block) use ($add_class) {
+add_filter('render_block', function($content, $block)  {
+  if (!trim($content)) {
+    return $content;
+  }
+
   $name = $block['blockName'];
   $options = wp_bootstrap_options();
 
@@ -104,7 +108,8 @@ add_filter('render_block', function($content, $block) use ($add_class) {
     remove_class($container, '~^wp-block~');
   }
 
-  if ($name === 'core/pullquote') {
+
+  if ($name === 'core/pullquote' || $name === 'core/quote') {
     remove_class($container, '~^wp-block~');
   }
   
