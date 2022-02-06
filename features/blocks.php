@@ -3,6 +3,7 @@
 use function util\dom\add_class;
 use function util\dom\remove_class;
 use function util\dom\remove_style;
+use function util\dom\has_class;
 
 add_filter('render_block', function($content, $block)  {
   if (!trim($content)) {
@@ -10,6 +11,7 @@ add_filter('render_block', function($content, $block)  {
   }
 
   $name = $block['blockName'];
+  $attrs = $block['attrs'];
   $options = wp_bootstrap_options();
 
   $doc = new DOMDocument();
@@ -69,22 +71,42 @@ add_filter('render_block', function($content, $block)  {
 
   // Inputs
   $inputs = $doc_xpath->query("//textarea|//select|//input[not(@type='checkbox') and not(@type='radio') and not(@type='submit')]");
-
   foreach ($inputs as $input) {
     add_class($input, $options['text_input_class']);
   }
 
+  // Buttons
+  $buttons = $doc_xpath->query("//button");
+  foreach ($buttons as $button) {
+    $class = sprintf($options['button_class'], 'primary');
+    add_class($button, $class);
+  }
+
   // Blocks
   if ($name === 'core/button') {
-    $elements = $doc_xpath->query("//a|//button");
+    list($button) = $doc_xpath->query("//a|//button");
 
-    foreach ($elements as $element) {
-      add_class($element, $options['button_class']);
-  
-      $element->setAttribute('role', 'button');
-      $element->setAttribute('href', $element->getAttribute('href') ?? '#');
+    $modifier = isset($attrs['backgroundColor'])
+      ? $attrs['backgroundColor']
+      : 'primary';
+
+    $class = sprintf(
+      isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']))
+        ? $options['button_outline_class']
+        : $options['button_class'],
+      $modifier
+    );
+
+    add_class($button, $class);
+
+    $button->setAttribute('role', 'button');
+
+    if ($button->nodeName === 'a') {
+      $button->setAttribute('href', $button->getAttribute('href') ?? '#');
     }
+    // print_r($block);
 
+    remove_class($button, '~^wp-block~');
     remove_class($container, '~^wp-block~');
   }
 
@@ -108,12 +130,12 @@ add_filter('render_block', function($content, $block)  {
     remove_class($container, '~^wp-block~');
   }
 
-
   if ($name === 'core/pullquote' || $name === 'core/quote') {
     remove_class($container, '~^wp-block~');
   }
   
   $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
+  // return $name . ' - ' . var_dump($block) . ' - ' . $result;
   return $result;
 }, 10, 2);

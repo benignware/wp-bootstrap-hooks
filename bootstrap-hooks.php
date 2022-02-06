@@ -39,7 +39,8 @@ function wp_bootstrap_hooks() {
 function wp_bootstrap_options() {
   $defaults = array(
     // Buttons
-    'button_class' => 'btn btn-primary',
+    'button_class' => 'btn btn-%1$s',
+    'button_outline_class' => 'btn btn-outline-%1$s',
     // Forms
     'search_form_class' => '',
     'search_submit_label' => '<i>🔎</i>',
@@ -78,7 +79,7 @@ function wp_bootstrap_options() {
     'edit_post_link_class' => 'btn btn-sm btn-outline-secondary',
     'edit_post_link_container_class' => 'btn-group btn-group-sm d-block my-2',
     // Tags
-    'post_tag_class' => 'badge badge-primary mb-1',
+    'post_tag_class' => 'badge badge-primary text-wrap mb-1',
     // Gallery
     'gallery_thumbnail_size' => 'thumbnail',
     'gallery_thumbnail_class' => '',

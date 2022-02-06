@@ -65,16 +65,16 @@ add_filter( 'comment_form_defaults', 'wp_bootstrap_comment_form_defaults' );
 /**
  * Comment Form After
  */
-function wp_bootstrap_comment_form_after() {
-  extract(wp_bootstrap_options());
-  echo
-    "<script>\n" .
-    "  (function($) {\n" .
-    "    $('#commentform input#submit').addClass('$submit_class');\n" .
-    "  })(jQuery)\n" .
-    "</script>\n";
-}
-add_action( 'comment_form_after', 'wp_bootstrap_comment_form_after' );
+// function wp_bootstrap_comment_form_after() {
+//   extract(wp_bootstrap_options());
+//   echo
+//     "<script>\n" .
+//     "  (function($) {\n" .
+//     "    $('#commentform input#submit').addClass('$submit_class');\n" .
+//     "  })(jQuery)\n" .
+//     "</script>\n";
+// }
+// add_action( 'comment_form_after', 'wp_bootstrap_comment_form_after' );
 
 
 /**

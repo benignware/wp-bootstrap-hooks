@@ -17,6 +17,13 @@ if ( version_compare( $GLOBALS['wp_version'], '4.7-alpha', '<' ) ) {
 	return;
 }
 
+// Disables the block editor from managing widgets in the Gutenberg plugin.
+// add_filter( 'gutenberg_use_widgets_block_editor', '__return_false', 100 );
+
+// Disables the block editor from managing widgets.
+// add_filter( 'use_widgets_block_editor', '__return_false' );
+
+
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  *
@@ -659,3 +666,49 @@ if (function_exists( 'wp_bootstrap_hooks' )) {
 
 //   return $widget_output;
 // }, 99, 3 );
+
+
+add_action( 'after_setup_theme', function () {
+  add_theme_support( 'editor-color-palette', array(
+		array(
+				'name'  => esc_attr__( 'Primary', 'bootstrap-hooks' ),
+				'slug'  => 'primary',
+				'color' => '#0d6efd',
+		),
+		array(
+				'name'  => esc_attr__( 'Secondary', 'bootstrap-hooks' ),
+				'slug'  => 'secondary',
+				'color' => '#6c757d',
+		),
+		array(
+			'name'  => esc_attr__( 'Success', 'bootstrap-hooks' ),
+			'slug'  => 'success',
+			'color' => '#198754',
+		),
+		array(
+				'name'  => esc_attr__( 'Info', 'bootstrap-hooks' ),
+				'slug'  => 'info',
+				'color' => '#0dcaf0',
+		),
+		array(
+			'name'  => esc_attr__( 'Warning', 'bootstrap-hooks' ),
+			'slug'  => 'warning',
+			'color' => '#ffc107',
+		),
+		array(
+				'name'  => esc_attr__( 'Danger', 'bootstrap-hooks' ),
+				'slug'  => 'danger',
+				'color' => '#dc3545',
+		),
+		array(
+				'name'  => esc_attr__( 'Light', 'bootstrap-hooks' ),
+				'slug'  => 'light',
+				'color' => '#f8f9fa',
+		),
+		array(
+				'name'  => esc_attr__( 'Dark', 'bootstrap-hooks' ),
+				'slug'  => 'dark',
+				'color' => '#212529',
+		),
+  ));
+});

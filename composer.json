@@ -44,7 +44,7 @@
     "wpackagist-plugin/wordpress-importer": ">=0.6.4",
     "wpackagist-plugin/wordpress-seo": ">=9.7",
     "wpackagist-plugin/advanced-random-posts-widget": ">=2.1.1",
-    "wpackagist-plugin/recent-posts-widget-extended": ">=0.9.9.7",
+    "wpackagist-plugin/recent-posts-widget-with-thumbnails": ">=7.1.1",
     "wptrt/theme-unit-test": "dev-master"
   },
   "scripts": {

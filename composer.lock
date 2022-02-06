@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "3952450daabbc63ed8da1d4e75bb5947",
+    "content-hash": "1344c4dd07d05c9d35e80fb28ba8ed3b",
     "packages": [
         {
             "name": "composer/installers",
@@ -224,22 +224,22 @@
             "homepage": "https://wordpress.org/plugins/advanced-random-posts-widget/"
         },
         {
-            "name": "wpackagist-plugin/recent-posts-widget-extended",
-            "version": "1.0.0",
+            "name": "wpackagist-plugin/recent-posts-widget-with-thumbnails",
+            "version": "7.1.1",
             "source": {
                 "type": "svn",
-                "url": "https://plugins.svn.wordpress.org/recent-posts-widget-extended/",
-                "reference": "tags/1.0.0"
+                "url": "https://plugins.svn.wordpress.org/recent-posts-widget-with-thumbnails/",
+                "reference": "tags/7.1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/recent-posts-widget-extended.1.0.0.zip"
+                "url": "https://downloads.wordpress.org/plugin/recent-posts-widget-with-thumbnails.7.1.1.zip"
             },
             "require": {
                 "composer/installers": "~1.0 || ~2.0"
             },
             "type": "wordpress-plugin",
-            "homepage": "https://wordpress.org/plugins/recent-posts-widget-extended/"
+            "homepage": "https://wordpress.org/plugins/recent-posts-widget-with-thumbnails/"
         },
         {
             "name": "wpackagist-plugin/wordpress-importer",
@@ -261,15 +261,15 @@
         },
         {
             "name": "wpackagist-plugin/wordpress-seo",
-            "version": "17.1",
+            "version": "17.2.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/wordpress-seo/",
-                "reference": "tags/17.1"
+                "reference": "tags/17.2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.17.1.zip"
+                "url": "https://downloads.wordpress.org/plugin/wordpress-seo.17.2.1.zip"
             },
             "require": {
                 "composer/installers": "~1.0 || ~2.0"

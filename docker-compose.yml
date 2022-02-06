@@ -33,9 +33,14 @@ services:
       - ./test/fixtures/themes/bootstrap-twentyseventeen:/var/www/html/wp-content/themes/bootstrap-twentyseventeen
     working_dir: /var/www/html
   wp:
+    environment:
+      WORDPRESS_DB_HOST: db:3306
+      WORDPRESS_DB_USER: wordpress
+      WORDPRESS_DB_PASSWORD: wordpress
     image: wordpress:cli
     user: '33:33'
     depends_on:
+      - db
       - wordpress
     volumes:
       - wordpress:/var/www/html
@@ -44,7 +49,7 @@ services:
       - .uploads:/var/www/html/wp-content/uploads
       - .plugins:/var/www/html/wp-content/plugins
     links:
-      - db
+      - db:db
     command: "--info"
   phpmyadmin:
     image: phpmyadmin/phpmyadmin
