@@ -4,7 +4,7 @@
  Plugin Name: Bootstrap Hooks
  Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  Description: A collection of action and filters for bootstrap based themes
- Version: 0.2.0-beta.2
+ Version: 1.0.0-beta.2
  Author: Rafael Nowrotek, Benignware
  Author URI: http://benignware.com
  License: MIT
@@ -27,7 +27,6 @@ function wp_bootstrap_hooks() {
       'pagination',
       'widgets',
       'header',
-      'integration/wordpress-seo'
     );
   }
 
@@ -37,6 +36,12 @@ function wp_bootstrap_hooks() {
 }
 
 function wp_bootstrap_options() {
+  global $_wp_theme_features;
+
+  $args = array_merge([
+    'version' => 5
+  ], $_wp_theme_features[ 'bootstrap' ]);
+
   $defaults = array(
     // Buttons
     'button_class' => 'btn btn-%1$s',
@@ -79,7 +84,8 @@ function wp_bootstrap_options() {
     'edit_post_link_class' => 'btn btn-sm btn-outline-secondary',
     'edit_post_link_container_class' => 'btn-group btn-group-sm d-block my-2',
     // Tags
-    'post_tag_class' => 'badge badge-primary text-wrap mb-1',
+    'post_tag_class' => 'btn btn-sm btn-secondary text-wrap mb-1',
+    'post_tag_count_class' => 'badge bg-primary',
     // Gallery
     'gallery_thumbnail_size' => 'thumbnail',
     'gallery_thumbnail_class' => '',
@@ -93,6 +99,7 @@ function wp_bootstrap_options() {
     'close_button_class' => 'btn btn-secondary',
     'close_button_label' => __('Close'),
     // Menu
+    'menu_class' => 'nav',
     'menu_item_class' => 'nav-item',
     'menu_item_link_class' => 'nav-link',
     'sub_menu_tag' => 'ul',
@@ -124,11 +131,15 @@ function wp_bootstrap_options() {
     'widget_class' => 'card mb-3',
     'widget_modifier_class' => 'card-widget',
     'widget_header_class' => 'card-header',
-    'widget_content_class' => 'card-body'
+    'widget_content_class' => 'card-body',
+    // Categories
+    'category_list_class' => 'breadcrumb',
+    'category_list_item_class' => 'breadcrumb-item',
+    'category_list_item_active_class' => 'active',
   );
 
   // Apply option filters
-  $options = apply_filters( 'bootstrap_options', $defaults );
+  $options = apply_filters( 'bootstrap_options', $defaults, $args );
 
   // Sanitize options
   $result = array();
@@ -144,3 +155,15 @@ function wp_bootstrap_options() {
 // if (preg_match("~^" . preg_quote(get_template_directory(), "~") . "~", __FILE__)) {
 //   wp_bootstrap_hooks();
 // }
+
+wp_bootstrap_hooks();
+
+add_filter('bootstrap_options', function($options, $args) {
+  if ($args['version'] === 4) {
+    return array_merge($options, [
+      'post_tag_class' => 'badge badge-secondary text-wrap mb-1'
+    ]);
+  }
+
+  return $options;
+}, 1, 2);

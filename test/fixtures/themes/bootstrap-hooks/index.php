@@ -54,7 +54,13 @@ get_header(); ?>
 							'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyseventeen' ) . ' </span>',
 						) ) );
 
-						posts_nav_link();
+						// the_posts_pagination( array(
+						// 	'prev_text' => twentyseventeen_get_svg( array( 'icon' => 'previous' ) ) . '<span class="screen-reader-text">' . __( 'Previous page', 'twentyseventeen' ) . '</span>',
+						// 	'next_text' => '<span class="screen-reader-text">' . __( 'Next page', 'twentyseventeen' ) . '</span>' . twentyseventeen_get_svg( array( 'icon' => 'next' ) ),
+						// 	'before_page_number' => '<span class="meta-nav screen-reader-text">' . __( 'Page', 'twentyseventeen' ) . ' </span>',
+						// ) );
+
+						// posts_nav_link();
 
 					else :
 
@@ -66,9 +72,11 @@ get_header(); ?>
 				</main><!-- #main -->
 			</div><!-- #primary -->
 		</div>
-		<div class="col-lg-4">
-			<?php get_sidebar(); ?>
-		</div>
+		<?php if (is_active_sidebar('sidebar-1')): ?>
+			<div class="col-lg-4">
+				<?php get_sidebar(); ?>
+			</div>
+		<?php endif; ?>
 	</div>
 </div><!-- .wrap -->
 <?php get_footer();

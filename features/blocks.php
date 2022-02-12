@@ -4,8 +4,15 @@ use function util\dom\add_class;
 use function util\dom\remove_class;
 use function util\dom\remove_style;
 use function util\dom\has_class;
+use function util\dom\find_by_class;
+use function util\dom\find_all_by_class;
+use function util\dom\replace_tag;
 
 add_filter('render_block', function($content, $block)  {
+  if (!current_theme_supports('bootstrap')) {
+    return $content;
+  }
+
   if (!trim($content)) {
     return $content;
   }
@@ -106,12 +113,12 @@ add_filter('render_block', function($content, $block)  {
     }
     // print_r($block);
 
-    remove_class($button, '~^wp-block~');
-    remove_class($container, '~^wp-block~');
+    // remove_class($button, '~^wp-block~');
+    // remove_class($container, '~^wp-block~');
   }
 
   if ($name === 'core/columns') {
-    remove_class($container, '~^wp-block~');
+    // remove_class($container, '~^wp-block~');
     add_class($container, $options['columns_class']);
   }
 
@@ -123,15 +130,99 @@ add_filter('render_block', function($content, $block)  {
 
     add_class($container, $class);
     remove_style($container, 'flex-basis');
-    remove_class($container, '~^wp-block~');
+    // remove_class($container, '~^wp-block~');
   }
 
   if ($name === 'core/image') {
-    remove_class($container, '~^wp-block~');
+    // remove_class($container, '~^wp-block~');
   }
 
   if ($name === 'core/pullquote' || $name === 'core/quote') {
-    remove_class($container, '~^wp-block~');
+    // remove_class($container, '~^wp-block~');
+  }
+
+  // Block Navigation
+  if ($name === 'core/page-list') {
+    // print_r($attrs);
+    // remove_class($container, '~^wp-block~');
+    add_class($container, $options['menu_class']);
+
+    $items = find_all_by_class($container, 'wp-block-pages-list__item');
+
+    foreach ($items as $item) {
+      // remove_class($item, '~^wp-block~');
+      add_class($item, $options['menu_item_class']);
+
+      $link = find_by_class($item, 'wp-block-pages-list__item__link');
+
+      if ($link) {
+        // remove_class($link, '~^wp-block~');
+        add_class($link, $options['menu_item_link_class']);
+      }
+    }
+  }
+
+
+
+  // if ($name === 'core/navigation') {
+  //   echo 'NAVIGATION';
+  //   print_r($block);
+  // }
+
+  // if ($name === 'core/group') {
+  //   echo 'GROUP';
+  //   print_r($block);
+  // }
+
+  // echo $name;
+  // echo '<br/>';
+
+  if ($name === 'core/query-pagination') {
+    $nav = $container->cloneNode();
+    $nav = replace_tag($nav, 'nav');
+
+    $list = $doc->createElement('ul');
+    $list->setAttribute('class', 'pagination');
+
+    $nav->appendChild($list);
+
+    $items = $doc_xpath->query('./li', $container);
+
+    foreach ($items as $item) {
+      $list->appendChild($item);
+    }
+
+    $container->parentNode->insertBefore($nav, $container);
+    $container->parentNode->removeChild($container);
+  }
+
+  if ($name === 'core/query-pagination-numbers') {
+    $links = find_all_by_class($container, 'page-numbers');
+
+    foreach ($links as $link) {
+      if ($link->nodeType === 1) {
+        add_class($link, 'page-link');
+        $item = $doc->createElement('li');
+        $item->setAttribute('class', 'page-item');
+        $item->appendChild($link->cloneNode(true));
+        $container->parentNode->appendChild($item);
+      }
+    }
+
+    $container->parentNode->removeChild($container);
+  }
+
+  if ($name === 'core/query-pagination-next' || $name === 'core/query-pagination-previous') {
+    add_class($container, 'page-link');
+    remove_class($container, 'has-small-font-size');
+
+    $item = $doc->createElement('li');
+    $item->setAttribute('class', 'page-item');
+    $item->appendChild($container->cloneNode(true));
+    remove_class($container, 'has-small-font-size');
+  
+    $container->parentNode->appendChild($item);
+    $container->parentNode->removeChild($container);
   }
   
   $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
@@ -139,3 +230,12 @@ add_filter('render_block', function($content, $block)  {
   // return $name . ' - ' . var_dump($block) . ' - ' . $result;
   return $result;
 }, 10, 2);
+
+
+//Remove Gutenberg Block Library CSS from loading on the frontend
+// function smartwp_remove_wp_block_library_css(){
+//   wp_dequeue_style( 'wp-block-library' );
+//   wp_dequeue_style( 'wp-block-library-theme' );
+//   wp_dequeue_style( 'wc-blocks-style' ); // Remove WooCommerce block CSS
+// } 
+// add_action( 'wp_enqueue_scripts', 'smartwp_remove_wp_block_library_css', 100 );

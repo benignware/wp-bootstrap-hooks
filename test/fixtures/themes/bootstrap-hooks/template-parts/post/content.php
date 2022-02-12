@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Template part for displaying posts
  *
@@ -14,73 +15,75 @@
 
 <article id="post-<?php the_ID(); ?>" <?php post_class(); ?>>
 	<?php
-	if ( is_sticky() && is_home() ) :
-		echo twentyseventeen_get_svg( array( 'icon' => 'thumb-tack' ) );
-	endif;
+		// if ( is_sticky() && is_home() ) :
+		// 	echo twentyseventeen_get_svg( array( 'icon' => 'thumb-tack' ) );
+		// endif;
 	?>
-	<header class="entry-header">
-		<?php
-		if ( 'post' === get_post_type() ) {
-			echo '<div class="entry-meta">';
-				if ( is_single() ) {
-					twentyseventeen_posted_on();
-				} else {
-					echo twentyseventeen_time_link();
-					twentyseventeen_edit_link();
-				};
-			echo '</div><!-- .entry-meta -->';
-		};
+	<!-- <header <?php post_header_class(); ?>> -->
+		<!-- <?php bs_post_categories(); ?> -->
+	<!-- </header> -->
+	<!-- .entry-header -->
 
-		if ( is_single() ) {
-			the_title( '<h1 class="entry-title">', '</h1>' );
-		} elseif ( is_front_page() && is_home() ) {
-			the_title( '<h3 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' );
-		} else {
-			the_title( '<h2 class="entry-title"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
-		}
-		?>
-		<?php
-	    $tags = get_tags();
-	    if ( $tags ) : ?>
-				<div class="tags mb-3">
-	       <?php foreach ( $tags as $tag ) : ?>
-	         <a class="badge badge-secondary" href="<?php echo esc_url( get_tag_link( $tag->term_id ) ); ?>" title="<?php echo esc_attr( $tag->name ); ?>"><?php echo esc_html( $tag->name ); ?></a>
-	       <?php endforeach; ?>
-			 	</div>
-	    <?php endif;
-		?>
+	<div class="row g-0">
+		<div class="col-md-4">
 
-	</header><!-- .entry-header -->
+			<?php if ( '' !== get_the_post_thumbnail() && ! is_single() ) : ?>
+				<div class="post-thumbnail figure">
+					<a href="<?php the_permalink(); ?>">
+						<?php the_post_thumbnail( 'twentyseventeen-featured-image', array('class' => 'figure-img card-img-top mb-0') ); ?>
+					</a>
+				</div><!-- .post-thumbnail -->
+			<?php endif; ?>
+		</div>
+		<div class="col-md-8">
+			<div <?php post_content_class(); ?>>
+				<?php
+					if ( is_single() ):
+						the_title( '<h1 class="' . get_post_title_class() . '">', '</h1>' );
+					elseif ( is_front_page() && is_home() ):
+						the_title( '<h3 class="' . get_post_title_class() . '"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' );
+					else:
+						the_title( '<h2 class="' . get_post_title_class() . '"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
+					endif;
+				?>
 
-	<?php if ( '' !== get_the_post_thumbnail() && ! is_single() ) : ?>
-		<div class="post-thumbnail figure">
-			<a href="<?php the_permalink(); ?>">
-				<?php the_post_thumbnail( 'twentyseventeen-featured-image', array('class' => 'figure-img') ); ?>
-			</a>
-		</div><!-- .post-thumbnail -->
-	<?php endif; ?>
+				<?php if (!bs_is_excerpt()): ?>
+					<?php bs_post_tags() ?>
+				<?php endif; ?>
 
-	<div class="entry-content">
-		<?php
-		/* translators: %s: Name of current post */
-		the_content( sprintf(
-			__( 'Continue reading<span class="screen-reader-text"> "%s"</span>', 'twentyseventeen' ),
-			get_the_title()
-		) );
+				<?php if ( 'post' === get_post_type() ): ?>
+					<div class="entry-meta">
+						<?php if ( is_single() ): ?>
+								<?php bs_posted_on(); ?> <?php bs_posted_by(); ?>
+						<?php else: ?>
+								<?php echo twentyseventeen_time_link(); ?>
+						<?php endif;
+						?>
+					</div><!-- .entry-meta -->
+				<?php endif; ?>
+		
+				<?php
+					if (bs_is_excerpt()) {
+						the_excerpt();
+					} else {
+						the_content( __( 'Continue reading', 'twentytwenty' ) );
+					}
+				?>
 
-		wp_link_pages( array(
-			'before'      => '<div class="page-links">' . __( 'Pages:', 'twentyseventeen' ),
-			'after'       => '</div>',
-			'link_before' => '<span class="page-number">',
-			'link_after'  => '</span>',
-		) );
-		?>
-	</div><!-- .entry-content -->
+				<?php	
+					wp_link_pages( array(
+						'before'      => '<div class="page-links">' . __( 'Pages:', 'twentyseventeen' ),
+						'after'       => '</div>',
+						'link_before' => '<span class="page-number">',
+						'link_after'  => '</span>',
+					) );
+				?>
+			</div><!-- .entry-content -->
+		</div>
+	</div>
 
-	<?php
-	if ( is_single() ) {
-		twentyseventeen_entry_footer();
-	}
-	?>
-
+	<!-- <footer <?php post_footer_class('default-max-width'); ?>> -->
+		<?php // bs_entry_meta_footer(); ?>
+	<!-- </footer> -->
+	<!-- .entry-footer -->
 </article><!-- #post-## -->

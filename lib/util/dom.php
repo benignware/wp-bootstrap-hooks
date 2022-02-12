@@ -56,7 +56,7 @@ namespace util\dom {
   function remove_class($element, $pattern) {
     $classes = _parse_class($element->getAttribute('class'));
     $classes = array_filter($classes, function($class) use ($pattern) {
-      return $class && !preg_match($pattern, $class);
+      return $class && $class !== $pattern && !preg_match($pattern, $class);
     });
 
     if (count($classes) > 0) {
@@ -131,5 +131,22 @@ namespace util\dom {
     return $element;
   }
 
-  return $element;
+  function replace_tag($element, $name) {
+    $new_element = $element->ownerDocument->createElement($name);
+  
+    foreach ($element->childNodes as $child) {
+      $new_element->appendChild($child->cloneNode(true));
+    }
+
+    foreach ($element->attributes as $attrName => $attrNode) {
+      $new_element->setAttribute($attrName, $attrNode->value);
+    }
+
+    if ($element->parentNode) {
+      $element->parentNode->insertBefore($new_element, $element);
+      $element->parentNode->removeChild($element);
+    }
+
+    return $new_element;
+  }
 }

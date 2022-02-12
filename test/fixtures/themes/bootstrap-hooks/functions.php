@@ -9,6 +9,47 @@
  * @since 1.0
  */
 
+// Template functions
+include 'inc/template-functions/post-header-class.php';
+include 'inc/template-functions/post-title-class.php';
+include 'inc/template-functions/post-content-class.php';
+include 'inc/template-functions/post-footer-class.php';
+include 'inc/template-functions/bs-is-excerpt.php';
+
+// include 'inc/template-functions/bs-can-show-post-thumbnail.php';
+
+// Template tags
+// include 'inc/template-tags/bs-post-thumbnail.php';
+include 'inc/template-tags/bs-entry-meta-footer.php';
+include 'inc/template-tags/bs-post-tags.php';
+include 'inc/template-tags/bs-posted-on.php';
+include 'inc/template-tags/bs-posted-by.php';
+include 'inc/template-tags/bs-post-categories.php';
+
+
+// Customize
+include 'inc/customize/theme-options.php';
+
+add_filter('post_class', function($classes) {
+	return bs_is_excerpt() ? array_merge($classes, ['card mb-3']) : $classes;
+});
+
+add_filter('post_header_class', function($classes) {
+	return bs_is_excerpt() ? array_merge($classes, ['card-header']) : $classes;
+});
+
+add_filter('post_title_class', function($classes) {
+	return bs_is_excerpt() ? array_merge($classes, ['card-title']) : $classes;
+});
+
+add_filter('post_content_class', function($classes) {
+	return bs_is_excerpt() ? array_merge($classes, ['card-body']) : $classes;
+});
+
+add_filter('post_footer_class', function($classes) {
+	return bs_is_excerpt() ? array_merge($classes, ['card-footer']) : $classes;
+});
+
 /**
  * Twenty Seventeen only works in WordPress 4.7 or later.
  */
@@ -32,6 +73,8 @@ if ( version_compare( $GLOBALS['wp_version'], '4.7-alpha', '<' ) ) {
  * as indicating support for post thumbnails.
  */
 function twentyseventeen_setup() {
+	// Bootstrap Hooks
+	add_theme_support( 'bootstrap' );
 	/*
 	 * Make theme available for translation.
 	 * Translations can be filed at WordPress.org. See: https://translate.wordpress.org/projects/wp-themes/twentyseventeen
@@ -597,11 +640,15 @@ require get_parent_theme_file_path( '/inc/icon-functions.php' );
  * Get Bootstrap from cdn
 */
 
+# 4.1.3
+define('BOOTSTRAP_VERSION', '5.1.0');
+
+
 add_action('wp_enqueue_scripts', function() {
-	wp_register_style( 'bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css' );
+	wp_register_style( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@'. BOOTSTRAP_VERSION .'/dist/css/bootstrap.min.css' );
 	wp_enqueue_style( 'bootstrap' );
 	
-	wp_register_script( 'bootstrap', 'https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js', array( 'jquery' ), null, true );
+	wp_register_script( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@'. BOOTSTRAP_VERSION .'/dist/js/bootstrap.min.js', array( 'jquery' ), null, true );
 	wp_enqueue_script( 'bootstrap' );
 	
 	wp_register_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', array( 'jquery' ), null, true );
@@ -612,9 +659,9 @@ add_action('wp_enqueue_scripts', function() {
  * Init Bootstrap Hooks
  */
 
-if (function_exists( 'wp_bootstrap_hooks' )) {
-	wp_bootstrap_hooks();
-}
+// if (function_exists( 'wp_bootstrap_hooks' )) {
+// 	wp_bootstrap_hooks();
+// }
 
 
 // add_filter( 'dynamic_sidebar_params', function( $sidebar_params ) {
@@ -712,3 +759,7 @@ add_action( 'after_setup_theme', function () {
 		),
   ));
 });
+
+add_filter('is_active_sidebar', function($is_active, $id) {
+	return !is_search() && !is_singular() ? get_theme_mod( 'blog_sidebar', $is_active ) : $is_active;
+}, 10, 2);

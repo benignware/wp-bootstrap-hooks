@@ -4,6 +4,10 @@
  * Nav Menu Args
  */
 function wp_bootstrap_nav_menu_args($args) {
+  if (!current_theme_supports('bootstrap')) {
+    return $args;
+  }
+
   $options = wp_bootstrap_options();
   $menu_class = isset($args['menu_class']) ? $args['menu_class'] : '';
   $is_default_menu_class = $menu_class === 'menu' ? true : false;
@@ -29,7 +33,11 @@ add_filter( 'wp_nav_menu_args', 'wp_bootstrap_nav_menu_args', 10, 2 );
 /**
  * Nav Menu Args
  */
-function wp_bootstrap_nav_menu($nav_menu = "", $args = array()) {
+function wp_bootstrap_nav_menu($nav_menu = '', $args = array()) {
+  if (!current_theme_supports('bootstrap')) {
+    return $nav_menu;
+  }
+
   // Parse menu id attribute
   preg_match("#<\w+\s[^>]*id\s*=\s*[\'\"]??\s*?(.*)[\'\"\s]{1}[^>]*>#simU", $nav_menu, $match);
   if (!$match) {

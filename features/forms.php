@@ -3,10 +3,15 @@
  * Get Search Form
  * TODO: Template
  */
-function wp_bootstrap_get_search_form( $form ) {
+
+add_filter( 'get_search_form', function( $output ) {
+  if (!current_theme_supports('bootstrap')) {
+    return $output;
+  }
+
   extract(wp_bootstrap_options());
 
-  $form = '<form role="search" method="get" id="searchform" class="searchform ' . $search_form_class . '" action="' . home_url( '/' ) . '" >
+  $output = '<form role="search" method="get" id="searchform" class="searchform ' . $search_form_class . '" action="' . home_url( '/' ) . '" >
   <label class="screen-reader-text" for="s">' . __( 'Search for:' ) . '</label>
   <div class="' . $input_group_class . '">
     <input class="' . $text_input_class . '" type="text" value="' . get_search_query() . '" name="s" id="s" placeholder="'. esc_attr__( 'Search' ) .'..."/>
@@ -15,15 +20,19 @@ function wp_bootstrap_get_search_form( $form ) {
     </span>
   </div>
 </form>';
-  return $form;
-}
-add_filter( 'get_search_form', 'wp_bootstrap_get_search_form' );
+  return $output;
+});
 
 /**
  * Password Form
-* TODO: Template
+ * TODO: Template
  */
-function wp_bootstrap_password_form($output = '') {
+
+add_filter( 'the_password_form', function($output = '') {
+  if (!current_theme_supports('bootstrap')) {
+    return $output;
+  }
+
   global $post;
 
   extract(wp_bootstrap_options());
@@ -39,7 +48,4 @@ function wp_bootstrap_password_form($output = '') {
   </div>
   </form>';
   return $form;
-}
-add_filter( 'the_password_form', 'wp_bootstrap_password_form', 10, 1 );
-
-?>
+}, 10, 1 );

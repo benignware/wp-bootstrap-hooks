@@ -61,26 +61,13 @@ function wp_bootstrap_comment_form_defaults( $args ) {
 }
 add_filter( 'comment_form_defaults', 'wp_bootstrap_comment_form_defaults' );
 
-
-/**
- * Comment Form After
- */
-// function wp_bootstrap_comment_form_after() {
-//   extract(wp_bootstrap_options());
-//   echo
-//     "<script>\n" .
-//     "  (function($) {\n" .
-//     "    $('#commentform input#submit').addClass('$submit_class');\n" .
-//     "  })(jQuery)\n" .
-//     "</script>\n";
-// }
-// add_action( 'comment_form_after', 'wp_bootstrap_comment_form_after' );
-
-
 /**
  * List Comment Args
  */
-function wp_bootstrap_list_comments_args($args) {
+add_action('wp_list_comments_args', function($args) {
+  if (!current_theme_supports('bootstrap')) {
+    return $args;
+  }
 
   $args = array_merge($args, array(
     'style' => 'div'
@@ -90,23 +77,23 @@ function wp_bootstrap_list_comments_args($args) {
     $args['walker'] = new wp_bootstrap_commentwalker();
   }
   return $args;
-}
-add_action( 'wp_list_comments_args', 'wp_bootstrap_list_comments_args' );
+});
 
 
 /**
  * Add bootstrap classes to the comment reply link
  */
-if (!function_exists('wp_bootstrap_comment_reply_link')) {
-  function wp_bootstrap_comment_reply_link($link, $args, $comment, $post) {
-    $options = wp_bootstrap_options();
-    $field_class = $options['field_class'];
-    $reply_link_class = $options['reply_link_class'];
-
-    return $link = '<div class="' . $field_class . '">' . str_replace("class='comment-reply-", "class='comment-reply-link $reply_link_class", $link) . '</div>';
+add_filter('comment_reply_link', function($link, $args, $comment, $post) {
+  if (!current_theme_supports('bootstrap')) {
+    return $link;
   }
-  add_filter( 'comment_reply_link', 'wp_bootstrap_comment_reply_link', 10, 4 );
-}
+
+  $options = wp_bootstrap_options();
+  $field_class = $options['field_class'];
+  $reply_link_class = $options['reply_link_class'];
+
+  return $link = '<div class="' . $field_class . '">' . str_replace("class='comment-reply-", "class='comment-reply-link $reply_link_class", $link) . '</div>';
+}, 10, 4);
 
 
 /**

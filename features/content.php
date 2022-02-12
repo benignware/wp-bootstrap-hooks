@@ -1,5 +1,7 @@
 <?php
 
+use function util\dom\add_class;
+
 /**
  * Add bootstrap classes to content images
  */
@@ -164,7 +166,6 @@ if(!function_exists('wp_bootstrap_the_content')) {
         $table_element->parentNode->insertBefore($table_container_element, $table_element);
         $table_container_element->appendChild($table_element);
       }
-
     }
 
     // Tags
@@ -333,14 +334,16 @@ EOT;
       .figure.aligncenter {
         display: block;
       }
-      .list-group-item {
+      /*.list-group-item {
         margin-bottom: 0;
         border-bottom: 0;
-      }
+      }*/
 
+      /*
       .card-header + :not(.card-body) + .list-group .list-group-item:first-child {
         border-top: 0;
       }
+      */
     </style>
 EOT;
   }
@@ -378,7 +381,7 @@ add_filter('edit_post_link', function($link = '', $post_id = null, $text = '') {
 function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null, $id = null, $class = "") {
   // Extract options
   $options = wp_bootstrap_options();
-   $edit_post_link_class = $options['edit_post_link_class'];
+  $edit_post_link_class = $options['edit_post_link_class'];
   $edit_post_link_container_class = $options['edit_post_link_container_class'];
    // Capture edit post link html
   ob_start();
@@ -406,6 +409,8 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
    echo preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
    return;
 }
+
+
 
 // FIXME: Get rid of it
 function wp_bootstrap_post_tag_class( $classes ) {

@@ -3,10 +3,6 @@
  * Posts Pagination
  */
 function wp_bootstrap_posts_pagination( $args = array() ) {
-  if (!current_theme_supports('bootstrap')) {
-    return $args;
-  }
-
   $navigation = '';
 
   extract(wp_bootstrap_options());
@@ -50,9 +46,6 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
 
 
 function wp_bootstrap_post_navigation($args = array()) {
-  if (!current_theme_supports('bootstrap')) {
-    return $args;
-  }
 
   $args = wp_parse_args( $args, array(
       'prev_text'          => '%title',
@@ -112,9 +105,6 @@ function wp_bootstrap_post_navigation($args = array()) {
 
 // define the wp_link_pages callback 
 function wp_bootstrap_link_pages( $output, $args ) {
-  if (!current_theme_supports('bootstrap')) {
-    return $output;
-  }
 
   if (!$output) {
     return $output;
@@ -169,10 +159,6 @@ add_filter( 'wp_link_pages', 'wp_bootstrap_link_pages', 10, 2 );
 
 // Next posts link class
 add_filter('next_posts_link_attributes', function($attrs = '') {
-  if (!current_theme_supports('bootstrap')) {
-    return $attrs;
-  }
-
   $options = wp_bootstrap_options();
   $next_posts_link_class = $options['next_posts_link_class'];
 
@@ -187,10 +173,6 @@ add_filter('next_posts_link_attributes', function($attrs = '') {
 
 // Previous posts link class
 add_filter('previous_posts_link_attributes', function($attrs = array()) {
-  if (!current_theme_supports('bootstrap')) {
-    return $attrs;
-  }
-
   $options = wp_bootstrap_options();
   $previous_posts_link_class = $options['previous_posts_link_class'];
 

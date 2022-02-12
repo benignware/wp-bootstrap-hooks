@@ -8,6 +8,10 @@ use function util\dom\remove_all;
 use function util\dom\nested_root;
 
 add_filter('register_sidebar_defaults', function($defaults) {
+  if (!current_theme_supports('bootstrap')) {
+    return $defaults;
+  }
+
   return array_merge(
     $defaults,
     array(
@@ -26,7 +30,11 @@ add_filter('register_sidebar_defaults', function($defaults) {
 /**
  * Dynamic sidebar params
  */
-function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
+add_filter( 'dynamic_sidebar_params', function( $sidebar_params ) {
+  if ( !current_theme_supports( 'bootstrap' ) ) {
+    return $sidebar_params;
+  }
+
   global $wp_registered_widgets;
 
   if ( is_admin() ) {
@@ -51,8 +59,7 @@ function wp_bootstrap_dynamic_sidebar_params( $sidebar_params ) {
   $wp_registered_widgets[ $widget_id ]['callback'] = 'wp_bootstrap_widget_callback_function';
 
   return $sidebar_params;
-}
-add_filter( 'dynamic_sidebar_params', 'wp_bootstrap_dynamic_sidebar_params' );
+} );
 
 // Widget Callback
 function wp_bootstrap_widget_callback_function() {
@@ -78,7 +85,8 @@ function wp_bootstrap_widget_callback_function() {
 /**
  * Override Widget Output
  */
-function wp_bootstrap_widget_output($html, $widget_id_base, $widget_id) {
+
+add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_id) {
   if (strlen(trim($html)) === 0) {
     return $html;
   }
@@ -175,89 +183,114 @@ function wp_bootstrap_widget_output($html, $widget_id_base, $widget_id) {
   $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
   return $html;
-}
-add_filter( 'bootstrap_widget_output', 'wp_bootstrap_widget_output', 10, 3 );
+}, 10, 3 );
 
 
 /**
  * Dropdown in category widget dropdown
  * Reference: http://webinspiration.gallery/5-tips-build-wordpress-theme-using-bootstrap-3/
  */
-function wp_bootstrap_widget_categories_dropdown_args( $args ) {
-  if ( array_key_exists( 'class', $args ) && $args['class']) {
-    $args['class'].= ' form-control';
-  } else {
-    $args['class'] = 'form-control';
+
+add_filter( 'widget_categories_dropdown_args', function( $args ) {
+  if (!current_theme_supports('bootstrap')) {
+    return $args;
   }
+
+  $options = wp_bootstrap_options();
+  $text_input_class = $options['text_input_class'];
+
+  if ( array_key_exists( 'class', $args ) && $args['class']) {
+    $args['class'].= ' ' . $text_input_class;
+  } else {
+    $args['class'] = $text_input_class;
+  }
+
   return $args;
-}
-add_filter( 'widget_categories_dropdown_args', 'wp_bootstrap_widget_categories_dropdown_args' );
+});
 
 /**
  * Custom Styles
  */
-function wp_bootstrap_widget_styles() {
-  $options = wp_bootstrap_options();
-  $widget_class = $options['widget_class'];
-  $widget_header_class = $options['widget_header_class'];
-  echo
-<<<EOT
-  <style type="text/css">
-    /* FIXME: https://github.com/twbs/bootstrap/issues/20395 */
-    .$widget_class > .list-group > .list-group-item {
-      border-left: 0;
-      border-right: 0;
-    }
-    .$widget_class > .list-group:first-child .list-group-item:first-of-type {
-      border-top: 0;
-    }
-    .$widget_class > .list-group:last-child .list-group-item:last-of-type {
-      border-bottom: 0;
-    }
-    /* FIXME: https://github.com/twbs/bootstrap/issues/19047 */
-    .$widget_class > .$widget_header_class + .list-group > .list-group-item:first-child,
-    .$widget_class > .list-group + .$widget_class-footer {
-      border-top: 0;
-    }
-    /* Strip borders in search widget */
-    .$widget_class.$widget_class-search {
-      border: 0;
-    }
-    .$widget_class.$widget_class-search .form-group {
-      margin: 0;
-    }
 
-    .badge {
-      text-overflow: ellipsis;
-      overflow: hidden;
-      max-width: 100%;
-      vertical-align: middle;
-    }
-  </style>
-EOT;
+// add_action('wp_head', function() {
+//   if (!current_theme_supports('bootstrap')) {
+//     return;
+//   }
+
+//   $options = wp_bootstrap_options();
+//   $widget_class = $options['widget_class'];
+//   $widget_header_class = $options['widget_header_class'];
+
+//   echo
+// <<<EOT
+//   <style type="text/css">
+//     /* FIXME: https://github.com/twbs/bootstrap/issues/20395 */
+//     .$widget_class > .list-group > .list-group-item {
+//       border-left: 0;
+//       border-right: 0;
+//     }
+//     .$widget_class > .list-group:first-child .list-group-item:first-of-type {
+//       border-top: 0;
+//     }
+//     .$widget_class > .list-group:last-child .list-group-item:last-of-type {
+//       border-bottom: 0;
+//     }
+//     /* FIXME: https://github.com/twbs/bootstrap/issues/19047 */
+//     .$widget_class > .$widget_header_class + .list-group > .list-group-item:first-child,
+//     .$widget_class > .list-group + .$widget_class-footer {
+//       border-top: 0;
+//     }
+//     /* Strip borders in search widget */
+//     .$widget_class.$widget_class-search {
+//       border: 0;
+//     }
+//     .$widget_class.$widget_class-search .form-group {
+//       margin: 0;
+//     }
+
+//     .badge {
+//       text-overflow: ellipsis;
+//       overflow: hidden;
+//       max-width: 100%;
+//       vertical-align: middle;
+//     }
+//   </style>
+// EOT;
+// }, 100);
+
+function bs_topic_count_text_callback($text) {
+  return ' dsfasdfa ' . $text;
 }
-add_action('wp_head', 'wp_bootstrap_widget_styles', 100);
-
 
 // Tag cloud widget
 add_filter( 'widget_tag_cloud_args', function ($args) {
-  $tagcloud_class = 'test';
+  if (!current_theme_supports('bootstrap')) {
+    return $args;
+  }
 
   return array_merge($args, array(
-    'format' => 'flat'
+    'format' => 'flat',
   ));
 });
 
 add_filter( 'wp_generate_tag_cloud_data', function ($tags_data) {
+  if (!current_theme_supports('bootstrap')) {
+    return $tags_data;
+  }
+
+  // echo '<textarea>' . print_r($tags_data) . '</textarea>';
+  // print_r($tags_data);
+
   $options = wp_bootstrap_options();
   $post_tag_class = $options['post_tag_class'];
+  $post_tag_count_class = $options['post_tag_count_class'];
 
   foreach ($tags_data as $index => $tag_data) {
     $tags_data[$index] = array_merge($tag_data, array(
-      'class' => isset($tag_data['class']) ? $tag_data['class'] . ' ' . $post_tag_class : $post_tag_class
+      'class' => isset($tag_data['class']) ? $tag_data['class'] . ' ' . $post_tag_class : $post_tag_class,
+      'show_count' => sprintf('<span class="%s">%d</span>', $post_tag_count_class, $tag_data['real_count'])
     ));
   }
 
   return $tags_data;
 }, 10, 1 );
-?>

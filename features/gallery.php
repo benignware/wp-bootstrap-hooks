@@ -1,10 +1,12 @@
 <?php
-
-
 /**
  * Post Gallery
  */
-function wp_bootstrap_post_gallery($output, $atts) {
+add_filter('post_gallery', function($output, $atts) {
+  if (!current_theme_supports('bootstrap')) {
+    return $output;
+  }
+
   global $post;
   extract(wp_bootstrap_options());
 
@@ -145,6 +147,4 @@ function wp_bootstrap_post_gallery($output, $atts) {
   $output.= "</script>";
 
   return $output;
-}
-add_filter( 'post_gallery', 'wp_bootstrap_post_gallery', 1, 2 );
-?>
+}, 1, 2 );
