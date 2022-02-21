@@ -4,7 +4,7 @@
  Plugin Name: Bootstrap Hooks
  Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  Description: A collection of action and filters for bootstrap based themes
- Version: 1.0.0-beta.2
+ Version: 1.0.0-beta.3
  Author: Rafael Nowrotek, Benignware
  Author URI: http://benignware.com
  License: MIT
@@ -18,6 +18,7 @@ function wp_bootstrap_hooks() {
 
   if (!count($args)) {
     $args = array(
+      'functions',
       'content',
       'comments',
       'blocks',
@@ -27,6 +28,7 @@ function wp_bootstrap_hooks() {
       'pagination',
       'widgets',
       'header',
+      'taxonomies'
     );
   }
 
@@ -46,12 +48,17 @@ function wp_bootstrap_options() {
     // Buttons
     'button_class' => 'btn btn-%1$s',
     'button_outline_class' => 'btn btn-outline-%1$s',
-    // Forms
+    // WP Forms REMOVE
     'search_form_class' => '',
     'search_submit_label' => '<i>🔎</i>',
+    // Forms
+    'label_class' => 'form-label',
     'text_input_class' => 'form-control',
     'input_group_class' => 'input-group',
     'input_group_append_class' => 'input-group-append',
+    'checkbox_container_class' => 'form-check',
+    'checkbox_input_class' => 'form-check-input',
+    'checkbox_label_class' => 'form-check-label',
     'field_class' => 'form-group',
     'submit_class' => 'btn btn-primary',
     'submit_button_class' => 'btn btn-primary', // FIXME: Redundant option

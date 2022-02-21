@@ -1,11 +1,12 @@
 <?php
 
 use function util\dom\add_class;
+use function util\dom\has_class;
 
 /**
  * Add bootstrap classes to content images
  */
-if(!function_exists('wp_bootstrap_the_content')) {
+if (!function_exists('wp_bootstrap_the_content')) {
 
   function wp_bootstrap_the_content($content) {
     $options = wp_bootstrap_options();
@@ -156,10 +157,12 @@ if(!function_exists('wp_bootstrap_the_content')) {
 
     // Tables
     $table_elements = $doc->getElementsByTagName( 'table' );
+
     foreach ($table_elements as $table_element) {
-      $class = $table_element->getAttribute('class');
+      $class = $table_element->getAttribute('class') ?: '';
       $class.= ' table';
       $table_element->setAttribute('class', $class);
+
       if ($table_container_tag) {
         $table_container_element = $doc->createElement($table_container_tag);
         $table_container_element->setAttribute("class", $table_container_class);
@@ -176,15 +179,76 @@ if(!function_exists('wp_bootstrap_the_content')) {
       $tag_element->setAttribute('class', implode(" ", $classes));
     }
 
-    $input_elements = $doc_xpath->query("//select|textarea|input[not(@type='checkbox') and not(@type='radio')]");
+    // Form inputs
+    $input_elements = $doc_xpath->query("//select|//textarea|//input[not(@type='checkbox') and not(@type='radio')]");
     foreach ($input_elements as $input_element) {
       $classes = preg_split('/\s+/', $input_element->getAttribute('class'));
       $classes[]= $text_input_class;
       $input_element->setAttribute('class', implode(" ", $classes));
     }
 
+    // Labels
+    $label_elements = $doc_xpath->query("//label");
+    foreach ($label_elements as $label_element) {
+      add_class($label_element, $options['label_class']);
+    }
+
+    // Checkbonxes
+    $forms = $doc_xpath->query("//form");
+
+    foreach ($forms as $form) {
+      $form_id = $form->getAttribute('id');
+      $labels = $doc_xpath->query("//label", $form);
+
+      foreach ($labels as $label) {
+        $for = $label->getAttribute('for');
+        $input = null;
+
+        if ($for) {
+          $input = $doc_xpath->query(sprintf('//*[@id="%s"]', $for))->item(0);
+        }
+
+        if (!$input) {
+          $input = $doc_xpath->query("//input[@type='checkbox' or @type='radio']", )->item(0);
+
+          if ($input) {
+            $input_id = $input->getAttribute('id');
+  
+            if (!$input_id) {
+              if (!$form_id) {
+                continue;
+              }
+  
+              $input_id = $form_id . '-' . $input_name;
+              $input->setAttribute('id', $input_id);
+            }
+  
+            $label->setAttribute('for',  $input_id);
+            $label->parentNode->insertBefore($input, $label);
+          }
+
+          $label->setAttribute('class', $options['checkbox_label_class']);
+          $input->setAttribute('class', $options['checkbox_input_class']);
+
+          if (!has_class($label->parentNode, $options['checkbox_container_class'])) {
+            $wrapper = $doc->createElement('div');
+            $wrapper->setAttribute('class', $options['checkbox_container_class']);
+            $wrapper->appendChild($input);
+            $label->parentNode->insertBefore($wrapper, $label);
+            $wrapper->appendChild($label);
+          }
+        }
+      }
+    }
+
+    // Buttons
+    $buttons = $doc_xpath->query("//button|//input[@type='submit']");
+    foreach ($buttons as $button) {
+      add_class($button, sprintf($options['button_class'], 'primary'));
+    }
+
     $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
-    // echo "<textarea>" . $output . "</textarea>";
+
     return $output;
   }
   add_filter( 'the_content', 'wp_bootstrap_the_content', 100, 1 );

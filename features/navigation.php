@@ -46,6 +46,7 @@ function wp_bootstrap_nav_menu($nav_menu = '', $args = array()) {
   $menu_id = $match[1];
   return $nav_menu . <<<EOT
   <script>
+    /* TODO: Bootstrap 3 Support */
     (function($) {
       $('#$menu_id').on('click', '.dropdown-toggle', function(e) {
         if ($(this).parent('.dropdown').hasClass('open')) {
@@ -54,6 +55,7 @@ function wp_bootstrap_nav_menu($nav_menu = '', $args = array()) {
         e.preventDefault();
       });
     })(jQuery);
+    */
   </script>
 EOT;
 }
@@ -181,7 +183,8 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 
       // If item has_children add atts to a.
       if ( $args->has_children && $depth === 0 ) {
-        $atts['data-toggle']  = 'dropdown';
+        $atts['data-toggle']  = 'dropdown'; // Bootstrap 4
+        $atts['data-bs-toggle']  = 'dropdown'; // Bootstrap 5
         $atts['class'].= ' dropdown-toggle';
       }
 
