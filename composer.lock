@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a182dc31beb50abc5da85fe095f7efc0",
+    "content-hash": "cdaaa1c0abca7b6d9563e09f8d7a6a12",
     "packages": [
         {
             "name": "composer/installers",
@@ -160,6 +160,16 @@
     ],
     "packages-dev": [
         {
+            "name": "benignware/menu-plus",
+            "version": "v1.0.0-beta.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/benignware/wp-menu-plus.git",
+                "reference": "v1.0.0-beta.2"
+            },
+            "type": "wordpress-plugin"
+        },
+        {
             "name": "wemakecustom/wp-mu-loader",
             "version": "v1.0.2",
             "source": {
@@ -243,21 +253,39 @@
         },
         {
             "name": "wpackagist-plugin/fakerpress",
-            "version": "0.5.2",
+            "version": "0.5.3",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fakerpress/",
-                "reference": "trunk"
+                "reference": "tags/0.5.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fakerpress.zip?timestamp=1643276789"
+                "url": "https://downloads.wordpress.org/plugin/fakerpress.0.5.3.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/fakerpress/"
+        },
+        {
+            "name": "wpackagist-plugin/menu-image",
+            "version": "3.0.8",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/menu-image/",
+                "reference": "tags/3.0.8"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/menu-image.3.0.8.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/menu-image/"
         },
         {
             "name": "wpackagist-plugin/recent-posts-widget-with-thumbnails",
@@ -315,15 +343,15 @@
         },
         {
             "name": "wpackagist-theme/twentytwentytwo",
-            "version": "1.0",
+            "version": "1.1",
             "source": {
                 "type": "svn",
                 "url": "https://themes.svn.wordpress.org/twentytwentytwo/",
-                "reference": "1.0"
+                "reference": "1.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/theme/twentytwentytwo.1.0.zip"
+                "url": "https://downloads.wordpress.org/theme/twentytwentytwo.1.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -345,6 +373,7 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
+        "benignware/menu-plus": 10,
         "wptrt/theme-unit-test": 20
     },
     "prefer-stable": false,

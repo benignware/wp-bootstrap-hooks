@@ -15,10 +15,6 @@ add_filter('register_sidebar_defaults', function($defaults) {
   return array_merge(
     $defaults,
     array(
-      // 'before_widget' => "<div class=\"widget widget-$widget_id_base $widget_class $widget_modifier_class\">",
-      // 'after_widget'  => '</div>',
-      // 'before_title'  => '<div class="' . $widget_header_class . '">',
-      // 'after_title'   => '</div>'
       'before_widget'  => '<div id="%1$s" class="widget %2$s card card-%2$s mb-4">',
       'after_widget'   => "</div>\n",
       'before_title'   => '<div class="card-header"><span class="widgettitle card-title">',
@@ -94,23 +90,47 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
   $options = wp_bootstrap_options();
 
   if (function_exists('wp_bootstrap_the_content')) {
-    $html = wp_bootstrap_the_content($html);
+    // $html = wp_bootstrap_the_content($html);
   }
 
-  $modifier = preg_replace("~_~Ui", "-", $widget_id_base);
+  // echo '<textarea>' . $html . '</textarea>';
+
+  // $modifier = preg_replace("~_~Ui", "-", $widget_id_base);
 
   $doc = new DOMDocument();
   @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html );
   $xpath = new DOMXpath($doc);
-  $root = $doc->getElementsByTagName( 'body' )->item(0)->firstChild;
+
+  $root = $xpath->query('/html/body/*')->item(0);
+
+  // echo $root->getAttribute('data-raudio');
 
   if (!$root) {
     return $html;
   }
 
-  $result = $root->cloneNode();
+  $class = $root->getAttribute('class');
+  // echo $class;
+  $classes = array_filter(explode(' ', $class));
 
-  $inner_roots = $xpath->query('//div[1][count(following-sibling::*) = 0]', $root);
+  // Extract context class via template option
+  $context_class = $options['widget_context_class'];
+  $context_class_pattern = preg_replace('~^([\w\d_-]+)%s$~', '~$1([\w\d_-]+)~', $context_class);
+
+  $context = current(
+    array_map(
+      function($class) use ($context_class_pattern) {
+        return preg_replace($context_class_pattern, '$1', $class);
+      },
+      array_values(
+        array_filter($classes, function($class) use ($context_class_pattern) {
+          return preg_match($context_class_pattern, $class);
+        })
+      )
+    )
+  );
+
+  $inner_roots = $xpath->query('//div[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]', $root);
   $inner_root = $inner_roots->item($inner_roots->length - 1);
 
   $header = null;
@@ -125,41 +145,88 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
   }
 
   if ($header) {
-    $result->appendChild($header->cloneNode(true));
     $header->parentNode->removeChild($header);
   }
 
-  $inner_roots = $xpath->query('//div[1][count(following-sibling::*[not(local-name() = "script")]) = 0]', $root);
+  $inner_roots = $xpath->query('//div[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]', $root);
   $inner_root = $inner_roots->item($inner_roots->length - 1);
+
+  $result = $inner_root->cloneNode();
+
+  if ($header) {
+    $result->appendChild($header->cloneNode(true));
+  }
+
+  if ($xpath->query('//img')->length === 1) {
+    $image = null;
+    $xp = '/*[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]';
+
+    foreach ($inner_root->childNodes as $index => $child) {
+      $p = '.' . $xp;
+
+      $first_elements = [];
+
+      while ($element = $xpath->query($p, $child)->item(0)) {
+        $p.= $xp;
+        $first_elements[] = $element;
+      }
+
+      if (count($first_elements) > 0) {
+        $first_element = $first_elements[count($first_elements) - 1];
+        
+        if ($first_element->nodeName === 'img') {
+          add_class($child, 'mb-0');
+
+          foreach ($first_elements as $first_element) {
+            add_class($first_element, 'mb-0');
+          }
+
+          add_class($first_element, $widget_img_class);
+          
+          
+          $image = $child;
+        }
+      }
+    }
+
+    if ($image) {
+      $image->parentNode->removeChild($image);
+      $result->appendChild($image->cloneNode(true));
+    }
+  }
 
   $content = $doc->createElement('div');
   $content->setAttribute('class', 'card-body');
 
   foreach ($inner_root->childNodes as $index => $child) {
-    if ($child->nodeType !== 1) {
-      $content->appendChild($child->cloneNode(true));
-      continue;
-    }
-
     if ($child->nodeName === 'ul') {
       $is_action_list = $xpath->query('./li', $child)->length === $xpath->query('./li/a', $child)->length;
       $list = $is_action_list ? $doc->createElement('div') : $child->cloneNode();
 
-      add_class($list, 'list-group list-group-flush');
+      add_class($list, $options['widget_menu_class']);      
 
       foreach ($child->childNodes as $child) {
+
+        $menu_item_classes = [
+          $options['widget_menu_item_class']
+        ];
+  
+        if ($context) {
+          $menu_item_classes[] = sprintf($options['widget_menu_item_context_class'], $context);
+        }
+
         if ($is_action_list && $child->nodeType === 1) {
           $item = $xpath->query('./a', $child)->item(0);
 
           if ($item) {
-            add_class($item, 'list-group-item list-group-item-action');
+            $menu_item_classes[] = $options['widget_menu_item_link_class'];
           }
         } else {
           $item = $child;
+        }
 
-          if ($item->nodeType === 1) {
-            add_class($item, 'list-group-item');
-          }
+        if ($item->nodeType === 1) {
+          $item->setAttribute('class', implode(' ', $menu_item_classes));
         }
 
         if ($item) {
@@ -177,8 +244,8 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     $result->appendChild($content);
   }
 
-  $root->parentNode->insertBefore($result, $root);
-  $root->parentNode->removeChild($root);
+  $inner_root->parentNode->insertBefore($result, $inner_root);
+  $inner_root->parentNode->removeChild($inner_root);
 
   $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 

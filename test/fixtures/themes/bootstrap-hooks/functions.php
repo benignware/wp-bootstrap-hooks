@@ -365,8 +365,10 @@ function twentyseventeen_widgets_init() {
 		'name'          => __( 'Blog Sidebar', 'twentyseventeen' ),
 		'id'            => 'sidebar-1',
 		'description'   => __( 'Add widgets here to appear in your sidebar on blog posts and archive pages.', 'twentyseventeen' ),
-		// 'before_widget' => '',
-		// 'after_widget'  => '',
+		'before_sidebar' => '<div class="row g-4">',
+		'after_sidebar' => '</div>',
+		'before_widget' => '<div class="col-sm-12 col-md-6 col-lg-12"><div id="%1$s" class="card %2$s">',
+		'after_widget' 	=> '</div></div>',
 		// 'before_title'  => '',
 		// 'after_title'   => '',
 	) );

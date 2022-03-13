@@ -41,10 +41,13 @@ namespace util\dom {
     return implode(' ', array_unique($classes));
   }
 
-  function has_class($element, $class) {
+  function has_class($element, $pattern) {
     $classes = _parse_class($element->getAttribute('class'));
+    $classes = array_filter($classes, function($class) use ($pattern) {
+      return $class === $pattern || preg_match($pattern, $class);
+    });
 
-    return in_array($class, $classes);
+    return count($classes) > 0;
   }
   
   function add_class($element, $class) {
@@ -148,5 +151,28 @@ namespace util\dom {
     }
 
     return $new_element;
+  }
+
+  function contains_node($parent, $node) {
+    $xpath = new DOMXpath($parent->ownerDocument);
+    $elements = $xpath->query('.//*', $parent);
+  
+    foreach ($elements as $element) {
+      if ($element === $node) {
+        return true;
+      }
+    }
+  
+    return false;
+  }
+
+  function get_common_ancestor($node_a, $node_b) {
+    while ($node_a = $node_a->parentNode) {
+      if (contains_node($node_a, $node_b)) {
+        return $node_a;
+      }
+    }
+  
+    return null;
   }
 }

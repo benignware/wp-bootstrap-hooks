@@ -1,4 +1,6 @@
 <?php
+use function util\dom\add_class;
+
 /**
  * Posts Pagination
  */
@@ -202,3 +204,55 @@ add_filter('previous_posts_link_attributes', function($attrs = array()) {
 
   return trim($attrs);
 });
+
+add_filter('paginate_links_output', function($links, $args = []) {
+  if (!isset($args['type']) || $args['type'] !== 'list') {
+    return $links;
+  }
+  
+  $options = wp_bootstrap_options();
+
+  $doc = new DOMDocument();
+  @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $links );
+  $doc_xpath = new DOMXpath($doc);
+
+  $lists = $doc_xpath->query("//ul");
+
+  // 'pagination_class' => 'pagination pagination-sm',
+  // 'page_item_class' => 'page-item',
+  // 'page_item_active_class' => 'active',
+  // 'page_link_class' => 'page-link',
+
+  foreach ($lists as $list) {
+    add_class($list, $options['pagination_class']);
+  }
+
+  $items = $doc_xpath->query("//li");
+
+  foreach ($items as $item) {
+    add_class($item, $options['page_item_class']);
+  }
+
+  $links = $doc_xpath->query("//li/*");
+
+  foreach ($links as $link) {
+    add_class($link, $options['page_link_class']);
+  }
+
+  // $page_links = $document->getElementsByTagName('ul')->item(0)->childNodes;
+  // foreach($page_links as $page_link) {
+  //   if ($page_link->nodeType === 1) {
+  //     $page_link->setAttribute('class', $page_link->getAttribute('class') . ' ' . $page_link_class);
+  //     // Wrap in $page_item
+  //     $page_item = $document->createElement('li');
+  //     $page_item->setAttribute( 'class', $page_item_class . ($page_link->nodeName !== 'a' ? ' active' : '') );
+  //     $page_link->parentNode->insertBefore($page_item, $page_link);
+  //   }
+  // }
+  $links = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+  // $navigation = _navigation_markup( $links, 'posts-navigation', $args['screen_reader_text'] );
+  // return '<textarea>' . $links . '</textarea>';
+  // return $links;
+
+  return $links;
+}, 10, 2);

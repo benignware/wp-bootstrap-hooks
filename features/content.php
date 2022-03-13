@@ -156,31 +156,31 @@ if (!function_exists('wp_bootstrap_the_content')) {
     }
 
     // Tables
-    $table_elements = $doc->getElementsByTagName( 'table' );
+    // $table_elements = $doc->getElementsByTagName( 'table' );
 
-    foreach ($table_elements as $table_element) {
-      $class = $table_element->getAttribute('class') ?: '';
-      $class.= ' table';
-      $table_element->setAttribute('class', $class);
+    // foreach ($table_elements as $table_element) {
+    //   $class = $table_element->getAttribute('class') ?: '';
+    //   $class.= ' table';
+    //   $table_element->setAttribute('class', $class);
 
-      if ($table_container_tag) {
-        $table_container_element = $doc->createElement($table_container_tag);
-        $table_container_element->setAttribute("class", $table_container_class);
-        $table_element->parentNode->insertBefore($table_container_element, $table_element);
-        $table_container_element->appendChild($table_element);
-      }
-    }
+    //   if ($table_container_tag) {
+    //     $table_container_element = $doc->createElement($table_container_tag);
+    //     $table_container_element->setAttribute("class", $table_container_class);
+    //     $table_element->parentNode->insertBefore($table_container_element, $table_element);
+    //     $table_container_element->appendChild($table_element);
+    //   }
+    // }
 
     // Tags
-    $tag_elements = $doc_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' tag ') or contains(concat(' ', normalize-space(@class), '-'), ' tag-')]");
-    foreach ($tag_elements as $tag_element) {
-      $classes = preg_split('/\s+/', $tag_element->getAttribute('class'));
-      $classes = wp_bootstrap_post_tag_class($classes);
-      $tag_element->setAttribute('class', implode(" ", $classes));
-    }
+    // $tag_elements = $doc_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' tag ') or contains(concat(' ', normalize-space(@class), '-'), ' tag-')]");
+    // foreach ($tag_elements as $tag_element) {
+    //   $classes = preg_split('/\s+/', $tag_element->getAttribute('class'));
+    //   $classes = wp_bootstrap_post_tag_class($classes);
+    //   $tag_element->setAttribute('class', implode(" ", $classes));
+    // }
 
     // Form inputs
-    $input_elements = $doc_xpath->query("//select|//textarea|//input[not(@type='checkbox') and not(@type='radio')]");
+    $input_elements = $doc_xpath->query("//select|//textarea|//input[not(@type='checkbox') and not(@type='radio') and not(@type='submit')]");
     foreach ($input_elements as $input_element) {
       $classes = preg_split('/\s+/', $input_element->getAttribute('class'));
       $classes[]= $text_input_class;
@@ -193,7 +193,7 @@ if (!function_exists('wp_bootstrap_the_content')) {
       add_class($label_element, $options['label_class']);
     }
 
-    // Checkbonxes
+    // Checkboxes
     $forms = $doc_xpath->query("//form");
 
     foreach ($forms as $form) {
@@ -244,7 +244,10 @@ if (!function_exists('wp_bootstrap_the_content')) {
     // Buttons
     $buttons = $doc_xpath->query("//button|//input[@type='submit']");
     foreach ($buttons as $button) {
-      add_class($button, sprintf($options['button_class'], 'primary'));
+      // TODO: Improve how to exclude things here
+      if (!has_class($button, '~^(?:carousel-control|btn-close)~')) {
+        add_class($button, sprintf($options['button_class'], 'primary'));
+      }
     }
 
     $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
@@ -387,10 +390,10 @@ EOT;
         height: auto;
       }
       .alignleft {
-        margin-right: 1rem;
+        margin-right: auto;
       }
       .alignright {
-        margin-left: 1rem;
+        margin-left: auto;
       }
       .figure {
         max-width: 100%;
@@ -474,17 +477,15 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
    return;
 }
 
-
-
 // FIXME: Get rid of it
-function wp_bootstrap_post_tag_class( $classes ) {
-  $options = wp_bootstrap_options();
-  $post_tag_class = $options['post_tag_class'];
-  foreach ($classes as $index => $class) {
-    $class = preg_replace("~^tag\b~", "$post_tag_class", $class);
-    $classes[$index] = $class;
-  }
-  return $classes;
-}
+// function wp_bootstrap_post_tag_class( $classes ) {
+//   $options = wp_bootstrap_options();
+//   $post_tag_class = $options['post_tag_class'];
+//   foreach ($classes as $index => $class) {
+//     $class = preg_replace("~^tag\b~", "$post_tag_class", $class);
+//     $classes[$index] = $class;
+//   }
+//   return $classes;
+// }
 
 ?>

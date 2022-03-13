@@ -19,7 +19,7 @@ services:
       WORDPRESS_DB_PASSWORD: wordpress
     depends_on:
       - db
-    image: wordpress
+    image: wordpress:latest
     ports:
       - 3070:80
     restart: always

@@ -6,6 +6,12 @@ namespace benignware\bootstrap_hooks {
   use \DOMXPath;
   use \DOMDocument;
 
+  function get_options($context = null) {
+    $content = wp_bootstrap_the_content($content);
+
+    return $content;
+  }
+
   function get_markup($content) {
     $content = wp_bootstrap_the_content($content);
 

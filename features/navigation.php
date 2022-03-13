@@ -33,33 +33,33 @@ add_filter( 'wp_nav_menu_args', 'wp_bootstrap_nav_menu_args', 10, 2 );
 /**
  * Nav Menu Args
  */
-function wp_bootstrap_nav_menu($nav_menu = '', $args = array()) {
-  if (!current_theme_supports('bootstrap')) {
-    return $nav_menu;
-  }
+// function wp_bootstrap_nav_menu($nav_menu = '', $args = array()) {
+//   if (!current_theme_supports('bootstrap')) {
+//     return $nav_menu;
+//   }
 
-  // Parse menu id attribute
-  preg_match("#<\w+\s[^>]*id\s*=\s*[\'\"]??\s*?(.*)[\'\"\s]{1}[^>]*>#simU", $nav_menu, $match);
-  if (!$match) {
-    return $nav_menu;
-  }
-  $menu_id = $match[1];
-  return $nav_menu . <<<EOT
-  <script>
-    /* TODO: Bootstrap 3 Support */
-    (function($) {
-      $('#$menu_id').on('click', '.dropdown-toggle', function(e) {
-        if ($(this).parent('.dropdown').hasClass('open')) {
-          window.location.href = $(this).prop('href');
-        }
-        e.preventDefault();
-      });
-    })(jQuery);
-    */
-  </script>
-EOT;
-}
-add_filter( 'wp_nav_menu', 'wp_bootstrap_nav_menu', 10, 2 );
+//   // Parse menu id attribute
+//   preg_match("#<\w+\s[^>]*id\s*=\s*[\'\"]??\s*?(.*)[\'\"\s]{1}[^>]*>#simU", $nav_menu, $match);
+//   if (!$match) {
+//     return $nav_menu;
+//   }
+//   $menu_id = $match[1];
+//   return $nav_menu . <<<EOT
+//   <script>
+//     /* TODO: Bootstrap 3 Support */
+//     (function($) {
+//       $('#$menu_id').on('click', '.dropdown-toggle', function(e) {
+//         if ($(this).parent('.dropdown').hasClass('open')) {
+//           window.location.href = $(this).prop('href');
+//         }
+//         e.preventDefault();
+//       });
+//     })(jQuery);
+//     */
+//   </script>
+// EOT;
+// }
+// add_filter( 'wp_nav_menu', 'wp_bootstrap_nav_menu', 10, 2 );
 
 /**
  * Class Name: wp_bootstrap_navwalker
@@ -87,10 +87,34 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
    * @param int $depth Depth of page. Used for padding.
    */
   public function start_lvl( &$output, $depth = 0, $args = array() ) {
-    $indent = str_repeat( "\t", $depth );
     $sub_menu_tag = $this->options['sub_menu_tag'];
     $sub_menu_class = $this->options['sub_menu_class'];
-    $output .= "\n$indent<$sub_menu_tag role=\"dropdown\" class=\" $sub_menu_class\">\n";
+
+    if ( isset( $args->item_spacing ) && 'discard' === $args->item_spacing ) {
+      $t = '';
+      $n = '';
+    } else {
+      $t = "\t";
+      $n = "\n";
+    }
+    $indent = str_repeat( $t, $depth );
+
+    // Default class.
+    $classes = array( 'sub-menu', $sub_menu_class );
+
+    /**
+     * Filters the CSS class(es) applied to a menu list element.
+     *
+     * @since 4.8.0
+     *
+     * @param string[] $classes Array of the CSS classes that are applied to the menu `<ul>` element.
+     * @param stdClass $args    An object of `wp_nav_menu()` arguments.
+     * @param int      $depth   Depth of menu item. Used for padding.
+     */
+    $class_names = implode( ' ', apply_filters( 'nav_menu_submenu_css_class', $classes, $args, $depth ) );
+    $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
+
+    $output .= "{$n}{$indent}<$sub_menu_tag$class_names>{$n}";
   }
 
   /**
@@ -105,6 +129,8 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
    */
   public function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
     $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
+
+    $menu_order = $item->menu_order;
 
     $menu_item_class = $this->options['menu_item_class'];
     $menu_item_link_class = $this->options['menu_item_link_class'];
@@ -198,11 +224,16 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
         }
       }
 
+      $title = apply_filters( 'the_title', $item->title, $item->ID );
+      $title = apply_filters( 'nav_menu_item_title', $title, $item, $args, $depth );
+
       $item_output = '';
 
       $item_output .= $args->before;
       $item_output .= '<a'. $attributes .'>';
-      $item_output .= $args->link_before . apply_filters( 'the_title', $item->title, $item->ID ) . $args->link_after;
+      $item_output .= $args->link_before;
+      $item_output .= $title;
+      $item_output .= $args->link_after;
       $item_output .= ( $caret && $args->has_children && 0 === $depth ) ? '&nbsp;' . $caret . '</a>' : '</a>';
       $item_output .= $args->after;
 

@@ -7,11 +7,16 @@ use function util\dom\has_class;
 use function util\dom\find_by_class;
 use function util\dom\find_all_by_class;
 use function util\dom\replace_tag;
+use function util\dom\get_common_ancestor;
+use function util\dom\contains_node;
 
 add_filter('render_block', function($content, $block)  {
   if (!current_theme_supports('bootstrap')) {
     return $content;
   }
+
+  $palette = get_theme_support('editor-color-palette');
+	$palette = $palette ? $palette[0] : null;
 
   if (!trim($content)) {
     return $content;
@@ -19,6 +24,32 @@ add_filter('render_block', function($content, $block)  {
 
   $name = $block['blockName'];
   $attrs = $block['attrs'];
+
+  $background_color_name = null;
+
+  if (isset($attrs['backgroundColor'])) {
+    if ($palette) {
+      $background_color_name = array_values(array_map(
+        function($item) {
+          return $item['slug'];
+        },
+        array_filter($palette, function($item) use ($attrs) {
+          return $item['color'] === $attrs['backgroundColor'];
+        })
+      ))[0];
+      $background_color_name = isset($background_color_name) ? $background_color_name : null;
+    }
+
+    // TODO: Custom colors
+    // if (!isset($background_color_name)) {
+    //   $background_color_name = str_replace('#', 'hex-', $attrs['backgroundColor']);
+    // }
+
+    if (!$background_color_name) {
+      $background_color_name = 'primary';
+    }
+  }
+
   $options = wp_bootstrap_options();
 
   $doc = new DOMDocument();
@@ -82,26 +113,15 @@ add_filter('render_block', function($content, $block)  {
     add_class($input, $options['text_input_class']);
   }
 
-  // Buttons
-  $buttons = $doc_xpath->query("//button");
-  foreach ($buttons as $button) {
-    $class = sprintf($options['button_class'], 'primary');
-    add_class($button, $class);
-  }
-
   // Blocks
   if ($name === 'core/button') {
     list($button) = $doc_xpath->query("//a|//button");
-
-    $modifier = isset($attrs['backgroundColor'])
-      ? $attrs['backgroundColor']
-      : 'primary';
 
     $class = sprintf(
       isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']))
         ? $options['button_outline_class']
         : $options['button_class'],
-      $modifier
+      $background_color_name ?: 'primary'
     );
 
     add_class($button, $class);
@@ -111,10 +131,9 @@ add_filter('render_block', function($content, $block)  {
     if ($button->nodeName === 'a') {
       $button->setAttribute('href', $button->getAttribute('href') ?? '#');
     }
-    // print_r($block);
+  }
 
-    // remove_class($button, '~^wp-block~');
-    // remove_class($container, '~^wp-block~');
+  if ($name === 'core/buttons') {
   }
 
   if ($name === 'core/columns') {
@@ -125,7 +144,7 @@ add_filter('render_block', function($content, $block)  {
   if ($name === 'core/column') {
     $width = $block['attrs']['width'];
     $cell = intval(floatval($width) / 100 * 12);
-    $breakpoint = 'lg';
+    $breakpoint = 'lg'; // TODO: Make configurable
     $class = sprintf($options['column_class'], $cell, $breakpoint);
 
     add_class($container, $class);
@@ -177,6 +196,43 @@ add_filter('render_block', function($content, $block)  {
   // echo $name;
   // echo '<br/>';
 
+  if ($name === 'core/search') {
+    $form = $doc_xpath->query('//form')->item(0);
+    $input = $doc_xpath->query('//input[@name="s"]')->item(0);
+    $submit = $doc_xpath->query('//input[@type="submit"]|//button')->item(0);
+    $common_ancestor = get_common_ancestor($input, $submit);
+
+    if ($common_ancestor === $form) {
+      $wrapper = $doc->createElement('div');
+      $children = [];
+  
+      foreach ($common_ancestor->childNodes as $child) {
+        if (
+          $child === $submit
+          || contains_node($child, $submit)
+          || $child === $input
+          || contains_node($child, $input)
+        ) {
+          $children[] = $child;
+        }
+      }
+  
+      if (count($children) > 0) {
+        $common_ancestor->insertBefore($wrapper, $children[0]);
+  
+        foreach ($children as $child) {
+          $wrapper->appendChild($child);
+        }
+      }
+    } else {
+      $wrapper = $common_ancestor;
+    }
+  
+    $wrapper->setAttribute('class', $options['input_group_class']);
+
+    $submit->setAttribute('class', $submit->getAttribute('class') . ' ' . $options['submit_button_class']);
+  }
+
   if ($name === 'core/query-pagination') {
     $nav = $container->cloneNode();
     $nav = replace_tag($nav, 'nav');
@@ -224,6 +280,16 @@ add_filter('render_block', function($content, $block)  {
     $container->parentNode->appendChild($item);
     $container->parentNode->removeChild($container);
   }
+
+
+  // Common
+
+  // Buttons
+  // $buttons = $doc_xpath->query("//button");
+  // foreach ($buttons as $button) {
+  //   $class = sprintf($options['button_class'], 'primary');
+  //   add_class($button, $class);
+  // }
   
   $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 

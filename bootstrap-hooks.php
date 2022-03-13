@@ -4,7 +4,7 @@
  Plugin Name: Bootstrap Hooks
  Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  Description: A collection of action and filters for bootstrap based themes
- Version: 1.0.0-beta.3
+ Version: 1.0.0-beta.4
  Author: Rafael Nowrotek, Benignware
  Author URI: http://benignware.com
  License: MIT
@@ -12,14 +12,15 @@
 
 require_once 'lib/util/dom.php';
 require_once 'lib/helpers.php';
+require_once 'features/functions.php';
 
 function wp_bootstrap_hooks() {
   $args = func_get_args();
 
   if (!count($args)) {
     $args = array(
-      'functions',
       'content',
+      'functions',
       'comments',
       'blocks',
       'forms',
@@ -56,7 +57,7 @@ function wp_bootstrap_options() {
     'text_input_class' => 'form-control',
     'input_group_class' => 'input-group',
     'input_group_append_class' => 'input-group-append',
-    'checkbox_container_class' => 'form-check',
+    'checkbox_container_class' => 'form-check my-3',
     'checkbox_input_class' => 'form-check-input',
     'checkbox_label_class' => 'form-check-label',
     'field_class' => 'form-group',
@@ -91,7 +92,7 @@ function wp_bootstrap_options() {
     'edit_post_link_class' => 'btn btn-sm btn-outline-secondary',
     'edit_post_link_container_class' => 'btn-group btn-group-sm d-block my-2',
     // Tags
-    'post_tag_class' => 'btn btn-sm btn-secondary text-wrap mb-1',
+    'post_tag_class' => 'btn btn-sm btn-outline-primary text-wrap mb-1',
     'post_tag_count_class' => 'badge bg-primary',
     // Gallery
     'gallery_thumbnail_size' => 'thumbnail',
@@ -118,7 +119,7 @@ function wp_bootstrap_options() {
     'divider_class' => 'divider',
     'caret' => '<span class="caret"></span>',
     // Pagination
-    'pagination_class' => 'pagination pagination-sm',
+    'pagination_class' => 'pagination',
     'page_item_class' => 'page-item',
     'page_item_active_class' => 'active',
     'page_link_class' => 'page-link',
@@ -127,18 +128,23 @@ function wp_bootstrap_options() {
     'post_nav_item_class' => 'page-item',
     'post_nav_item_tag' => 'li',
     'post_nav_link_class' => 'page-link',
-    'paginated_class' => 'pagination pagination-sm',
+    'paginated_class' => 'pagination',
     'paginated_tag' => 'ul',
     'paginated_item_class' => 'page-item',
     'paginated_item_tag' => 'li',
     'paginated_link_class' => 'page-link',
-    'next_posts_link_class' => 'btn btn-outline-secondary btn-sm float-right',
-    'previous_posts_link_class' => 'btn btn-outline-secondary btn-sm float-left',
+    'next_posts_link_class' => 'btn btn-outline-secondary float-right',
+    'previous_posts_link_class' => 'btn btn-outline-secondary float-left',
     // Widgets
     'widget_class' => 'card mb-3',
+    'widget_context_class' => 'bg-%s', // Used to retrieve current context
     'widget_modifier_class' => 'card-widget',
     'widget_header_class' => 'card-header',
     'widget_content_class' => 'card-body',
+    'widget_menu_class' => 'list-group list-group-flush',
+    'widget_menu_item_class' => 'list-group-item',
+    'widget_menu_item_link_class' => 'list-group-item-action',
+    'widget_menu_item_context_class' => 'list-group-item-%s',
     // Categories
     'category_list_class' => 'breadcrumb',
     'category_list_item_class' => 'breadcrumb-item',
@@ -157,11 +163,6 @@ function wp_bootstrap_options() {
 
   return $result;
 }
-
-// If file resides in template directory, require all immediately
-// if (preg_match("~^" . preg_quote(get_template_directory(), "~") . "~", __FILE__)) {
-//   wp_bootstrap_hooks();
-// }
 
 wp_bootstrap_hooks();
 

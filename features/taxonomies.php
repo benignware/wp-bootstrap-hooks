@@ -4,8 +4,6 @@ use function util\dom\add_class;
 add_action('init', function() {
   $taxonomies = get_taxonomies();
 
-  // print_r($taxonomies);
-
   add_filter('term_links-topic-tag', function($links) {
     $result = [];
 
@@ -28,4 +26,3 @@ add_action('init', function() {
     return $result;
   });
 });
-
