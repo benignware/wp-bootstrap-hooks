@@ -15,6 +15,9 @@ add_filter('render_block', function($content, $block)  {
     return $content;
   }
 
+  // list($palette) = has_theme_support('editor-color-palette')
+  //   ? get_theme_support('editor-color-palette')
+  //   : [[]];
   $palette = get_theme_support('editor-color-palette');
 	$palette = $palette ? $palette[0] : null;
 
@@ -285,11 +288,12 @@ add_filter('render_block', function($content, $block)  {
   // Common
 
   // Buttons
-  // $buttons = $doc_xpath->query("//button");
-  // foreach ($buttons as $button) {
-  //   $class = sprintf($options['button_class'], 'primary');
-  //   add_class($button, $class);
-  // }
+  $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']");
+
+  foreach ($buttons as $button) {
+    $class = sprintf($options['button_class'], 'primary');
+    add_class($button, $class);
+  }
   
   $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 

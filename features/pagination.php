@@ -1,5 +1,6 @@
 <?php
 use function util\dom\add_class;
+use function util\dom\has_class;
 
 /**
  * Posts Pagination
@@ -237,6 +238,10 @@ add_filter('paginate_links_output', function($links, $args = []) {
 
   foreach ($links as $link) {
     add_class($link, $options['page_link_class']);
+
+    if (has_class($link, 'current')) {
+      add_class($link->parentNode, $options['page_item_active_class']);
+    }
   }
 
   // $page_links = $document->getElementsByTagName('ul')->item(0)->childNodes;

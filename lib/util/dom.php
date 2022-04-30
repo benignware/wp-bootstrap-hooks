@@ -110,11 +110,9 @@ namespace util\dom {
   }
 
   function nested_root($element) {
-    echo 'GET NESTED ROOT: ' . $element->nodeName . '<br/>';
     $result = null;
 
     foreach ($element->childNodes as $child) {
-      echo 'NESTED CHILD...<br/>';
       if ($child->nodeType === 3 && strlen(trim($child->nodeValue)) > 0) {
         return $element;
       }
@@ -127,7 +125,6 @@ namespace util\dom {
     }
 
     if ($result) {
-      echo 'NESTED';
       return nested_root($result);
     }
 

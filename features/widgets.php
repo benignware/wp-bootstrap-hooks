@@ -1,6 +1,7 @@
 <?php
 
 use function util\dom\add_class;
+use function util\dom\remove_class;
 use function util\dom\add_style;
 use function util\dom\find_by_class;
 use function util\dom\trim_nodes;
@@ -15,6 +16,10 @@ add_filter('register_sidebar_defaults', function($defaults) {
   return array_merge(
     $defaults,
     array(
+      // 'before_widget' => "<div class=\"widget widget-$widget_id_base $widget_class $widget_modifier_class\">",
+      // 'after_widget'  => '</div>',
+      // 'before_title'  => '<div class="' . $widget_header_class . '">',
+      // 'after_title'   => '</div>'
       'before_widget'  => '<div id="%1$s" class="widget %2$s card card-%2$s mb-4">',
       'after_widget'   => "</div>\n",
       'before_title'   => '<div class="card-header"><span class="widgettitle card-title">',
@@ -83,19 +88,19 @@ function wp_bootstrap_widget_callback_function() {
  */
 
 add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_id) {
+
+  
   if (strlen(trim($html)) === 0) {
     return $html;
   }
 
   $options = wp_bootstrap_options();
 
+  
+
   if (function_exists('wp_bootstrap_the_content')) {
-    // $html = wp_bootstrap_the_content($html);
+    $html = wp_bootstrap_the_content($html);
   }
-
-  // echo '<textarea>' . $html . '</textarea>';
-
-  // $modifier = preg_replace("~_~Ui", "-", $widget_id_base);
 
   $doc = new DOMDocument();
   @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html );
@@ -103,14 +108,21 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
 
   $root = $xpath->query('/html/body/*')->item(0);
 
-  // echo $root->getAttribute('data-raudio');
-
   if (!$root) {
     return $html;
   }
 
+  $card = $xpath->query("*//*[contains(concat(' ', normalize-space(@class), ' '), ' card ')]", $root)->item(0);
+
+  if ($card) {
+    remove_class($card, 'card');
+
+    $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+
+    return $html;
+  }
+
   $class = $root->getAttribute('class');
-  // echo $class;
   $classes = array_filter(explode(' ', $class));
 
   // Extract context class via template option

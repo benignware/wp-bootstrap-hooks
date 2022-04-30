@@ -37,6 +37,8 @@ if (!function_exists('wp_bootstrap_the_content')) {
       $image_element->setAttribute('class', $image_element_class);
     }
 
+    
+
     // Embeds
 
     // Get ratio items and sort by their ratios
@@ -118,6 +120,8 @@ if (!function_exists('wp_bootstrap_the_content')) {
       }
     }
 
+    
+
     // Blockquotes
     $blockquote_elements = $doc->getElementsByTagName( 'blockquote' );
     foreach ($blockquote_elements as $blockquote_element) {
@@ -156,20 +160,22 @@ if (!function_exists('wp_bootstrap_the_content')) {
     }
 
     // Tables
-    // $table_elements = $doc->getElementsByTagName( 'table' );
+    $table_elements = $doc->getElementsByTagName( 'table' );
 
-    // foreach ($table_elements as $table_element) {
-    //   $class = $table_element->getAttribute('class') ?: '';
-    //   $class.= ' table';
-    //   $table_element->setAttribute('class', $class);
+    foreach ($table_elements as $table_element) {
+      $class = $table_element->getAttribute('class') ?: '';
+      $class.= ' table';
+      $table_element->setAttribute('class', $class);
 
-    //   if ($table_container_tag) {
-    //     $table_container_element = $doc->createElement($table_container_tag);
-    //     $table_container_element->setAttribute("class", $table_container_class);
-    //     $table_element->parentNode->insertBefore($table_container_element, $table_element);
-    //     $table_container_element->appendChild($table_element);
-    //   }
-    // }
+      if ($table_container_tag) {
+        $table_container_element = $doc->createElement($table_container_tag);
+        $table_container_element->setAttribute("class", $table_container_class);
+        $table_element->parentNode->insertBefore($table_container_element, $table_element);
+        $table_container_element->appendChild($table_element);
+      }
+    }
+
+    
 
     // Tags
     // $tag_elements = $doc_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' tag ') or contains(concat(' ', normalize-space(@class), '-'), ' tag-')]");
@@ -186,6 +192,8 @@ if (!function_exists('wp_bootstrap_the_content')) {
       $classes[]= $text_input_class;
       $input_element->setAttribute('class', implode(" ", $classes));
     }
+
+    
 
     // Labels
     $label_elements = $doc_xpath->query("//label");
@@ -225,29 +233,31 @@ if (!function_exists('wp_bootstrap_the_content')) {
   
             $label->setAttribute('for',  $input_id);
             $label->parentNode->insertBefore($input, $label);
-          }
 
-          $label->setAttribute('class', $options['checkbox_label_class']);
-          $input->setAttribute('class', $options['checkbox_input_class']);
+            $input->setAttribute('class', $options['checkbox_input_class']);
+            $label->setAttribute('class', $options['checkbox_label_class']);
 
-          if (!has_class($label->parentNode, $options['checkbox_container_class'])) {
-            $wrapper = $doc->createElement('div');
-            $wrapper->setAttribute('class', $options['checkbox_container_class']);
-            $wrapper->appendChild($input);
-            $label->parentNode->insertBefore($wrapper, $label);
-            $wrapper->appendChild($label);
+            if (!has_class($label->parentNode, $options['checkbox_container_class'])) {
+              $wrapper = $doc->createElement('div');
+              $wrapper->setAttribute('class', $options['checkbox_container_class']);
+              $wrapper->appendChild($input);
+              $label->parentNode->insertBefore($wrapper, $label);
+              $wrapper->appendChild($label);
+            }
           }
         }
       }
     }
 
     // Buttons
-    $buttons = $doc_xpath->query("//button|//input[@type='submit']");
+    $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']");
+    // $buttons = $doc_xpath->query("//button|//input[@type='submit']");
     foreach ($buttons as $button) {
       // TODO: Improve how to exclude things here
-      if (!has_class($button, '~^(?:carousel-control|btn-close)~')) {
-        add_class($button, sprintf($options['button_class'], 'primary'));
-      }
+      // if (!has_class($button, '~^(?:carousel-control|btn-close)~')) {
+      //   add_class($button, sprintf($options['button_class'], 'primary'));
+      // }
+      add_class($button, sprintf($options['button_class'], 'primary'));
     }
 
     $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
@@ -487,5 +497,3 @@ function wp_bootstrap_edit_post_link($link = null, $before = null, $after = null
 //   }
 //   return $classes;
 // }
-
-?>
