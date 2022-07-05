@@ -41,10 +41,6 @@ function wp_bootstrap_hooks() {
 function wp_bootstrap_options() {
   global $_wp_theme_features;
 
-  $args = array_merge([
-    'version' => 5
-  ], isset($_wp_theme_features[ 'bootstrap' ]) ? $_wp_theme_features[ 'bootstrap' ] : []);
-
   $defaults = array(
     // Buttons
     'button_class' => 'btn btn-%1$s',
@@ -149,6 +145,13 @@ function wp_bootstrap_options() {
     'category_list_class' => 'breadcrumb',
     'category_list_item_class' => 'breadcrumb-item',
     'category_list_item_active_class' => 'active',
+  );
+
+  $args = array_merge(
+    [
+      'version' => 5
+    ],
+    is_array($_wp_theme_features[ 'bootstrap' ]) ? $_wp_theme_features[ 'bootstrap' ] : []
   );
 
   // Apply option filters

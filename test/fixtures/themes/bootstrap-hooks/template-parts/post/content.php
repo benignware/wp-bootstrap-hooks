@@ -39,11 +39,11 @@
 			<div <?php post_content_class(); ?>>
 				<?php
 					if ( is_single() ):
-						the_title( '<h1 class="' . get_post_title_class() . '">', '</h1>' );
+						the_title( '<h1 class="' . implode(' ', get_post_title_class()) . '">', '</h1>' );
 					elseif ( is_front_page() && is_home() ):
-						the_title( '<h3 class="' . get_post_title_class() . '"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' );
+						the_title( '<h3 class="' . implode(' ', get_post_title_class()) . '"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h3>' );
 					else:
-						the_title( '<h2 class="' . get_post_title_class() . '"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
+						the_title( '<h2 class="' . implode(' ', get_post_title_class()) . '"><a href="' . esc_url( get_permalink() ) . '" rel="bookmark">', '</a></h2>' );
 					endif;
 				?>
 
