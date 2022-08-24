@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cdaaa1c0abca7b6d9563e09f8d7a6a12",
+    "content-hash": "1229e6b46b79f2a4cbaacc171857aa55",
     "packages": [
         {
             "name": "composer/installers",
@@ -213,6 +213,7 @@
                 "issues": "https://github.com/wemakecustom/wp-mu-loader/issues",
                 "source": "https://github.com/wemakecustom/wp-mu-loader/tree/master"
             },
+            "abandoned": true,
             "time": "2015-01-21T14:32:26+00:00"
         },
         {
@@ -235,15 +236,15 @@
         },
         {
             "name": "wpackagist-plugin/disable-full-site-editing",
-            "version": "1.0.3",
+            "version": "1.1.3",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/disable-full-site-editing/",
-                "reference": "tags/1.0.3"
+                "reference": "tags/1.1.3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/disable-full-site-editing.1.0.3.zip"
+                "url": "https://downloads.wordpress.org/plugin/disable-full-site-editing.1.1.3.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -325,15 +326,15 @@
         },
         {
             "name": "wpackagist-theme/twentyseventeen",
-            "version": "2.9",
+            "version": "3.0",
             "source": {
                 "type": "svn",
                 "url": "https://themes.svn.wordpress.org/twentyseventeen/",
-                "reference": "2.9"
+                "reference": "3.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/theme/twentyseventeen.2.9.zip"
+                "url": "https://downloads.wordpress.org/theme/twentyseventeen.3.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -343,15 +344,15 @@
         },
         {
             "name": "wpackagist-theme/twentytwentytwo",
-            "version": "1.1",
+            "version": "1.2",
             "source": {
                 "type": "svn",
                 "url": "https://themes.svn.wordpress.org/twentytwentytwo/",
-                "reference": "1.1"
+                "reference": "1.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/theme/twentytwentytwo.1.1.zip"
+                "url": "https://downloads.wordpress.org/theme/twentytwentytwo.1.2.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"

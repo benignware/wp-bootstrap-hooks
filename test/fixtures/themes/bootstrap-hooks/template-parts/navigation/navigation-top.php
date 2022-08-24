@@ -8,7 +8,7 @@
  * @version 1.2
  */
 ?>
-<nav id="site-navigation" class="main-navigation navbar navbar-expand-md navbar-dark bg-dark" role="navigation" aria-label="<?php esc_attr_e( 'Top Menu', 'twentyseventeen' ); ?>">
+<nav id="site-navigation" class="main-navigation navbar navbar-expand-md navbar-dark bg-dark" role="navigation">
 	<div class="container">
 		<a class="navbar-brand site-title" href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home" title="<?php bloginfo( 'name' ); ?>">
 			<?php bloginfo( 'name' ); ?>

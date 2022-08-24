@@ -4,7 +4,7 @@
  Plugin Name: Bootstrap Hooks
  Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  Description: A collection of action and filters for bootstrap based themes
- Version: 1.0.0-beta.5
+ Version: 1.0.0-beta.6
  Author: Rafael Nowrotek, Benignware
  Author URI: http://benignware.com
  License: MIT
@@ -72,7 +72,8 @@ function wp_bootstrap_options() {
     'img_caption_text_tag' => 'figcaption',
     'img_caption_text_class' => 'figure-caption',
     'img_caption_img_class' => 'figure-img',
-    'table_class' => 'table table-responsive',
+    'table_class' => 'table',
+    'table_striped_class' => 'table-striped',
     'table_container_tag' => 'div',
     'table_container_class' => 'table-responsive',
     'blockquote_class' => 'blockquote',
@@ -151,7 +152,9 @@ function wp_bootstrap_options() {
     [
       'version' => 5
     ],
-    is_array($_wp_theme_features[ 'bootstrap' ]) ? $_wp_theme_features[ 'bootstrap' ] : []
+    isset($_wp_theme_features[ 'bootstrap' ]) && is_array($_wp_theme_features[ 'bootstrap' ])
+      ? $_wp_theme_features[ 'bootstrap' ]
+      : []
   );
 
   // Apply option filters

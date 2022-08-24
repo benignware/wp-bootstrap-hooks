@@ -120,8 +120,6 @@ if (!function_exists('wp_bootstrap_the_content')) {
       }
     }
 
-    
-
     // Blockquotes
     $blockquote_elements = $doc->getElementsByTagName( 'blockquote' );
     foreach ($blockquote_elements as $blockquote_element) {
@@ -163,11 +161,9 @@ if (!function_exists('wp_bootstrap_the_content')) {
     $table_elements = $doc->getElementsByTagName( 'table' );
 
     foreach ($table_elements as $table_element) {
-      $class = $table_element->getAttribute('class') ?: '';
-      $class.= ' table';
-      $table_element->setAttribute('class', $class);
+      add_class($table_element, $options['table_class']);
 
-      if ($table_container_tag) {
+      if ($table_container_tag && !has_class($table_element->parentNode, $table_container_class)) {
         $table_container_element = $doc->createElement($table_container_tag);
         $table_container_element->setAttribute("class", $table_container_class);
         $table_element->parentNode->insertBefore($table_container_element, $table_element);

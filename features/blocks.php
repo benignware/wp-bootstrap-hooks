@@ -116,6 +116,14 @@ add_filter('render_block', function($content, $block)  {
     add_class($input, $options['text_input_class']);
   }
 
+  // Buttons
+  $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']");
+
+  foreach ($buttons as $button) {
+    $class = sprintf($options['button_class'], 'primary');
+    add_class($button, $class);
+  }
+
   // Blocks
   if ($name === 'core/button') {
     list($button) = $doc_xpath->query("//a|//button");
@@ -142,6 +150,21 @@ add_filter('render_block', function($content, $block)  {
   if ($name === 'core/columns') {
     // remove_class($container, '~^wp-block~');
     add_class($container, $options['columns_class']);
+  }
+
+  if ($name === 'core/table') {
+    add_class($container, $options['table_container_class']);
+    remove_class($container, 'figure', true);
+
+    $table = $container->getElementsByTagName('table')->item(0);
+
+    add_class($table, $options['table_class']);
+
+    if (in_array('is-style-stripes', explode(' ', $attrs['className']))) {
+      add_class($table, $options['table_striped_class']);
+    };
+
+    remove_class($container, '~^wp-block-table~', true);
   }
 
   if ($name === 'core/column') {
@@ -285,15 +308,7 @@ add_filter('render_block', function($content, $block)  {
   }
 
 
-  // Common
-
-  // Buttons
-  $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']");
-
-  foreach ($buttons as $button) {
-    $class = sprintf($options['button_class'], 'primary');
-    add_class($button, $class);
-  }
+  
   
   $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 

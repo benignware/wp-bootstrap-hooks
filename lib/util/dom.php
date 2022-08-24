@@ -44,7 +44,7 @@ namespace util\dom {
   function has_class($element, $pattern) {
     $classes = _parse_class($element->getAttribute('class'));
     $classes = array_filter($classes, function($class) use ($pattern) {
-      return $class === $pattern || preg_match($pattern, $class);
+      return $class === $pattern || @preg_match($pattern, $class);
     });
 
     return count($classes) > 0;
@@ -56,10 +56,16 @@ namespace util\dom {
     $element->setAttribute('class', _stringify_class($classes));
   }
   
-  function remove_class($element, $pattern) {
+  function remove_class($element, $pattern, $recursive = false) {
+    if (is_array($element) or $element instanceof \DOMNodeList) {
+      foreach ($element as $node) {
+        remove_class($node, $pattern);
+      }
+      return;
+    }
     $classes = _parse_class($element->getAttribute('class'));
     $classes = array_filter($classes, function($class) use ($pattern) {
-      return $class && $class !== $pattern && !preg_match($pattern, $class);
+      return $class && $class !== $pattern && !@preg_match($pattern, $class);
     });
 
     if (count($classes) > 0) {
@@ -67,17 +73,30 @@ namespace util\dom {
     } else {
       $element->removeAttribute('class');
     }
+
+    if ($recursive) {
+      foreach ($element->childNodes as $node) {
+        if ($node->nodeType === 1) {
+          remove_class($node, $pattern);
+        }
+      }
+    }
   }
 
-  function find_all_by_class($element, $class) {
-    $xpath = new DOMXPath($element->ownerDocument);
-    $items = $xpath->query(".//*[contains(concat(' ', normalize-space(@class), ' '), ' " . $class . " ')]", $element);
+  function find_all_by_class($element, ...$classes) {
+    $result = [];
 
-    return $items;
+    foreach ($classes as $class) {
+      $xpath = new DOMXPath($element->ownerDocument);
+      $items = $xpath->query(".//*[contains(concat(' ', normalize-space(@class), ' '), ' " . $class . " ')]", $element);
+      $result = array_merge($result, iterator_to_array($items));
+    }
+    
+    return $result;
   }
 
   function find_by_class($element, $class) {
-    return find_all_by_class($element, $class)->item(0);
+    return current(find_all_by_class($element, $class));
   }
 
   function remove_all($parentNode) {
@@ -171,5 +190,28 @@ namespace util\dom {
     }
   
     return null;
+  }
+
+  function inner_root($root) {
+    $doc = $root->ownerDocument;
+    $xpath = new \DOMXpath($doc);
+    $inner_roots = $xpath->query('//div[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]', $root);
+    $inner_root = $inner_roots->item($inner_roots->length - 1);
+    $p = null;
+  
+    foreach ( $inner_roots as $element) {
+      if ($p === null or $element->parentNode === $p) {
+        if ($p !== null) {
+          $inner_root = $element;
+        }
+        
+        $p = $element;
+      } else {
+        break;
+      }
+     
+    }
+
+    return $inner_root;
   }
 }

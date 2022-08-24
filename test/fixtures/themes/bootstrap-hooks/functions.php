@@ -367,7 +367,7 @@ function twentyseventeen_widgets_init() {
 		'description'   => __( 'Add widgets here to appear in your sidebar on blog posts and archive pages.', 'twentyseventeen' ),
 		'before_sidebar' => '<div class="row g-4">',
 		'after_sidebar' => '</div>',
-		'before_widget' => '<div class="col-sm-12 col-md-6 col-lg-12"><div id="%1$s" class="card %2$s">',
+		'before_widget' => '<div class="col-sm-12 col-md-6 col-lg-12"><div id="%1$s" class="%2$s card">',
 		'after_widget' 	=> '</div></div>',
 		// 'before_title'  => '',
 		// 'after_title'   => '',
@@ -377,10 +377,10 @@ function twentyseventeen_widgets_init() {
 		'name'          => __( 'Footer 1', 'twentyseventeen' ),
 		'id'            => 'sidebar-2',
 		'description'   => __( 'Add widgets here to appear in your footer.', 'twentyseventeen' ),
-		// 'before_widget' => '',
-		// 'after_widget'  => '',
-		// 'before_title'  => '',
-		// 'after_title'   => '',
+		'before_widget' => '<div class="col-sm-12 col-md-6 col-lg-4"><div id="%1$s" class="%2$s">',
+		'after_widget'  => '</div>',
+		'before_title'  => '',
+		'after_title'   => '',
 	) );
 
 	register_sidebar( array(
@@ -643,14 +643,14 @@ require get_parent_theme_file_path( '/inc/icon-functions.php' );
 */
 
 # 4.1.3
-define('BOOTSTRAP_VERSION', '5.1.0');
+define('BOOTSTRAP_VERSION', '5.2.0');
 
 
 add_action('wp_enqueue_scripts', function() {
 	wp_register_style( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@'. BOOTSTRAP_VERSION .'/dist/css/bootstrap.min.css' );
 	wp_enqueue_style( 'bootstrap' );
 	
-	wp_register_script( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@'. BOOTSTRAP_VERSION .'/dist/js/bootstrap.min.js', array( 'jquery' ), null, true );
+	wp_register_script( 'bootstrap', 'https://cdn.jsdelivr.net/npm/bootstrap@'. BOOTSTRAP_VERSION .'/dist/js/bootstrap.bundle.min.js', array( 'jquery' ), null, true );
 	wp_enqueue_script( 'bootstrap' );
 	
 	wp_register_script( 'popper', 'https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js', array( 'jquery' ), null, true );
@@ -765,3 +765,26 @@ add_action( 'after_setup_theme', function () {
 add_filter('is_active_sidebar', function($is_active, $id) {
 	return !is_search() && !is_singular() ? get_theme_mod( 'blog_sidebar', $is_active ) : $is_active;
 }, 10, 2);
+
+// add_filter( 'nav_menu_css_class', function ($classes, $menu_item, $args, $depth ) {
+// 	return $classes;
+// }, 10, 4);
+
+
+add_filter( 'wp_nav_menu_args', function ($args) {
+	$classes = explode(' ', $args['menu_class']);
+
+	if (
+		in_array('nav', $classes)
+			&& !in_array('navbar-nav', $classes)
+			&& !in_array('nav-tabs', $classes)
+	) {
+		$classes = array_merge($classes, [
+			'flex-column'
+		]);
+	
+		$args['menu_class'] = implode(' ', $classes);
+	}
+
+	return $args;
+});

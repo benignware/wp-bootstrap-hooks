@@ -1,12 +1,15 @@
 <?php
 
 use function util\dom\add_class;
+use function util\dom\has_class;
 use function util\dom\remove_class;
 use function util\dom\add_style;
 use function util\dom\find_by_class;
+use function util\dom\find_all_by_class;
 use function util\dom\trim_nodes;
 use function util\dom\remove_all;
-use function util\dom\nested_root;
+use function util\dom\inner_root;
+
 
 add_filter('register_sidebar_defaults', function($defaults) {
   if (!current_theme_supports('bootstrap')) {
@@ -88,15 +91,11 @@ function wp_bootstrap_widget_callback_function() {
  */
 
 add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_id) {
-
-  
   if (strlen(trim($html)) === 0) {
     return $html;
   }
 
   $options = wp_bootstrap_options();
-
-  
 
   if (function_exists('wp_bootstrap_the_content')) {
     $html = wp_bootstrap_the_content($html);
@@ -112,15 +111,27 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     return $html;
   }
 
-  $card = $xpath->query("*//*[contains(concat(' ', normalize-space(@class), ' '), ' card ')]", $root)->item(0);
+  $has_card = !!find_by_class($root, 'card');
 
-  if ($card) {
-    remove_class($card, 'card');
-
-    $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
-
+  if (!$has_card) {
     return $html;
   }
+
+
+  $has_card_header = !!find_by_class($root, 'card-header');
+  $has_card_body = !!find_by_class($root, 'card-body');
+  $has_card_img = !!find_by_class($root, 'card-img-top');
+  // $has_card = !!$xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' card ')]", $root)->item(0);
+  // $has_card_header = !!$xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' card-header ')]", $root)->item(0);
+
+  // $card = $xpath->query("*//*[contains(concat(' ', normalize-space(@class), ' '), ' card ')]", $root)->item(0);
+  // if ($card) {
+  //   remove_class($card, 'card');
+
+  //   $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+
+  //   return $html;
+  // }
 
   $class = $root->getAttribute('class');
   $classes = array_filter(explode(' ', $class));
@@ -142,8 +153,8 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     )
   );
 
-  $inner_roots = $xpath->query('//div[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]', $root);
-  $inner_root = $inner_roots->item($inner_roots->length - 1);
+  $inner_root = inner_root($root);
+  $result = $inner_root->cloneNode();
 
   $header = null;
 
@@ -158,15 +169,13 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
 
   if ($header) {
     $header->parentNode->removeChild($header);
-  }
 
-  $inner_roots = $xpath->query('//div[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]', $root);
-  $inner_root = $inner_roots->item($inner_roots->length - 1);
+    $inner_root = inner_root($root);
+    $result = $inner_root->cloneNode();
 
-  $result = $inner_root->cloneNode();
-
-  if ($header) {
-    $result->appendChild($header->cloneNode(true));
+    if ($header) {
+      $result->appendChild($header->cloneNode(true));
+    }
   }
 
   if ($xpath->query('//img')->length === 1) {
@@ -194,8 +203,7 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
           }
 
           add_class($first_element, $widget_img_class);
-          
-          
+
           $image = $child;
         }
       }
@@ -207,18 +215,27 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     }
   }
 
-  $content = $doc->createElement('div');
-  $content->setAttribute('class', 'card-body');
-
   foreach ($inner_root->childNodes as $index => $child) {
-    if ($child->nodeName === 'ul') {
-      $is_action_list = $xpath->query('./li', $child)->length === $xpath->query('./li/a', $child)->length;
-      $list = $is_action_list ? $doc->createElement('div') : $child->cloneNode();
+    // $list_element = $xpath->query('./ul', $child)->item(0);
+    // print_r($list_element);
+    $is_list_group = $child->nodeName === 'ul' && !has_class($child, $options['menu_class']);
 
-      add_class($list, $options['widget_menu_class']);      
+    // if ($child->nodeName === 'ul') {
+    //   echo has_class($child, $options['menu_class']);
+    // }
+
+    if ($is_list_group) {
+      // $list_items = $xpath->query('./li', $child);
+      $is_action_list = $xpath->query('./li/a', $child)->length > 0;
+
+      // $is_action_list = $xpath->query('./li', $child)->length === $xpath->query('./li/a', $child)->length;
+      // $is_action_list = true;
+      $list = $is_action_list ? $doc->createElement('div') : $child->cloneNode();
+      // $list = $child->cloneNode();
+
+      add_class($list, $options['widget_menu_class']);
 
       foreach ($child->childNodes as $child) {
-
         $menu_item_classes = [
           $options['widget_menu_item_class']
         ];
@@ -227,11 +244,23 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
           $menu_item_classes[] = sprintf($options['widget_menu_item_context_class'], $context);
         }
 
-        if ($is_action_list && $child->nodeType === 1) {
-          $item = $xpath->query('./a', $child)->item(0);
+        if ($is_action_list && $child->nodeType === 1 && $child->nodeName === 'li') {
+          $children = $xpath->query('./*', $child);
 
-          if ($item) {
+          if ($children->length > 1) {
+            $item = $doc->createElement('div');
+
+            foreach ($children as $node) {
+              // remove_class($node, 'nav-link');
+              $item->appendChild($node->cloneNode(true));
+            }
+          } else {
+            $item = $children->item(0);
+          }
+
+          if ($item->nodeName === 'a') {
             $menu_item_classes[] = $options['widget_menu_item_link_class'];
+            // remove_class($item, 'nav-link');
           }
         } else {
           $item = $child;
@@ -246,14 +275,21 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
         }
       }
 
-      $result->appendChild($list);
-    } else {
-      $content->appendChild($child->cloneNode(true));
-    }
-  }
+      // $desc = find_all_by_class($list, 'nav', 'nav-item', 'nav-link');
 
-  if (strlen(trim($content->textContent))) {
-    $result->appendChild($content);
+      // print_r($desc);
+
+      $result->appendChild($list);
+      
+    } else {
+      $content = $doc->createElement('div');
+      $content->setAttribute('class', 'card-body');
+      $content->appendChild($child->cloneNode(true));
+
+      if (strlen(trim($content->textContent))) {
+        $result->appendChild($content);
+      }
+    }
   }
 
   $inner_root->parentNode->insertBefore($result, $inner_root);
