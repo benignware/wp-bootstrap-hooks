@@ -117,7 +117,6 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     return $html;
   }
 
-
   $has_card_header = !!find_by_class($root, 'card-header');
   $has_card_body = !!find_by_class($root, 'card-body');
   $has_card_img = !!find_by_class($root, 'card-img-top');
@@ -153,6 +152,13 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     )
   );
 
+  $scripts = $xpath->query('//script');
+
+  foreach ($scripts as $script) {
+    $script->parentNode->removeChild($script);
+  }
+  
+
   $inner_root = inner_root($root);
   $result = $inner_root->cloneNode();
 
@@ -177,6 +183,8 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
       $result->appendChild($header->cloneNode(true));
     }
   }
+
+
 
   if ($xpath->query('//img')->length === 1) {
     $image = null;
@@ -293,6 +301,11 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
   }
 
   $inner_root->parentNode->insertBefore($result, $inner_root);
+
+  foreach($scripts as $script) {
+    $inner_root->parentNode->insertBefore($script, $inner_root);
+  }
+
   $inner_root->parentNode->removeChild($inner_root);
 
   $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
