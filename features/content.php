@@ -213,7 +213,7 @@ if (!function_exists('wp_bootstrap_the_content')) {
         }
 
         if (!$input) {
-          $input = $doc_xpath->query("//input[@type='checkbox' or @type='radio']", )->item(0);
+          $input = $doc_xpath->query("//input[@type='checkbox' or @type='radio']")->item(0);
 
           if ($input) {
             $input_id = $input->getAttribute('id');
