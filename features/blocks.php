@@ -160,7 +160,7 @@ add_filter('render_block', function($content, $block)  {
 
     add_class($table, $options['table_class']);
 
-    if (in_array('is-style-stripes', explode(' ', $attrs['className']))) {
+    if (isset($attrs['className']) && in_array('is-style-stripes', explode(' ', $attrs['className']))) {
       add_class($table, $options['table_striped_class']);
     };
 
