@@ -171,8 +171,6 @@ if (!function_exists('wp_bootstrap_the_content')) {
       }
     }
 
-    
-
     // Tags
     // $tag_elements = $doc_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' tag ') or contains(concat(' ', normalize-space(@class), '-'), ' tag-')]");
     // foreach ($tag_elements as $tag_element) {
@@ -189,57 +187,73 @@ if (!function_exists('wp_bootstrap_the_content')) {
       $input_element->setAttribute('class', implode(" ", $classes));
     }
 
-    
-
     // Labels
     $label_elements = $doc_xpath->query("//label");
     foreach ($label_elements as $label_element) {
       add_class($label_element, $options['label_class']);
     }
 
-    // Checkboxes
+    // Handle label-wrapped inputs and checkboxes
     $forms = $doc_xpath->query("//form");
 
     foreach ($forms as $form) {
       $form_id = $form->getAttribute('id');
-      $labels = $doc_xpath->query("//label", $form);
+      $labels = iterator_to_array($doc_xpath->query(".//label", $form));
 
       foreach ($labels as $label) {
         $for = $label->getAttribute('for');
         $input = null;
 
         if ($for) {
-          $input = $doc_xpath->query(sprintf('//*[@id="%s"]', $for))->item(0);
+          $input = $doc_xpath->query(sprintf('.//input[@id="%s"]', $for))->item(0);
+        } else {
+          $input = $doc_xpath->query(".//input[not(@type='submit' or @type='button' or @type='hidden')]", $label)->item(0);
+          
+          if ($input) {
+            $input_type = $input->getAttribute('type');
+            $input_name = $input->getAttribute('name');
+            $input_id = $input->hasAttribute('id')
+              ? $input->getAttribute('id')
+              : (
+                $form_id && $input->hasAttribute('name')
+                  ? $form_id . '-' . $input->getAttribute('name')
+                  : null
+              );
+
+            // Make sure to hide inputs if their wrapper was (honeypot)
+            if ($label->getAttribute('style') && preg_match('~display:\s*none~', $label->getAttribute('style'))) {
+              $style = $input->getAttribute('style') ?: '';
+              $input->setAttribute('style', $style . '; display: none !important');
+            }
+
+            if ($input_id) {
+              $input->setAttribute('id', $input_id);
+              $label->setAttribute('for', $input_id);
+
+              if ($label->nextSibling) {
+                $label->parentNode->insertBefore($input, $label->nextSibling);
+              } else {
+                $label->parentNode->appendChild($input);
+              }
+            }
+          }
         }
 
         if (!$input) {
-          $input = $doc_xpath->query("//input[@type='checkbox' or @type='radio']")->item(0);
+          continue;
+        }
 
-          if ($input) {
-            $input_id = $input->getAttribute('id');
-  
-            if (!$input_id) {
-              if (!$form_id) {
-                continue;
-              }
-  
-              $input_id = $form_id . '-' . $input_name;
-              $input->setAttribute('id', $input_id);
-            }
-  
-            $label->setAttribute('for',  $input_id);
-            $label->parentNode->insertBefore($input, $label);
+        if (in_array($input->getAttribute('type'), ['checkbox', 'radio'])) {
+          $input->setAttribute('class', $options['checkbox_input_class']);
+          $label->setAttribute('class', $options['checkbox_label_class']);
 
-            $input->setAttribute('class', $options['checkbox_input_class']);
-            $label->setAttribute('class', $options['checkbox_label_class']);
-
-            if (!has_class($label->parentNode, $options['checkbox_container_class'])) {
-              $wrapper = $doc->createElement('div');
-              $wrapper->setAttribute('class', $options['checkbox_container_class']);
-              $wrapper->appendChild($input);
-              $label->parentNode->insertBefore($wrapper, $label);
-              $wrapper->appendChild($label);
-            }
+          if (!has_class($label->parentNode, $options['checkbox_container_class'])) {
+            $wrapper = $doc->createElement('span');
+            $wrapper->setAttribute('style', 'display: block');
+            $wrapper->setAttribute('class', $options['checkbox_container_class']);
+            $wrapper->appendChild($input);
+            $label->parentNode->insertBefore($wrapper, $label);
+            $wrapper->appendChild($label);
           }
         }
       }

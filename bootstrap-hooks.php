@@ -53,7 +53,7 @@ function wp_bootstrap_options() {
     'text_input_class' => 'form-control',
     'input_group_class' => 'input-group',
     'input_group_append_class' => 'input-group-append',
-    'checkbox_container_class' => 'form-check my-3',
+    'checkbox_container_class' => 'form-check mb-3',
     'checkbox_input_class' => 'form-check-input',
     'checkbox_label_class' => 'form-check-label',
     'field_class' => 'form-group',
