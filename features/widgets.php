@@ -9,6 +9,7 @@ use function util\dom\find_all_by_class;
 use function util\dom\trim_nodes;
 use function util\dom\remove_all;
 use function util\dom\inner_root;
+use function util\dom\replace_tag;
 
 
 add_filter('register_sidebar_defaults', function($defaults) {
@@ -167,7 +168,18 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
   foreach ($inner_root->childNodes as $index => $child) {
     $node = find_by_class($child, 'widgettitle');
 
+    if (!$node) {
+      $node = $xpath->query('//h1|//h2', $child)->item(0);
+    }
+
     if ($node) {
+      $has_card_header = !!(has_class($child, 'card-header') || find_by_class($child, 'card-header'));
+
+      if (!$has_card_header) {
+        add_class($child, 'card-header');
+      }
+
+      $header_node = $node;
       $header = $child;
       break;
     }
@@ -175,6 +187,16 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
 
   if ($header) {
     $header->parentNode->removeChild($header);
+    if ($header_node) {
+      try {
+        $new_header_node = replace_tag($header_node, 'div');
+      } catch (Exception $e) {
+      }
+
+      if ($new_header_node && $header_node === $header) {
+        $header = $new_header_node;
+      }
+    }
 
     $inner_root = inner_root($root);
     $result = $inner_root->cloneNode();
@@ -405,9 +427,6 @@ add_filter( 'wp_generate_tag_cloud_data', function ($tags_data) {
   if (!current_theme_supports('bootstrap')) {
     return $tags_data;
   }
-
-  // echo '<textarea>' . print_r($tags_data) . '</textarea>';
-  // print_r($tags_data);
 
   $options = wp_bootstrap_options();
   $post_tag_class = $options['post_tag_class'];
