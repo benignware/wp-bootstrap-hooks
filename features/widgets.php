@@ -26,7 +26,7 @@ add_filter('register_sidebar_defaults', function($defaults) {
       // 'after_title'   => '</div>'
       'before_widget'  => '<div id="%1$s" class="widget %2$s card card-%2$s mb-4">',
       'after_widget'   => "</div>\n",
-      'before_title'   => '<div class="card-header"><span class="widgettitle card-title">',
+      'before_title'   => '<div class="card-header"><span class="widgettitle">',
       'after_title'    => "</span></div>\n",
     )
   );
@@ -112,7 +112,8 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     return $html;
   }
 
-  $has_card = !!find_by_class($root, 'card');
+  $card = find_by_class($root, 'card');
+  $has_card = !!$card;
 
   if (!$has_card) {
     return $html;
@@ -133,7 +134,14 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
   //   return $html;
   // }
 
-  $class = $root->getAttribute('class');
+  $widget_root = $doc->getElementById($widget_id);
+
+  if (!$widget_root) {
+    $widget_root = $root;
+  }
+
+  $class = $widget_root->getAttribute('class');
+  // $class = $card->getAttribute('class');
   $classes = array_filter(explode(' ', $class));
 
   // Extract context class via template option
@@ -206,8 +214,6 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     }
   }
 
-
-
   if ($xpath->query('//img')->length === 1) {
     $image = null;
     $xp = '/*[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]';
@@ -246,22 +252,11 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
   }
 
   foreach ($inner_root->childNodes as $index => $child) {
-    // $list_element = $xpath->query('./ul', $child)->item(0);
-    // print_r($list_element);
     $is_list_group = $child->nodeName === 'ul' && !has_class($child, $options['menu_class']);
 
-    // if ($child->nodeName === 'ul') {
-    //   echo has_class($child, $options['menu_class']);
-    // }
-
     if ($is_list_group) {
-      // $list_items = $xpath->query('./li', $child);
       $is_action_list = $xpath->query('./li/a', $child)->length > 0;
-
-      // $is_action_list = $xpath->query('./li', $child)->length === $xpath->query('./li/a', $child)->length;
-      // $is_action_list = true;
       $list = $is_action_list ? $doc->createElement('div') : $child->cloneNode();
-      // $list = $child->cloneNode();
 
       add_class($list, $options['widget_menu_class']);
 
@@ -304,10 +299,6 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
           $list->appendChild($item->cloneNode(true));
         }
       }
-
-      // $desc = find_all_by_class($list, 'nav', 'nav-item', 'nav-link');
-
-      // print_r($desc);
 
       $result->appendChild($list);
       
