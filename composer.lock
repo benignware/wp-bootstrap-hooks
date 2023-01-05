@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "61227aac2c6a5a728d6388dc4e44cb5f",
+    "content-hash": "ebb3a8a8a9966a9101ebc6374bb0e4e3",
     "packages": [
         {
             "name": "composer/installers",
@@ -236,15 +236,15 @@
         },
         {
             "name": "wpackagist-plugin/disable-full-site-editing",
-            "version": "1.1.3",
+            "version": "1.2.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/disable-full-site-editing/",
-                "reference": "tags/1.1.3"
+                "reference": "tags/1.2.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/disable-full-site-editing.1.1.3.zip"
+                "url": "https://downloads.wordpress.org/plugin/disable-full-site-editing.1.2.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -272,15 +272,15 @@
         },
         {
             "name": "wpackagist-plugin/mailchimp-for-wp",
-            "version": "4.8.11",
+            "version": "4.8.12",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/mailchimp-for-wp/",
-                "reference": "tags/4.8.11"
+                "reference": "tags/4.8.12"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/mailchimp-for-wp.4.8.11.zip"
+                "url": "https://downloads.wordpress.org/plugin/mailchimp-for-wp.4.8.12.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"

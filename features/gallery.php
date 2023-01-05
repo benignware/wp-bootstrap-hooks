@@ -147,4 +147,4 @@ add_filter('post_gallery', function($output, $atts) {
   $output.= "</script>";
 
   return $output;
-}, 1, 2 );
+}, 10, 2 );
