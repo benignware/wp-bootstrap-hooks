@@ -1,7 +1,9 @@
 <?php
 
 use function util\dom\add_class;
+use function util\dom\remove_class;
 use function util\dom\has_class;
+use function util\dom\find_all_by_class;
 
 /**
  * Add bootstrap classes to content images
@@ -271,6 +273,36 @@ if (!function_exists('wp_bootstrap_the_content')) {
       //   add_class($button, sprintf($options['button_class'], 'primary'));
       // }
       add_class($button, sprintf($options['button_class'], 'primary'));
+    }
+
+
+
+    // Alerts
+    $alerts = find_all_by_class($doc->documentElement, 'mu_alert', 'alert');
+
+    foreach($alerts as $alert) {
+      if (!has_class($alert, 'alert')) {
+        add_class($alert, 'alert-secondary');
+      }
+      preg_match('~\balert-(\w+)\b~', $alert->getAttribute('class'), $matches);
+      $context = count($matches) ? $matches[1] : '';
+
+      $alert_links = $doc_xpath->query('//a', $alert);
+
+      foreach($alert_links as $alert_link) {
+        if (!has_class($alert_link, 'btn')) {
+          add_class($alert_link, 'alert-link');
+        }
+      }
+
+      if ($context) {
+        $alert_buttons = find_all_by_class($alert, 'btn');
+
+        foreach($alert_buttons as $alert_button) {
+          remove_class($alert_button, '~^btn-~');
+          add_class($alert_button, "btn-$context");
+        }
+      }
     }
 
     $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());

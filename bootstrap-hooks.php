@@ -47,7 +47,7 @@ function wp_bootstrap_options() {
     'button_outline_class' => 'btn btn-outline-%1$s',
     // WP Forms REMOVE
     'search_form_class' => '',
-    'search_submit_label' => '<i>🔎</i>',
+    'search_submit_label' => __('Search'),
     // Forms
     'label_class' => 'form-label',
     'text_input_class' => 'form-control',

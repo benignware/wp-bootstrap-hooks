@@ -85,9 +85,13 @@ namespace util\dom {
 
   function find_all_by_class($element, ...$classes) {
     $result = [];
+    $container = $element instanceof DOMDocument ? $element : $element->ownerDocument;
+    if (!$container) {
+      return [];
+    }
+    $xpath = new DOMXPath($container);
 
     foreach ($classes as $class) {
-      $xpath = new DOMXPath($element->ownerDocument);
       $items = $xpath->query(".//*[contains(concat(' ', normalize-space(@class), ' '), ' " . $class . " ')]", $element);
       $result = array_merge($result, iterator_to_array($items));
     }
