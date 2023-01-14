@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ebb3a8a8a9966a9101ebc6374bb0e4e3",
+    "content-hash": "d18f676e338e4f7179d5a3867aafab5a",
     "packages": [
         {
             "name": "composer/installers",
@@ -272,15 +272,15 @@
         },
         {
             "name": "wpackagist-plugin/mailchimp-for-wp",
-            "version": "4.8.12",
+            "version": "4.9.0",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/mailchimp-for-wp/",
-                "reference": "tags/4.8.12"
+                "reference": "tags/4.9.0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/mailchimp-for-wp.4.8.12.zip"
+                "url": "https://downloads.wordpress.org/plugin/mailchimp-for-wp.4.9.0.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"

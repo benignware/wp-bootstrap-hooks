@@ -260,7 +260,10 @@ if (!function_exists('wp_bootstrap_the_content')) {
     }
 
     // Buttons
-    $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']");
+    $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']|//*[contains(concat(' ', normalize-space(@class), ' '), ' button ')]");
+
+    // $elements = $doc_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), button)]");
+
     // $buttons = $doc_xpath->query("//button|//input[@type='submit']");
     foreach ($buttons as $button) {
       // TODO: Improve how to exclude things here
