@@ -1,6 +1,6 @@
 {
   "name": "benignware/wp-bootstrap-hooks",
-  "version": "1.0.0-beta.16",
+  "version": "1.0.0-beta.17",
   "type": "wordpress-muplugin",
   "license": "MIT",
   "description": "A collection of action and filters for bootstrap based themes",
