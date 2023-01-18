@@ -16,8 +16,8 @@ add_filter('wp_get_attachment_image', function($html) {
 
   foreach ($image_elements as $image_element) {
     $classes = explode(' ', $image_element->getAttribute('class'));
-    $classes.= $options['img_class'];
-    $classes = array_unique($classes);
+    $classes[]= $options['img_class'];
+    $classes = array_values(array_unique($classes));
 
     $image_element->setAttribute('class', implode(' ', $classes));
   }
