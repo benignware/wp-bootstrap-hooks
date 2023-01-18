@@ -21,4 +21,8 @@ add_filter('wp_get_attachment_image', function($html) {
 
     $image_element->setAttribute('class', implode(' ', $classes));
   }
+
+  $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+
+  return $html;
 }, 100);
