@@ -22,24 +22,15 @@ if (!function_exists('wp_bootstrap_the_content')) {
     $doc_xpath = new DOMXpath($doc);
 
     // Images
-    $image_elements = $doc->getElementsByTagName( 'img' );
+    $image_elements = $doc_xpath->query('//img|//video');
+
     foreach ($image_elements as $image_element) {
-      // Adjust class
-      $image_element_class = $image_element->getAttribute('class');
-      // Add align class
-      $image_element_class = trim($image_element_class . " " . $img_class);
-      if (preg_match('/\balignleft\b/i', $image_element_class)) {
-        $image_element_class.= " $align_left_class";
-      } else if (preg_match('/\balignright\b/i', $image_element_class)) {
-        $image_element_class.= " $align_right_class";
-      } else if (preg_match('/\baligncenter\b/i', $image_element_class)) {
-        $image_element_class.= " $align_center_class";
-      }
+      $classes = explode(' ', $image_element->getAttribute('class'));
+      $classes[]= $options['img_class'];
+      $classes = array_values(array_unique($classes));
 
-      $image_element->setAttribute('class', $image_element_class);
+      $image_element->setAttribute('class', implode(' ', $classes));
     }
-
-    
 
     // Embeds
 

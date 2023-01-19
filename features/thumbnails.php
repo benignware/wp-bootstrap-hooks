@@ -12,7 +12,7 @@ add_filter('wp_get_attachment_image', function($html) {
   $doc_xpath = new DOMXpath($doc);
 
   // Images
-  $image_elements = $doc->getElementsByTagName( 'img' );
+  $image_elements = $doc_xpath->query('//img|//video');
 
   foreach ($image_elements as $image_element) {
     $classes = explode(' ', $image_element->getAttribute('class'));
