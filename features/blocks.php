@@ -11,6 +11,7 @@ use function util\dom\get_common_ancestor;
 use function util\dom\contains_node;
 
 add_filter('render_block', function($content, $block)  {
+
   if (!current_theme_supports('bootstrap')) {
     return $content;
   }
@@ -26,6 +27,15 @@ add_filter('render_block', function($content, $block)  {
   }
 
   $name = $block['blockName'];
+
+  if (!$name) {
+    return $content;
+  }
+
+  if ($name === 'core/paragraph') {
+    return $content;
+  }
+
   $attrs = $block['attrs'];
 
   $background_color_name = null;
@@ -166,6 +176,8 @@ add_filter('render_block', function($content, $block)  {
 
     remove_class($container, '~^wp-block-table~', true);
   }
+
+  
 
   if ($name === 'core/column') {
     $width = $block['attrs']['width'];

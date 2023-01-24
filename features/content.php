@@ -11,6 +11,8 @@ use function util\dom\find_all_by_class;
 if (!function_exists('wp_bootstrap_the_content')) {
 
   function wp_bootstrap_the_content($content) {
+
+    // return $content;
     $options = wp_bootstrap_options();
 
     // Extract options
@@ -154,6 +156,10 @@ if (!function_exists('wp_bootstrap_the_content')) {
     $table_elements = $doc->getElementsByTagName( 'table' );
 
     foreach ($table_elements as $table_element) {
+      if (has_class($table_element, $options['table_class'])) {
+        continue;
+      }
+
       add_class($table_element, $options['table_class']);
 
       if ($table_container_tag && !has_class($table_element->parentNode, $table_container_class)) {
@@ -263,10 +269,10 @@ if (!function_exists('wp_bootstrap_the_content')) {
       // if (!has_class($button, '~^(?:carousel-control|btn-close)~')) {
       //   add_class($button, sprintf($options['button_class'], 'primary'));
       // }
-      add_class($button, sprintf($options['button_class'], 'primary'));
+      if (!has_class($button, '~^(?:carousel-control|btn-)~')) {
+        add_class($button, sprintf($options['button_class'], 'primary'));
+      }
     }
-
-
 
     // Alerts
     $alerts = find_all_by_class($doc->documentElement, 'mu_alert', 'alert');
@@ -296,29 +302,64 @@ if (!function_exists('wp_bootstrap_the_content')) {
       }
     }
 
+    // Navs
+    /*
+    $nav_elements = $doc_xpath->query('//nav');
+
+    foreach ($nav_elements as $nav_element) {
+      $menu_element = $nav_element->tagName === 'UL' ? $nav_element : $doc_xpath->query('.//ul', $nav_element)->item(0);
+
+      if (!$menu_element && !has_class($menu_element, $options['menu_class'])) {
+        continue;
+      }
+
+      $list_item_elements = $doc_xpath->query('./li', $menu_element);
+
+      if (count($list_item_elements)) {
+        foreach ($list_item_elements as $list_item_element) {
+          $is_active = has_class($list_item_element, 'is-active');
+          $link_element = $doc_xpath->query('./*', $list_item_element)->item(0) ?: null;
+
+          if ($link_element) {
+            add_class($link_element, $options['menu_item_link_class']);
+
+            if ($is_active) {
+              add_class($link_element, $options['menu_item_link_active_class']);
+            }
+          }
+
+          add_class($list_item_element, $options['menu_item_class']);
+        }
+
+        add_class($menu_element, $options['menu_class']);
+        add_class($menu_element, 'flex-column nav-pills');
+      }
+    }
+    */
+
     $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
     return $output;
   }
-  add_filter( 'the_content', 'wp_bootstrap_the_content', 100, 1 );
+  add_filter( 'the_content', 'wp_bootstrap_the_content', 10000, 1 );
 
 
-  function div_wrapper($content) {
-      // match any iframes
-      $pattern = '~<iframe.*</iframe>|<embed.*</embed>~';
-      preg_match_all($pattern, $content, $matches);
+  
+  add_filter('the_content', function($content) {
+    // match any iframes
+    $pattern = '~<iframe.*</iframe>|<embed.*</embed>~';
+    preg_match_all($pattern, $content, $matches);
 
-      foreach ($matches[0] as $match) {
-        // wrap matched iframe with div
-        $wrappedframe = '<div>' . $match . '</div>';
+    foreach ($matches[0] as $match) {
+      // wrap matched iframe with div
+      $wrappedframe = '<div>' . $match . '</div>';
 
-        //replace original iframe with new in content
-        $content = str_replace($match, $wrappedframe, $content);
-      }
+      //replace original iframe with new in content
+      $content = str_replace($match, $wrappedframe, $content);
+    }
 
-      return $content;
-  }
-  add_filter('the_content', 'div_wrapper');
+    return $content;
+  });
 
   /**
    * Img Caption
