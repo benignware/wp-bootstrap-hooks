@@ -284,7 +284,7 @@ if (!function_exists('wp_bootstrap_the_content')) {
       preg_match('~\balert-(\w+)\b~', $alert->getAttribute('class'), $matches);
       $context = count($matches) ? $matches[1] : '';
 
-      $alert_links = $doc_xpath->query('//a', $alert);
+      $alert_links = $doc_xpath->query('.//a', $alert);
 
       foreach($alert_links as $alert_link) {
         if (!has_class($alert_link, 'btn')) {
