@@ -298,8 +298,10 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 
       $fb_output = null;
 
+      $container_tagname = $container ? (is_string($container) ? $container : 'div') : null;
+
       if ( $container ) {
-        $fb_output = '<' . $container;
+        $fb_output = '<' . $container_tagname;
 
         if ( $container_id )
           $fb_output .= ' id="' . $container_id . '"';
@@ -320,11 +322,12 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 
       $fb_output .= '>';
       // TODO: Text Domain
-      $fb_output .= '<li class="' . $menu_item_class . '"><a class="' . $menu_item_link_class . '" href="' . admin_url( 'nav-menus.php' ) . '">Add a menu</a></li>';
+      $fb_output .= '<li class="' . $menu_item_class . '"><a class="' . $menu_item_link_class . '" href="' . admin_url( 'nav-menus.php' ) . '">' . __('Add a menu', 'bootstrap-hooks') . '</a></li>';
       $fb_output .= '</ul>';
 
-      if ( $container )
-        $fb_output .= '</' . $container . '>';
+      if ( $container ) {
+        $fb_output .= '</' . $container_tagname . '>';
+      }
 
       echo $fb_output;
     }
