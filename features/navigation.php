@@ -134,6 +134,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 
     $menu_item_class = $this->options['menu_item_class'];
     $menu_item_link_class = $this->options['menu_item_link_class'];
+    $menu_item_link_active_class = $this->options['menu_item_link_active_class'];
 
     $divider_class = $this->options['divider_class'];
 
@@ -201,8 +202,12 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
         $atts['class'].= ' ' . $menu_item_link_class;
       } else {
         $atts['class'].= ' ' . $sub_menu_item_link_class;
-        if ( in_array( 'current-menu-item', $classes ) )
-          $atts['class'] .= ' active';
+        // if ( in_array( 'current-menu-item', $classes ) )
+          // $atts['class'] .= ' active';
+      }
+
+      if ( in_array( 'current-menu-item', $classes ) ) {
+        $atts['class'].= ' ' . $menu_item_link_active_class;
       }
 
       $atts['href'] = ! empty( $item->url ) ? $item->url : '';
