@@ -243,10 +243,9 @@ if (!function_exists('wp_bootstrap_the_content')) {
         }
 
         if (in_array($input->getAttribute('type'), ['checkbox', 'radio'])) {
-          $input->setAttribute('class', $options['checkbox_input_class']);
-          $label->setAttribute('class', $options['checkbox_label_class']);
-
-          if (!has_class($label->parentNode, $options['checkbox_container_class'])) {
+          if (!has_class($input, $options['checkbox_input_class']) && !has_class($label->parentNode, $options['checkbox_container_class'])) {
+            $input->setAttribute('class', $options['checkbox_input_class']);
+            $label->setAttribute('class', $options['checkbox_label_class']);
             $wrapper = $doc->createElement('span');
             $wrapper->setAttribute('style', 'display: block');
             $wrapper->setAttribute('class', $options['checkbox_container_class']);
