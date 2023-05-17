@@ -4,7 +4,7 @@
  Plugin Name: Bootstrap Hooks
  Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  Description: A collection of action and filters for bootstrap based themes
- Version: 1.0.0-beta.23
+ Version: 1.0.0-beta.21
  Author: Rafael Nowrotek, Benignware
  Author URI: http://benignware.com
  License: MIT
@@ -54,7 +54,7 @@ function wp_bootstrap_options() {
     'text_input_class' => 'form-control',
     'input_group_class' => 'input-group',
     'input_group_append_class' => 'input-group-append',
-    'checkbox_container_class' => 'form-check mb-3',
+    'checkbox_container_class' => 'form-check',
     'checkbox_input_class' => 'form-check-input',
     'checkbox_label_class' => 'form-check-label',
     'field_class' => 'form-group',
