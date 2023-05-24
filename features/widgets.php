@@ -166,7 +166,6 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
   foreach ($scripts as $script) {
     $script->parentNode->removeChild($script);
   }
-  
 
   $inner_root = inner_root($root);
   $result = $inner_root->cloneNode();
@@ -206,7 +205,7 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
       }
     }
 
-    // $inner_root = inner_root($root);
+    // $inner_root = inner_root($inner_root);
     // $result = $inner_root->cloneNode();
 
     if ($header) {
@@ -251,10 +250,13 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     }
   }*/
 
+  $content = null;
+
   foreach ($inner_root->childNodes as $index => $child) {
     $is_list_group = $child->nodeName === 'ul' && !has_class($child, $options['menu_class']);
 
     if ($is_list_group) {
+      $content = null;
       $is_action_list = $xpath->query('./li/a', $child)->length > 0;
       $list = $is_action_list ? $doc->createElement('div') : $child->cloneNode();
 
@@ -303,12 +305,14 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
       $result->appendChild($list);
       
     } else {
-      $content = $doc->createElement('div');
-      $content->setAttribute('class', 'card-body');
-      $content->appendChild($child->cloneNode(true));
-
-      if (strlen(trim($content->textContent))) {
+      if ($content == null || $result->childNodes->length === 0) {
+        $content = $doc->createElement('div');
+        $content->setAttribute('class', 'card-body');
         $result->appendChild($content);
+      }
+
+      if (strlen(trim($child->textContent))) {
+        $content->appendChild($child->cloneNode(true));
       }
     }
   }
@@ -319,7 +323,10 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
     $inner_root->parentNode->insertBefore($script, $inner_root);
   }
 
-  $inner_root->parentNode->removeChild($inner_root);
+  if ($inner_root !== $root) {
+    $inner_root->parentNode->removeChild($inner_root);
+  }
+ 
 
   $html = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
