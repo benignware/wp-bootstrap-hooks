@@ -206,15 +206,15 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
       }
     }
 
-    $inner_root = inner_root($root);
-    $result = $inner_root->cloneNode();
+    // $inner_root = inner_root($root);
+    // $result = $inner_root->cloneNode();
 
     if ($header) {
       $result->appendChild($header->cloneNode(true));
     }
   }
 
-  if ($xpath->query('//img')->length === 1) {
+  /*if ($xpath->query('//img')->length === 1) {
     $image = null;
     $xp = '/*[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]';
 
@@ -249,7 +249,7 @@ add_filter( 'bootstrap_widget_output', function($html, $widget_id_base, $widget_
       $image->parentNode->removeChild($image);
       $result->appendChild($image->cloneNode(true));
     }
-  }
+  }*/
 
   foreach ($inner_root->childNodes as $index => $child) {
     $is_list_group = $child->nodeName === 'ul' && !has_class($child, $options['menu_class']);
