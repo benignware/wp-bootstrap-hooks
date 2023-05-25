@@ -433,8 +433,9 @@ add_filter( 'wp_generate_tag_cloud_data', function ($tags_data) {
   foreach ($tags_data as $index => $tag_data) {
     $tags_data[$index] = array_merge($tag_data, array(
       'class' => isset($tag_data['class']) ? $tag_data['class'] . ' ' . $post_tag_class : $post_tag_class,
+    ), $tag_data['show_count'] ? [
       'show_count' => sprintf('<span class="%s">%d</span>', $post_tag_count_class, $tag_data['real_count'])
-    ));
+    ] : []);
   }
 
   return $tags_data;
