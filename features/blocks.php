@@ -152,6 +152,8 @@ add_filter('render_block', function($content, $block)  {
     if ($button->nodeName === 'a') {
       $button->setAttribute('href', $button->getAttribute('href') ?? '#');
     }
+
+    remove_class($container, '~^wp-block~', true);
   }
 
   if ($name === 'core/buttons') {
