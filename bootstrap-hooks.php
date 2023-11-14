@@ -53,7 +53,6 @@ function wp_bootstrap_options() {
     'label_class' => 'form-label',
     'text_input_class' => 'form-control',
     'input_group_class' => 'input-group',
-    'input_group_append_class' => 'input-group-append',
     'checkbox_container_class' => 'form-check',
     'checkbox_input_class' => 'form-check-input',
     'checkbox_label_class' => 'form-check-label',
@@ -175,9 +174,10 @@ function wp_bootstrap_options() {
 wp_bootstrap_hooks();
 
 add_filter('bootstrap_options', function($options, $args) {
-  if ($args['version'] === 4) {
+  if ($args['version'] <= 4) {
     return array_merge($options, [
-      'post_tag_class' => 'badge badge-secondary text-wrap mb-1'
+      'post_tag_class' => 'badge badge-secondary text-wrap mb-1',
+      'input_group_append_class' => 'input-group-append',
     ]);
   }
 
