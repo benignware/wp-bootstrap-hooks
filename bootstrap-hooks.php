@@ -11,6 +11,7 @@
 */
 
 require_once 'lib/util/dom.php';
+require_once 'lib/util/colors.php';
 require_once 'lib/helpers.php';
 require_once 'features/functions.php';
 
@@ -115,6 +116,7 @@ function wp_bootstrap_options() {
     'sub_menu_item_class' => '',
     'sub_menu_item_link_class' => 'dropdown-item',
     'divider_class' => 'divider',
+    // 'caret' => '',
     'caret' => '<span class="caret"></span>',
     // Pagination
     'pagination_class' => 'pagination',
@@ -126,13 +128,14 @@ function wp_bootstrap_options() {
     'post_nav_item_class' => 'page-item',
     'post_nav_item_tag' => 'li',
     'post_nav_link_class' => 'page-link',
+    'next_posts_link_class' => 'btn btn-outline-secondary float-right',
+    'previous_posts_link_class' => 'btn btn-outline-secondary float-left',
+    // Deprecated
     'paginated_class' => 'pagination',
     'paginated_tag' => 'ul',
     'paginated_item_class' => 'page-item',
     'paginated_item_tag' => 'li',
     'paginated_link_class' => 'page-link',
-    'next_posts_link_class' => 'btn btn-outline-secondary float-right',
-    'previous_posts_link_class' => 'btn btn-outline-secondary float-left',
     // Widgets
     'widget_class' => 'card mb-3',
     'widget_context_class' => 'bg-%s', // Used to retrieve current context
@@ -178,6 +181,7 @@ add_filter('bootstrap_options', function($options, $args) {
     return array_merge($options, [
       'post_tag_class' => 'badge badge-secondary text-wrap mb-1',
       'input_group_append_class' => 'input-group-append',
+      'caret' => '<span class="caret"></span>',
     ]);
   }
 

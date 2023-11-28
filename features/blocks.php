@@ -1,24 +1,23 @@
 <?php
 
-use function util\dom\add_class;
-use function util\dom\remove_class;
-use function util\dom\remove_style;
-use function util\dom\has_class;
-use function util\dom\find_by_class;
-use function util\dom\find_all_by_class;
-use function util\dom\replace_tag;
-use function util\dom\get_common_ancestor;
-use function util\dom\contains_node;
+use function benignware\bootstrap_hooks\util\dom\add_class;
+use function benignware\bootstrap_hooks\util\dom\add_style;
+use function benignware\bootstrap_hooks\util\dom\remove_class;
+use function benignware\bootstrap_hooks\util\dom\remove_style;
+use function benignware\bootstrap_hooks\util\dom\has_class;
+use function benignware\bootstrap_hooks\util\dom\find_by_class;
+use function benignware\bootstrap_hooks\util\domm\find_all_by_class;
+use function benignware\bootstrap_hooks\util\dom\replace_tag;
+use function benignware\bootstrap_hooks\util\dom\get_common_ancestor;
+use function benignware\bootstrap_hooks\util\dom\contains_node;
+
+use function benignware\bootstrap_hooks\util\colors\shade;
 
 add_filter('render_block', function($content, $block)  {
-
   if (!current_theme_supports('bootstrap')) {
     return $content;
   }
 
-  // list($palette) = has_theme_support('editor-color-palette')
-  //   ? get_theme_support('editor-color-palette')
-  //   : [[]];
   $palette = get_theme_support('editor-color-palette');
 	$palette = $palette ? $palette[0] : null;
 
@@ -58,9 +57,9 @@ add_filter('render_block', function($content, $block)  {
     //   $background_color_name = str_replace('#', 'hex-', $attrs['backgroundColor']);
     // }
 
-    if (!$background_color_name) {
-      $background_color_name = 'primary';
-    }
+    // if (!$background_color_name) {
+    //   $background_color_name = 'primary';
+    // }
   }
 
   $options = wp_bootstrap_options();
@@ -138,14 +137,80 @@ add_filter('render_block', function($content, $block)  {
   if ($name === 'core/button') {
     list($button) = $doc_xpath->query("//a|//button");
 
+    $bg_name = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
+
+    $is_outline = isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']));
+    
     $class = sprintf(
-      isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']))
-        ? $options['button_outline_class']
-        : $options['button_class'],
-      $background_color_name ?: 'primary'
+      $is_outline ? $options['button_outline_class'] : $options['button_class'],
+      $bg_name ?: 'primary'
     );
 
+    $color_name = isset($attrs['textColor']) ? $attrs['textColor'] : '';
+    
+    if ($color_name) {
+      $class.= ' text-' . $color_name;
+    }
+    
+    if (isset($attrs['style'])) {
+      if (isset($attrs['style']['color'])) {
+        $color = isset($attrs['style']['color']['text']) ? $attrs['style']['color']['text'] : '';
+        $bg = isset($attrs['style']['color']['background']) ? $attrs['style']['color']['background'] : '';
+
+        if ($color) {
+          $color = $attrs['style']['color']['text'];
+
+          add_style($button, '--bs-btn-color', $color);
+          remove_style($button, 'color');
+
+          $hover_color = shade($color, 0.9);
+          $hover_color = $is_outline ? ($bg ?: 'initial') : shade($color, 0.9);
+
+          add_style($button, '--bs-btn-hover-color', $hover_color);
+          add_style($button, '--bs-btn-active-color', $color);
+        }
+
+        if ($bg) {
+          add_style($button, '--bs-btn-bg', $bg);
+          remove_style($button, 'background-color');
+
+          add_style($button, '--bs-btn-border-color', $is_outline ? ($color ?: 'initial') : $bg);
+          remove_style($button, 'border-color');
+
+          $hover_bg = $is_outline ? ($color ?: 'initial') : shade($bg, 0.9);
+
+          add_style($button, '--bs-btn-hover-bg', $hover_bg);
+          add_style($button, '--bs-btn-hover-border-color', $hover_bg);
+
+          add_style($button, '--bs-btn-active-bg', $bg);
+          add_style($button, '--bs-btn-active-border-color', $bg);
+        }
+      }
+
+      if (isset($attrs['style']['border'])) {
+        if (isset($attrs['style']['border']['radius'])) {
+          $radius = $attrs['style']['border']['radius'];
+          
+          add_style($button, '--bs-btn-border-radius', $radius);
+          remove_style($button, 'border-radius');
+        }
+      }
+    }
+
     add_class($button, $class);
+
+    // $class = sprintf(
+    //   isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']))
+    //     ? $options['button_outline_class']
+    //     : $options['button_class'],
+    //     isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : 'primary'
+    // );
+
+    // echo $background_color_name;
+
+    // add_class($button, $class);
+
+    // add_style()
 
     $button->setAttribute('role', 'button');
 
@@ -153,6 +218,7 @@ add_filter('render_block', function($content, $block)  {
       $button->setAttribute('href', $button->getAttribute('href') ?? '#');
     }
 
+    remove_class($container, 'is-style-outline', true);
     remove_class($container, '~^wp-block~', true);
   }
 
@@ -178,8 +244,6 @@ add_filter('render_block', function($content, $block)  {
 
     remove_class($container, '~^wp-block-table~', true);
   }
-
-  
 
   if ($name === 'core/column') {
     $width = $block['attrs']['width'];

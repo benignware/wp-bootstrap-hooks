@@ -1,6 +1,6 @@
 <?php
-use function util\dom\add_class;
-use function util\dom\has_class;
+use function benignware\bootstrap_hooks\util\dom\add_class;
+use function benignware\bootstrap_hooks\util\dom\has_class;
 
 /**
  * Posts Pagination
@@ -33,6 +33,7 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
     $document = new DOMDocument();
     @$document->loadHTML('<?xml encoding="utf-8" ?>' . "<ul class=\"$pagination_class\">" . $links . "</ul>");
     $page_links = $document->getElementsByTagName('ul')->item(0)->childNodes;
+    
     foreach($page_links as $page_link) {
       if ($page_link->nodeType === 1) {
         $page_link->setAttribute('class', $page_link->getAttribute('class') . ' ' . $page_link_class);
@@ -42,6 +43,7 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
         $page_link->parentNode->insertBefore($page_item, $page_link);
       }
     }
+    
     $links = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $document->saveHTML());
     $navigation = _navigation_markup( $links, 'posts-navigation', $args['screen_reader_text'] );
   }

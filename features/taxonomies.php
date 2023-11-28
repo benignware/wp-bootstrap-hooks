@@ -1,5 +1,5 @@
 <?php
-use function util\dom\add_class;
+use function benignware\bootstrap_hooks\util\dom\add_class;
 
 add_action('init', function() {
   $taxonomies = get_taxonomies();

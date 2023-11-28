@@ -4,8 +4,7 @@
  * TODO: Template
  */
 
-
- add_filter( 'get_search_form', function( $output ) {
+add_filter( 'get_search_form', function( $output ) {
   if (!current_theme_supports('bootstrap')) {
     return $output;
   }

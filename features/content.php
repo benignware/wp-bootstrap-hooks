@@ -1,9 +1,9 @@
 <?php
 
-use function util\dom\add_class;
-use function util\dom\remove_class;
-use function util\dom\has_class;
-use function util\dom\find_all_by_class;
+use function benignware\bootstrap_hooks\util\dom\add_class;
+use function benignware\bootstrap_hooks\util\dom\remove_class;
+use function benignware\bootstrap_hooks\util\dom\has_class;
+use function benignware\bootstrap_hooks\util\dom\find_all_by_class;
 
 /**
  * Add bootstrap classes to content images

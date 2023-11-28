@@ -1,15 +1,15 @@
 <?php
 
-use function util\dom\add_class;
-use function util\dom\has_class;
-use function util\dom\remove_class;
-use function util\dom\add_style;
-use function util\dom\find_by_class;
-use function util\dom\find_all_by_class;
-use function util\dom\trim_nodes;
-use function util\dom\remove_all;
-use function util\dom\inner_root;
-use function util\dom\replace_tag;
+use function benignware\bootstrap_hooks\util\dom\add_class;
+use function benignware\bootstrap_hooks\util\dom\has_class;
+use function benignware\bootstrap_hooks\util\dom\remove_class;
+use function benignware\bootstrap_hooks\util\dom\add_style;
+use function benignware\bootstrap_hooks\util\dom\find_by_class;
+use function benignware\bootstrap_hooks\util\dom\find_all_by_class;
+use function benignware\bootstrap_hooks\util\dom\trim_nodes;
+use function benignware\bootstrap_hooks\util\dom\remove_all;
+use function benignware\bootstrap_hooks\util\dom\inner_root;
+use function benignware\bootstrap_hooks\util\dom\replace_tag;
 
 
 add_filter('register_sidebar_defaults', function($defaults) {
@@ -20,10 +20,6 @@ add_filter('register_sidebar_defaults', function($defaults) {
   return array_merge(
     $defaults,
     array(
-      // 'before_widget' => "<div class=\"widget widget-$widget_id_base $widget_class $widget_modifier_class\">",
-      // 'after_widget'  => '</div>',
-      // 'before_title'  => '<div class="' . $widget_header_class . '">',
-      // 'after_title'   => '</div>'
       'before_widget'  => '<div id="%1$s" class="widget %2$s card card-%2$s mb-4">',
       'after_widget'   => "</div>\n",
       'before_title'   => '<div class="card-header"><span class="widgettitle">',

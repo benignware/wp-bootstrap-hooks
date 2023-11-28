@@ -30,36 +30,67 @@ function wp_bootstrap_nav_menu_args($args) {
 }
 add_filter( 'wp_nav_menu_args', 'wp_bootstrap_nav_menu_args', 10 );
 
-/**
- * Nav Menu Args
- */
-// function wp_bootstrap_nav_menu($nav_menu = '', $args = array()) {
-//   if (!current_theme_supports('bootstrap')) {
-//     return $nav_menu;
-//   }
+add_action( 'wp_enqueue_scripts', function() {
+  wp_register_script( 'bootstrap-hooks-dropdown-links', '', [], '', true );
+  wp_enqueue_script( 'bootstrap-hooks-dropdown-links' );
+  wp_add_inline_script( 'bootstrap-hooks-dropdown-links', <<<EOT
+<script>
+  (() => {
+    const handler = (e) => {
+      const target = event.target.closest('a[href].dropdown-toggle');
+  
+      if (!target) {
+        return;
+      }
+  
+      if (target.href.startsWith('#') || target.href.startsWith('javascript:')) {
+        return;
+      }
+  
+      const isOpen = !!target.classList.contains('show');
+  
+      if (isOpen) {
+        return;
+      }
 
-//   // Parse menu id attribute
-//   preg_match("#<\w+\s[^>]*id\s*=\s*[\'\"]??\s*?(.*)[\'\"\s]{1}[^>]*>#simU", $nav_menu, $match);
-//   if (!$match) {
-//     return $nav_menu;
-//   }
-//   $menu_id = $match[1];
-//   return $nav_menu . <<<EOT
-//   <script>
-//     /* TODO: Bootstrap 3 Support */
-//     (function($) {
-//       $('#$menu_id').on('click', '.dropdown-toggle', function(e) {
-//         if ($(this).parent('.dropdown').hasClass('open')) {
-//           window.location.href = $(this).prop('href');
-//         }
-//         e.preventDefault();
-//       });
-//     })(jQuery);
-//     */
-//   </script>
-// EOT;
-// }
-// add_filter( 'wp_nav_menu', 'wp_bootstrap_nav_menu', 10, 2 );
+      const isCaret = !!event.target.closest('caret') || (() => {
+        const after = getComputedStyle(target, ":after");
+      
+        if (after) {
+          const w = Math.max(Number(after.getPropertyValue("width").slice(0, -2)), 16);
+          const h = target.offsetHeight;
+          const x = target.offsetWidth - w;
+          const y = 0;
+          const ex = e.layerX;
+          const ey = e.layerY;
+          
+          if (ex > x && ex < x + w && ey > y && ey < y + h) {
+            return true;
+          }
+        }
+  
+        return false;
+      })();
+  
+      if (isCaret) {
+        return false;
+      }
+  
+      const hasText = [...target.childNodes].some(node => node.nodeType === 3);
+  
+      if (!hasText && event.target !== target || hasText && event.target === target) {
+        window.location.href = target.href;
+      }
+    }
+    window.addEventListener('click', handler);
+  })();
+</script>
+EOT);
+} );
+
+add_filter( 'nav_menu_item_title', function($title) {
+  return '<span>' . $title . '</span>';
+}, 2);
 
 /**
  * Class Name: wp_bootstrap_navwalker
@@ -129,7 +160,6 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
    */
   public function start_el( &$output, $item, $depth = 0, $args = array(), $id = 0 ) {
     $indent = ( $depth ) ? str_repeat( "\t", $depth ) : '';
-
     $menu_order = $item->menu_order;
 
     $menu_item_class = $this->options['menu_item_class'];
@@ -194,8 +224,6 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
       $atts['title']  = ! empty( $item->title ) ? $item->title  : '';
       $atts['target'] = ! empty( $item->target )  ? $item->target : '';
       $atts['rel']    = ! empty( $item->xfn )   ? $item->xfn  : '';
-
-
       $atts['class'] = '';
 
       if ($depth === 0) {
@@ -239,7 +267,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
       $item_output .= $args->link_before;
       $item_output .= $title;
       $item_output .= $args->link_after;
-      $item_output .= ( $caret && $args->has_children && 0 === $depth ) ? '&nbsp;' . $caret . '</a>' : '</a>';
+      $item_output .= ( $caret && $args->has_children && 0 === $depth ) ? $caret . '</a>' : '</a>';
       $item_output .= $args->after;
 
       $output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );
@@ -267,17 +295,19 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
    * @return null Null on failure with no changes to parameters.
    */
   public function display_element( $element, &$children_elements, $max_depth, $depth, $args, &$output ) {
-        if ( ! $element )
-            return;
-
-        $id_field = $this->db_fields['id'];
-
-        // Display this element.
-        if ( is_object( $args[0] ) )
-           $args[0]->has_children = ! empty( $children_elements[ $element->$id_field ] );
-
-        parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
+    if ( ! $element ) {
+      return;
     }
+
+    $id_field = $this->db_fields['id'];
+
+    // Display this element.
+    if ( is_object( $args[0] ) ) {
+      $args[0]->has_children = ! empty( $children_elements[ $element->$id_field ] );
+    }
+
+    parent::display_element( $element, $children_elements, $max_depth, $depth, $args, $output );
+  }
 
   /**
    * Menu Fallback
@@ -291,7 +321,6 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
    *
    */
   public static function fallback( $args ) {
-
     $options = wp_bootstrap_options();
 
     if ( current_user_can( 'manage_options' ) ) {
@@ -338,4 +367,3 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
     }
   }
 }
-

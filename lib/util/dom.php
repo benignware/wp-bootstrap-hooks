@@ -1,11 +1,16 @@
 <?php
 
-namespace util\dom {
+namespace benignware\bootstrap_hooks\util\dom {
   use \DOMXPath;
 
   function _parse_style($css) {
-    return array_reduce(preg_split('~[;\s]+~', $css), function($result, $item) {
-      list($key, $value) = preg_split('~[\s:]+~', $item);
+    return array_reduce(preg_split('~[;]+\s*~', $css), function($result, $item) {
+      $split_index = strpos($item, ':');
+
+      if ($split_index >= 0) {
+        $key = trim(substr($item, 0, $split_index));
+        $value = trim(substr($item, $split_index + 1));
+      }
   
       return array_merge($result, [
         $key => $value
@@ -16,8 +21,8 @@ namespace util\dom {
   function _stringify_style($styles) {
     $styles = array_filter($styles);
 
-    return implode('; ', array_map(function($key, $value) {
-      return $key . ': ' . $value;
+    return implode(';', array_map(function($key, $value) {
+      return trim($key) . ': ' . trim($value);
     }, array_keys($styles), array_values($styles)));
   }
   
@@ -26,11 +31,20 @@ namespace util\dom {
     $styles[$name] = $value;
     $element->setAttribute('style', _stringify_style($styles));
   }
+
+  function get_style($element, $name) {
+    $styles = _parse_style($element->getAttribute('style'));
+    return isset($styles[$name]) ? $styles[$name] : null;
+  }
   
   function remove_style($element, $name) {
     $styles = _parse_style($element->getAttribute('style'));
     unset($styles[$name]);
     $element->setAttribute('style', _stringify_style($styles));
+  }
+
+  function remove_all_styles($element) {
+    $element->removeAttribute('style');
   }
   
   function _parse_class($class) {
