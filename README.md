@@ -5,45 +5,26 @@
 When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not sufficient to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc.
 Bootstrap Hooks aims to cover most of these cases to make us immediately start implementing the individual application rather than getting hassled by markup incompatibilities.
 
-Bootstrap Hooks consists of six separate modules for Comments, Gallery, Navbar, Pagination, Forms and Widgets which can be used altogether or independently from each other. Every module is customizable by passing options to a central filter method.
+Bootstrap Hooks consists of six separate modules for Navigation, Pagination, Forms, Widgets, Comments, Gallery and Blocks which can be used altogether or independently from each other. Every module is customizable by passing options to a central filter method.
 
-Bootstrap Hooks has been optimized for Bootstrap 4, though it can be adjusted to also support Bootstrap 3. See [Recipes](#recipes) for more details on how to do this.
+Bootstrap Hooks has been optimized for Bootstrap 5, though it can be adjusted to also support older versions. See [Recipes](#recipes) for more details on how to do this.
 
 ## Install
 
-Either install as a must-use-plugin or copy the desired files directly to your theme and require them in your functions.php.
+Install preferrably as a must-use plugin. It should be enabled by themes programmatically and updated by theme developers who maintain Bootstrap inside a certain themes.
 
-### Plugin
-When utilizing as plugin, require all modules from your functions.php as follows:
+### Initialize
+
+Bootstrap Hooks is made aware that your theme actually supports Bootstrap by calling `add_theme_support` in your `functions.php`:
 
 ```php
-if (function_exists('wp_bootstrap_hooks')) {
-  wp_bootstrap_hooks();
-}
+add_theme_support( 'bootstrap' );
 ```
 
 To only include specific modules, just pass them as parameters:
 
 ```php
 wp_bootstrap_hooks('menu', 'widgets', ...);
-```
-
-Please note that it's recommended to install Bootstrap Hooks as a Must-Use-Plugin instead of a regular plugin and should only be updated manually by theme developers.
-
-### Theme
-
-When used from inside a theme, all hooks can be required by including only the main file:
-
-```php
-require_once 'inc/wp-bootstrap-hooks/bootstrap-hooks.php';
-```
-
-Otherwise require specific modules as needed:
-
-```php
-require_once 'inc/wp-bootstrap-hooks/bootstrap-menu.php';
-require_once 'inc/wp-bootstrap-hooks/bootstrap-widgets.php';
-...
 ```
 
 ## Usage
@@ -488,7 +469,7 @@ Inject custom options.
   </tr>
   <tr>
     <td>caret</td>
-    <td>Sets the menu item caret class</td>
+    <td>Sets the menu item caret class (bs < 5)</td>
     <td>&lt;span class=&quot;caret&quot;&gt;&lt;/span&gt;</td>
   </tr>
   <tr>
