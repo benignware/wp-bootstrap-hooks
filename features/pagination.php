@@ -1,6 +1,6 @@
 <?php
-use function benignware\bootstrap_hooks\util\dom\add_class;
-use function benignware\bootstrap_hooks\util\dom\has_class;
+use function util\dom\add_class;
+use function util\dom\has_class;
 
 /**
  * Posts Pagination
@@ -33,7 +33,7 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
     $document = new DOMDocument();
     @$document->loadHTML('<?xml encoding="utf-8" ?>' . "<ul class=\"$pagination_class\">" . $links . "</ul>");
     $page_links = $document->getElementsByTagName('ul')->item(0)->childNodes;
-    
+
     foreach($page_links as $page_link) {
       if ($page_link->nodeType === 1) {
         $page_link->setAttribute('class', $page_link->getAttribute('class') . ' ' . $page_link_class);
@@ -43,7 +43,7 @@ function wp_bootstrap_posts_pagination( $args = array() ) {
         $page_link->parentNode->insertBefore($page_item, $page_link);
       }
     }
-    
+  
     $links = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $document->saveHTML());
     $navigation = _navigation_markup( $links, 'posts-navigation', $args['screen_reader_text'] );
   }
@@ -60,19 +60,20 @@ function wp_bootstrap_post_navigation($args = array()) {
   }
 
   $args = wp_parse_args( $args, array(
-      'prev_text'          => '%title',
-      'next_text'          => '%title',
-      // 'in_same_term'       => false,
-      // 'excluded_terms'     => '',
-      // 'taxonomy'           => 'category',
-      // 'screen_reader_text' => __( 'Post navigation' ),
+    'prev_text'          => '%title',
+    'next_text'          => '%title',
+    // 'in_same_term'       => false,
+    // 'excluded_terms'     => '',
+    // 'taxonomy'           => 'category',
+    // 'screen_reader_text' => __( 'Post navigation' ),
   ) );
 
-  // FIXME: Safe extract
-  extract($args);
+  // FIXME: Get rid of extract
   extract(wp_bootstrap_options());
 
   $prev_post = get_previous_post();
+  $prev_text = isset($args['prev_text']) ? $args['prev_text'] : '';
+  $previous = '';
 
   if ( $prev_post ) {
     // Replace %title with post title
@@ -87,6 +88,9 @@ function wp_bootstrap_post_navigation($args = array()) {
   }
 
   $next_post = get_next_post();
+  $next_text = isset($args['next_text']) ? $args['next_text'] : '';
+  $next = '';
+
   if ( $next_post ) {
     // Replace %title with post title
     $next_text = preg_replace("~%title~", $next_post->post_title, $next_text);
