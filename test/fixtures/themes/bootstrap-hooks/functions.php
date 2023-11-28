@@ -75,6 +75,7 @@ if ( version_compare( $GLOBALS['wp_version'], '4.7-alpha', '<' ) ) {
 function twentyseventeen_setup() {
 	// Bootstrap Hooks
 	add_theme_support( 'bootstrap' );
+
 	/*
 	 * Make theme available for translation.
 	 * Translations can be filed at WordPress.org. See: https://translate.wordpress.org/projects/wp-themes/twentyseventeen
