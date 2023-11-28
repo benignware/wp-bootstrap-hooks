@@ -34,7 +34,6 @@ add_action( 'wp_enqueue_scripts', function() {
   wp_register_script( 'bootstrap-hooks-dropdown-links', '', [], '', true );
   wp_enqueue_script( 'bootstrap-hooks-dropdown-links' );
   wp_add_inline_script( 'bootstrap-hooks-dropdown-links', <<<EOT
-<script>
   (() => {
     const handler = (e) => {
       const target = event.target.closest('a[href].dropdown-toggle');
@@ -84,7 +83,6 @@ add_action( 'wp_enqueue_scripts', function() {
     }
     window.addEventListener('click', handler);
   })();
-</script>
 EOT);
 } );
 
