@@ -52,7 +52,7 @@ if (!function_exists('wp_bootstrap_the_content')) {
       );
     }
     usort($embed_preset_ratios_sorted, function($a, $b) {
-      return $a["ratio"] > $b["ratio"];
+      return $a["ratio"] > $b["ratio"] ? 1 : ($a["ratio"] < $b["ratio"] ? -1 : 0);
     });
 
     $iframe_elements = $doc->getElementsByTagName( 'iframe' );
