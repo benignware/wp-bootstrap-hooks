@@ -9,15 +9,19 @@ add_filter( 'get_search_form', function( $output ) {
     return $output;
   }
 
-  extract(wp_bootstrap_options());
+  $options = wp_bootstrap_options();
+
+  extract($options);
 
   $action_url = home_url( '/' );
   $search_query = get_search_query();
   $search_for_label = __( 'Search for:' );
   $search_placeholder = esc_attr__( 'Search' ) . '...';
-  $search_submit_label = $search_submit_label ?: esc_attr_x( 'Search', 'submit button' );
-  $search_submit_before = $input_group_append_class ? sprintf('<div class="%s">', $input_group_append_class) : '';
-  $search_submit_after = $input_group_append_class ? '</div>' : '';
+  $search_submit_label = isset($options['search_submit_label'])
+    ? $search_submit_label
+    : esc_attr_x( 'Search', 'submit button' );
+  $search_submit_before = isset($input_group_append_class) ? sprintf('<div class="%s">', $input_group_append_class) : '';
+  $search_submit_after = isset($input_group_append_class) ? '</div>' : '';
   $output = <<<EOT
 <form
   role="search"
