@@ -205,6 +205,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
     $sub_menu_item_tag = $this->options['sub_menu_item_tag'];
     $sub_menu_item_class = $this->options['sub_menu_item_class'];
     $sub_menu_class = $this->options['sub_menu_class'];
+    $sub_menu_toggle_class = $this->options['sub_menu_toggle_class'];
     $sub_menu_item_link_class = $this->options['sub_menu_item_link_class'];
 
     $caret = isset($this->options['caret']) ? $this->options['caret'] : '';
@@ -233,14 +234,19 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
       $classes = empty( $item->classes ) ? array() : (array) $item->classes;
       $classes[] = $menu_item_class;
       $classes[] = 'menu-item-' . $item->ID;
+      $classes = apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args );
 
-      $class_names = join( ' ', apply_filters( 'nav_menu_css_class', array_filter( $classes ), $item, $args ) );
+      $class_names = join( ' ', $classes );
 
-      if ( $args->has_children )
+      if ( $args->has_children ) {
         $class_names .= ' dropdown';
+      }
 
-      if ( in_array( 'current-menu-item', $classes ) )
+      if ( in_array('current-menu-item', $classes)
+        || in_array('current-post-ancestor', $classes)
+        || in_array('current-category-parent', $classes)) {
         $class_names .= ' active';
+      }
 
       $class_names = $class_names ? ' class="' . esc_attr( $class_names ) . '"' : '';
 
@@ -277,7 +283,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
       if ( $args->has_children && $depth === 0 ) {
         $atts['data-toggle'] = 'dropdown'; // Bootstrap 4
         $atts['data-bs-toggle'] = 'dropdown'; // Bootstrap 5
-        $atts['class'].= ' dropdown-toggle';
+        $atts['class'].= ' ' . $sub_menu_toggle_class;
       }
 
       $atts = apply_filters( 'nav_menu_link_attributes', $atts, $item, $args, $depth );
