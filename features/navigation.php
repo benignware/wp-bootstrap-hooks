@@ -18,23 +18,56 @@ function wp_bootstrap_nav_menu_args($args) {
     'primary', 'top'
   );
 
-  // Apply .navbar-nav only if primary-menu and no custom class has been set
+  // Apply .navbar-nav automatically to primary menu if no custom class has been set
   if ($is_default_menu_class && isset($args['theme_location']) && in_array($args['theme_location'], $navbar_locations)) {
     $args['menu_class'] = $args['menu_class'] . " navbar-nav";
   }
+
   if (empty($args['walker'])) {
     $args['fallback_cb'] = 'wp_bootstrap_navwalker::fallback';
     $args['walker'] = new wp_bootstrap_navwalker($options);
   }
   return $args;
 }
+
 add_filter( 'wp_nav_menu_args', 'wp_bootstrap_nav_menu_args', 10 );
+add_action( 'wp_enqueue_scripts', function() {
+  if (!current_theme_supports('bootstrap')) {
+    return;
+  }
+
+  $options = wp_bootstrap_options();
+
+  if (!isset($options['caret']) || !$options['caret']) {
+    return;
+  }
+
+  wp_register_style( 'bootstrap-hooks-hide-pseudo-caret', '', [], '', true );
+  wp_enqueue_style( 'bootstrap-hooks-hide-pseudo-caret' );
+  wp_add_inline_style( 'bootstrap-hooks-hide-pseudo-caret', <<<EOT
+<style>
+  .menu-item.nav-item .dropdown-toggle::after {
+    display: none
+  }
+</style>
+EOT);
+} );
 
 add_action( 'wp_enqueue_scripts', function() {
+  if (!current_theme_supports('bootstrap')) {
+    return;
+  }
+
+  $options = wp_bootstrap_options();
+
+  $caret_class = isset($options['caret_class']) ? $options['caret_class'] : '';
+
   wp_register_script( 'bootstrap-hooks-dropdown-links', '', [], '', true );
   wp_enqueue_script( 'bootstrap-hooks-dropdown-links' );
   wp_add_inline_script( 'bootstrap-hooks-dropdown-links', <<<EOT
+<script>
   (() => {
+    const caretSelector = '$caret_class';
     const handler = (e) => {
       const target = event.target.closest('a[href].dropdown-toggle');
   
@@ -52,7 +85,7 @@ add_action( 'wp_enqueue_scripts', function() {
         return;
       }
 
-      const isCaret = !!event.target.closest('caret') || (() => {
+      const isCaret = caretSelector && !!event.target.closest(caretSelector) || (() => {
         const after = getComputedStyle(target, ":after");
       
         if (after) {
@@ -83,12 +116,13 @@ add_action( 'wp_enqueue_scripts', function() {
     }
     window.addEventListener('click', handler);
   })();
+</script>
 EOT);
 } );
 
-add_filter( 'nav_menu_item_title', function($title) {
-  return '<span>' . $title . '</span>';
-}, 2);
+// add_filter( 'nav_menu_item_title', function($title) {
+//   return '<span>' . $title . '</span>';
+// }, 2);
 
 /**
  * Class Name: wp_bootstrap_navwalker
@@ -173,7 +207,8 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
     $sub_menu_class = $this->options['sub_menu_class'];
     $sub_menu_item_link_class = $this->options['sub_menu_item_link_class'];
 
-    $caret = $this->options['caret'];
+    $caret = isset($this->options['caret']) ? $this->options['caret'] : '';
+    $caret_class = isset($this->options['caret_class']) ? $this->options['caret_class'] : 'caret';
 
     /**
      * Dividers, Headers or Disabled
@@ -240,8 +275,8 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
 
       // If item has_children add atts to a.
       if ( $args->has_children && $depth === 0 ) {
-        $atts['data-toggle']  = 'dropdown'; // Bootstrap 4
-        $atts['data-bs-toggle']  = 'dropdown'; // Bootstrap 5
+        $atts['data-toggle'] = 'dropdown'; // Bootstrap 4
+        $atts['data-bs-toggle'] = 'dropdown'; // Bootstrap 5
         $atts['class'].= ' dropdown-toggle';
       }
 
@@ -265,7 +300,7 @@ class wp_bootstrap_navwalker extends Walker_Nav_Menu {
       $item_output .= $args->link_before;
       $item_output .= $title;
       $item_output .= $args->link_after;
-      $item_output .= ( $caret && $args->has_children && 0 === $depth ) ? $caret . '</a>' : '</a>';
+      $item_output .= ( $caret && $args->has_children && 0 === $depth ) ? sprintf($caret, $caret_class) . '</a>' : '</a>';
       $item_output .= $args->after;
 
       $output .= apply_filters( 'walker_nav_menu_start_el', $item_output, $item, $depth, $args );

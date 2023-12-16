@@ -116,8 +116,6 @@ function wp_bootstrap_options() {
     'sub_menu_item_class' => '',
     'sub_menu_item_link_class' => 'dropdown-item',
     'divider_class' => 'divider',
-    // 'caret' => '',
-    'caret' => '<span class="caret"></span>',
     // Pagination
     'pagination_class' => 'pagination',
     'page_item_class' => 'page-item',
@@ -181,7 +179,8 @@ add_filter('bootstrap_options', function($options, $args) {
     return array_merge($options, [
       'post_tag_class' => 'badge badge-secondary text-wrap mb-1',
       'input_group_append_class' => 'input-group-append',
-      'caret' => '<span class="caret"></span>',
+      'caret' => '<span class="%s"></span>',
+      'caret_class' => 'caret',
     ]);
   }
 
