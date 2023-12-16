@@ -59,13 +59,11 @@ add_action( 'wp_enqueue_scripts', function() {
   }
 
   $options = wp_bootstrap_options();
-
   $caret_class = isset($options['caret_class']) ? $options['caret_class'] : '';
 
   wp_register_script( 'bootstrap-hooks-dropdown-links', '', [], '', true );
   wp_enqueue_script( 'bootstrap-hooks-dropdown-links' );
   wp_add_inline_script( 'bootstrap-hooks-dropdown-links', <<<EOT
-<script>
   (() => {
     const caretSelector = '$caret_class';
     const handler = (e) => {
@@ -116,7 +114,6 @@ add_action( 'wp_enqueue_scripts', function() {
     }
     window.addEventListener('click', handler);
   })();
-</script>
 EOT);
 } );
 
