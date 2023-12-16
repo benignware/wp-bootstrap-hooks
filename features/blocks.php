@@ -103,21 +103,21 @@ add_filter('render_block', function($content, $block)  {
   }
 
   // Figures
-  $figures = $doc_xpath->query("//figure");
+  // $figures = $doc_xpath->query("//figure");
 
-  foreach ($figures as $figure) {
-    add_class($figure, $options['img_caption_class']);
+  // foreach ($figures as $figure) {
+  //   add_class($figure, $options['img_caption_class']);
 
-    list($figcaption) = $doc_xpath->query("//figcaption", $figure);
-    if ($figcaption) {
-      add_class($figcaption, $options['img_caption_text_class']);
-    }
+    // list($figcaption) = $doc_xpath->query("//figcaption", $figure);
+    // if ($figcaption) {
+    //   add_class($figcaption, $options['img_caption_text_class']);
+    // }
 
-    list($figimg) = $doc_xpath->query("//img", $figure);
-    if ($figimg) {
-      add_class($figimg, $options['img_caption_img_class']);
-    }
-  }
+    // list($figimg) = $doc_xpath->query("//img", $figure);
+    // if ($figimg) {
+    //   add_class($figimg, $options['img_caption_img_class']);
+    // }
+  // }
 
   // Inputs
   $inputs = $doc_xpath->query("//textarea|//select|//input[not(@type='checkbox') and not(@type='radio') and not(@type='submit')]");
@@ -126,19 +126,71 @@ add_filter('render_block', function($content, $block)  {
   }
 
   // Buttons
-  $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']");
+  // $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']");
 
-  foreach ($buttons as $button) {
-    $class = sprintf($options['button_class'], 'primary');
-    add_class($button, $class);
+  // foreach ($buttons as $button) {
+  //   $class = sprintf($options['button_class'], 'primary');
+  //   add_class($button, $class);
+  // }
+
+  // Image
+  if ($name === 'core/image') {
+    if ($container->nodeName === 'figure') {
+      add_class($container, $options['img_caption_class']);
+      remove_class($container, '~^wp-block~', true);
+
+      $caption = $doc_xpath->query("//figcaption", $container)->item(0);
+      
+      if ($caption) {
+        add_class($caption, $options['img_caption_text_class']);
+        remove_class($container, 'wp-element-caption', true);
+      }
+
+      $img = $doc_xpath->query("//img", $container)->item(0);
+
+      if ($img) {
+        add_class($img, $options['img_caption_img_class']);
+
+        if (!$caption) {
+          add_class($img, 'mb-0');
+        }
+      }
+
+      if (isset($attrs['align'])) {
+        if ($attrs['align'] === 'center') {
+          add_class($container, 'mx-auto');
+        }
+
+        add_style($container, 'width', 'fit-content !important');
+      }
+    }
   }
 
-  // Blocks
+  if ($name === 'core/buttons') {
+    // print_r($block);
+  }
+
   if ($name === 'core/button') {
     list($button) = $doc_xpath->query("//a|//button");
 
-    $bg_name = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
+    if (isset($attrs['width'])) {
+      add_class($container, sprintf('w-%s', $attrs['width']));
+      add_class($button, 'd-block');
+    }
 
+    if (isset($attrs['fontSize'])) {
+      $class_size = $attrs['fontSize'] === 'small'
+        ? 'btn-sm'
+        : (
+          $attrs['fontSize'] === 'large'
+            ? 'btn-lg'
+            : ''
+        );
+
+      add_class($button, $class_size);
+    }
+
+    $bg_name = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
     $is_outline = isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']));
     
     $class = sprintf(
@@ -153,6 +205,14 @@ add_filter('render_block', function($content, $block)  {
     }
     
     if (isset($attrs['style'])) {
+      if (isset($attrs['style']['typography'])) {
+        if (isset($attrs['style']['typography']['fontSize'])) {
+          $font_size = $attrs['style']['typography']['fontSize'];
+          
+          add_style($button, '--bs-btn-font-size', $font_size);
+        }
+      }
+      
       if (isset($attrs['style']['color'])) {
         $color = isset($attrs['style']['color']['text']) ? $attrs['style']['color']['text'] : '';
         $bg = isset($attrs['style']['color']['background']) ? $attrs['style']['color']['background'] : '';
@@ -225,11 +285,6 @@ add_filter('render_block', function($content, $block)  {
   if ($name === 'core/buttons') {
   }
 
-  if ($name === 'core/columns') {
-    // remove_class($container, '~^wp-block~');
-    add_class($container, $options['columns_class']);
-  }
-
   if ($name === 'core/table') {
     add_class($container, $options['table_container_class']);
     remove_class($container, 'figure', true);
@@ -245,15 +300,106 @@ add_filter('render_block', function($content, $block)  {
     remove_class($container, '~^wp-block-table~', true);
   }
 
-  if ($name === 'core/column') {
-    $width = $block['attrs']['width'];
-    $cell = intval(floatval($width) / 100 * 12);
-    $breakpoint = 'lg'; // TODO: Make configurable
-    $class = sprintf($options['column_class'], $cell, $breakpoint);
+  if ($name === 'core/columns') {
+    remove_class($container, '~^wp-block~');
+    remove_class($container, 'is-layout-flex');
+    remove_class($container, 'is-not-stacked-on-mobile');
+    remove_class($container, '~wp-container-core-columns-layout-\d~');
+
+    $columns = isset($block['innerBlocks']) ? count($block['innerBlocks']) : 1;
+    $classes = explode(' ', $options['columns_class']);
+
+    $isStackedOnMobile = 1;
+    $breakpoint = 'md';
+
+    if (isset($block['attrs']['isStackedOnMobile'])) {
+      $isStackedOnMobile = $block['attrs']['isStackedOnMobile'] ? 1 : 0;
+    }
+
+    foreach ($container->childNodes as $child) {
+      if ($child->nodeType === 1) {
+        $class = $child->getAttribute('class');
+
+        if ($isStackedOnMobile) {
+          remove_class($child, 'col');
+          add_class($child, 'col-12');
+        }
+
+        if (!preg_match('/col-md/', $class)) {
+          add_class($child, 'col-md');
+        }
+      }
+    }
+
+    // $classes[] = $isStackedOnMobile ? 'row-cols-1' : sprintf(
+    //   'row-cols-%s',
+    //   $columns
+    // );
+
+    // $classes[] = sprintf(
+    //   'row-cols-%s-%s',
+    //   $breakpoint, $columns
+    // );
+
+    if (isset($block['attrs']['verticalAlignment'])) {
+      $classes[] = sprintf('align-items-%s', $block['attrs']['verticalAlignment']);
+    }
+
+    $class = implode(' ', $classes);
 
     add_class($container, $class);
-    remove_style($container, 'flex-basis');
-    // remove_class($container, '~^wp-block~');
+  }
+
+  if ($name === 'core/column') {
+    $size = '';
+    $class = '';
+
+    if (isset($block['attrs']['width'])) {
+      $width = $block['attrs']['width'];
+      // echo $width;
+      preg_match('~([\d]+(?:\.\d+)?)(%|[a-z]+)~', $block['attrs']['width'], $matches);
+      $value = floatval($matches[1]);
+      $unit = $matches[2];
+
+      // echo $value / (100 / 12) - floor($value / (100 / 12));
+
+      if ($unit === '%') {
+        if ($value / (100 / 12) - floor($value / (100 / 12)) < 1) {
+          // echo 'DO IT';
+          $size = round($width / 100 * 12);
+          $breakpoint = 'md'; // TODO: Make breakpoint configurable
+          $class = sprintf($options['column_class'], $breakpoint, $size);
+          add_class($container, $class);
+          remove_style($container, 'flex-basis');
+        }
+      }
+      // $width = '11.34';
+      // echo $value . '<br/>';
+      // echo 'UNIT: ' . $unit;
+      // echo '<br/>';
+      // echo $value / (100 / 12);
+      // echo '<br/>';
+      // echo floor($value / (100 / 12));
+      // echo '<br/>';
+      // // $size = $width / 100 * 12;
+      // // $size_rounded = round($width / 100 * 12);
+      // echo $value % (100 / 12) . ' = ' . fmod($value, 100 / 12);
+      // echo '<br/>';
+      // echo '<br/>';
+    }
+
+    // $breakpoint = 'md'; // TODO: Make breakpoint configurable
+
+    // if ($size) {
+    //   $class = sprintf($options['column_class'], $breakpoint, $size);
+    // } else {
+    //   // $class = sprintf('col-12 col-%s', $breakpoint);
+    // }
+
+    
+    // remove_style($container, 'flex-basis');
+    remove_class($container, '~^wp-block~');
+
   }
 
   if ($name === 'core/image') {
@@ -285,8 +431,6 @@ add_filter('render_block', function($content, $block)  {
     }
   }
 
-
-
   // if ($name === 'core/navigation') {
   //   echo 'NAVIGATION';
   //   print_r($block);
@@ -299,6 +443,10 @@ add_filter('render_block', function($content, $block)  {
 
   // echo $name;
   // echo '<br/>';
+
+  if ($name === 'core/separator') {
+    remove_class($container, '~^wp-block~', true);
+  }
 
   if ($name === 'core/search') {
     $form = $doc_xpath->query('//form')->item(0);
@@ -385,9 +533,6 @@ add_filter('render_block', function($content, $block)  {
     $container->parentNode->removeChild($container);
   }
 
-
-  
-  
   $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
   // return $name . ' - ' . var_dump($block) . ' - ' . $result;
