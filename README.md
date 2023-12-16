@@ -21,31 +21,9 @@ Bootstrap Hooks is made aware that your theme actually supports Bootstrap by cal
 add_theme_support( 'bootstrap' );
 ```
 
-To only include specific modules, just pass them as parameters:
-
-```php
-wp_bootstrap_hooks('menu', 'widgets', ...);
-```
-
 ## Usage
 
 With few exceptions, Bootstrap Hooks works out-of-the-box by injecting its magic via actions and filters. Read further to learn more about the distinct modules.
-
-### Comments
-
-Comments are rendered as nested media-objects.
-
-You can customize the label 'Comment' by making use of the `bootstrap_options`-filter:
-
-```php
-// Customize Comment Label
-function my_bootstrap_options($args) {
-  return array_merge($args, array(
-    'comment_label' => ('Comment' , 'textdomain');
-  ));
-}
-add_filter( 'bootstrap_options', 'my_bootstrap_options' );
-```
 
 ### Content
 
@@ -168,6 +146,23 @@ register_sidebar( array(
   'id'            => 'sidebar-1',
   'description'   => __( 'Add widgets here to appear in your sidebar.', 'textdomain' )
 ) );
+```
+
+
+### Comments
+
+Comments are rendered as nested media-objects.
+
+You can customize the label 'Comment' by making use of the `bootstrap_options`-filter:
+
+```php
+// Customize Comment Label
+function my_bootstrap_options($args) {
+  return array_merge($args, array(
+    'comment_label' => ('Comment' , 'textdomain');
+  ));
+}
+add_filter( 'bootstrap_options', 'my_bootstrap_options' );
 ```
 
 
