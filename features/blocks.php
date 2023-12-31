@@ -6,10 +6,11 @@ use function benignware\bootstrap_hooks\util\dom\remove_class;
 use function benignware\bootstrap_hooks\util\dom\remove_style;
 use function benignware\bootstrap_hooks\util\dom\has_class;
 use function benignware\bootstrap_hooks\util\dom\find_by_class;
-use function benignware\bootstrap_hooks\util\domm\find_all_by_class;
+use function benignware\bootstrap_hooks\util\dom\find_all_by_class;
 use function benignware\bootstrap_hooks\util\dom\replace_tag;
 use function benignware\bootstrap_hooks\util\dom\get_common_ancestor;
 use function benignware\bootstrap_hooks\util\dom\contains_node;
+use function benignware\bootstrap_hooks\util\dom\append_html;
 
 use function benignware\bootstrap_hooks\util\colors\shade;
 
@@ -26,6 +27,13 @@ add_filter('render_block', function($content, $block)  {
   }
 
   $name = $block['blockName'];
+
+  // echo '<br/>';
+  // echo $name;
+  // echo '<br/>';
+  // print_r($block);
+  // echo '<br/>';
+  // echo '<br/>';
 
   if (!$name) {
     return $content;
@@ -68,7 +76,71 @@ add_filter('render_block', function($content, $block)  {
   @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $content);
   $doc_xpath = new DOMXpath($doc);
 
+  $walker = function($parent, $level = 0) use ($doc_xpath, &$walker) {
+    remove_class($parent, '~^wp-block~');
+
+    foreach ($parent->childNodes as $item) {
+      if ($level === 0) {
+        add_class($item, 'nav-item');
+      }
+
+      if ($item->nodeName === 'li') {
+        // echo 'LIST ITEM';
+        $link = null;
+        $list = null;
+        $button = null;
+
+        foreach ($item->childNodes as $item_child) {
+          if ($item_child->nodeName === 'a') {
+            $link = $item_child;
+          }
+
+          if ($item_child->nodeName === 'ul') {
+            $list = $item_child;
+          }
+
+          if ($item_child->nodeName === 'button') {
+            $button = $item_child;
+          }
+        }
+
+        if ($button) {
+          $button->parentNode->removeChild($button);
+        }
+
+        remove_class($item, 'open-on-hover-click');
+        remove_class($item, '~^wp-block~');
+        
+        if ($link) {
+          if ($level === 0) {
+            add_class($link, 'nav-link');
+          } else {
+            add_class($link, 'dropdown-item');
+          }
+
+          if ($list) {
+            add_class($list, 'dropdown-menu');
+            add_class($link, 'dropdown-toggle');
+            add_class($item, 'dropdown');
+
+            $link->setAttribute('role', 'button');
+            $link->setAttribute('data-bs-toggle', 'dropdown');
+            $link->setAttribute('aria-expanded', 'false');
+          }
+        }
+
+        if ($list) {
+          $walker($list, $level + 1);
+        }
+      }
+    }
+  };
+
   list($container) = $doc_xpath->query("//body/*[1]");
+
+  if (!$container) {
+    return $content;
+  }
 
   // Images
   $imgs = $doc_xpath->query("//img");
@@ -137,7 +209,8 @@ add_filter('render_block', function($content, $block)  {
   if ($name === 'core/image') {
     if ($container->nodeName === 'figure') {
       add_class($container, $options['img_caption_class']);
-      remove_class($container, '~^wp-block~', true);
+      // add_style($container, 'display', 'block');
+      // remove_class($container, '~^wp-block~', true);
 
       $caption = $doc_xpath->query("//figcaption", $container)->item(0);
       
@@ -156,13 +229,16 @@ add_filter('render_block', function($content, $block)  {
         }
       }
 
-      if (isset($attrs['align'])) {
-        if ($attrs['align'] === 'center') {
-          add_class($container, 'mx-auto');
-        }
-
-        add_style($container, 'width', 'fit-content !important');
-      }
+      // if (isset($attrs['align'])) {
+      //   if ($attrs['align'] === 'center') {
+      //     add_class($container, 'mx-auto');
+      //   } else if ($attrs['align'] === 'right') {
+      //     add_class($container, 'ms-auto');
+      //   } else {
+      //     add_class($container, 'me-auto');
+      //   }
+      //   // add_style($container, 'width', 'fit-content !important');
+      // }
     }
   }
 
@@ -411,30 +487,173 @@ add_filter('render_block', function($content, $block)  {
   }
 
   // Block Navigation
-  if ($name === 'core/page-list') {
-    // print_r($attrs);
-    // remove_class($container, '~^wp-block~');
-    add_class($container, $options['menu_class']);
+  // if ($name === 'core/page-list') {
+  //   // print_r($attrs);
+  //   // remove_class($container, '~^wp-block~');
+  //   add_class($container, $options['menu_class']);
 
-    $items = find_all_by_class($container, 'wp-block-pages-list__item');
+  //   $items = find_all_by_class($container, 'wp-block-pages-list__item');
 
-    foreach ($items as $item) {
-      // remove_class($item, '~^wp-block~');
-      add_class($item, $options['menu_item_class']);
+  //   foreach ($items as $item) {
+  //     // remove_class($item, '~^wp-block~');
+  //     add_class($item, $options['menu_item_class']);
 
-      $link = find_by_class($item, 'wp-block-pages-list__item__link');
+  //     $link = find_by_class($item, 'wp-block-pages-list__item__link');
 
-      if ($link) {
-        // remove_class($link, '~^wp-block~');
-        add_class($link, $options['menu_item_link_class']);
+  //     if ($link) {
+  //       // remove_class($link, '~^wp-block~');
+  //       add_class($link, $options['menu_item_link_class']);
+  //     }
+  //   }
+  // }
+
+  // echo $name . ' - ' . $container->tagName . ' --- ' . $container->getAttribute('class');
+  // echo '<br/>';
+
+  // echo "<textarea>" . $content . "</textarea>";
+  // echo '<br/>';
+  // echo '<br/>';
+
+  if ($name === 'core/navigation') {
+    // echo '<br/>';
+    // echo 'NAVIGATION';
+    // print_r($block);
+    // echo '<br/>';
+    // echo '<br/>';
+
+    $list = $doc_xpath->query(".//ul", $container)->item(0);
+
+    if ($list) {
+      // echo 'LIST';
+      add_class($list, 'nav');
+      $walker($list);
+
+      remove_class($list, '~^wp-block~', true);
+    }
+
+    // add_class($container, 'nav');
+    // $walker($container);
+    // remove_class($container, '~^wp-block~', true);
+  
+    // remove_class($container, '~^wp-block~', true);
+    add_class($container, 'navbar'); 
+
+    $content_class = 'wp-block-navigation__responsive-container';
+    $close_class = 'wp-block-navigation__responsive-container-close';
+
+    $button = $doc_xpath->query("./button", $container)->item(0);
+
+    $content = find_by_class($container, $content_class);
+
+    if ($content) {
+      $collapse_id = $content->getAttribute('id');
+      $close = find_by_class($content, $close_class);
+
+      if ($close) {
+        $close->parentNode->removeChild($close);
       }
+
+      add_class($content, 'collapse navbar-collapse');
+      remove_class($content, '~^wp-block~', true);
+    }
+
+    if ($button) {
+      $new_button = $doc->createElement('button');
+      $container->insertBefore($new_button, $container->firstChild);
+      $button->parentNode->removeChild($button);
+
+      $button = $new_button;
+
+      add_class($button, 'navbar-toggler');
+
+      $button->setAttribute('data-bs-toggle', 'collapse');
+      $button->setAttribute('data-bs-target', '#' . $collapse_id);
+
+      $button->textContent = '';
+
+      append_html($button, '<span class="navbar-toggler-icon"></span>');
+      
+
+      // <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    }
+
+    $navs = find_all_by_class($container, 'nav');
+
+    foreach ($navs as $nav) {
+      add_class($nav, 'navbar-nav');
+    }
+
+    // remove_class($container, '~^wp-block-navigation~');
+  }
+
+  if (has_class($container, 'navbar')) {
+    $nested = find_by_class($container, 'navbar');
+
+    if ($nested) {
+      $toggler = find_by_class($nested, 'navbar-toggler');
+
+      if ($toggler) {
+        $nested->parentNode->insertBefore($toggler, $nested);
+      }
+
+      add_style($nested, 'display', 'contents');
+
+      remove_class($container->childNodes, 'navbar', true);
+      remove_class($container->childNodes, '~^navbar-expand~', true);
     }
   }
 
-  // if ($name === 'core/navigation') {
-  //   echo 'NAVIGATION';
-  //   print_r($block);
+  // if (has_class($container, 'alignwide')) {
+  //   add_class($container, 'container');
   // }
+
+  // if (has_class($container, 'alignfull')) {
+  //   add_class($container, 'container-fluid');
+  // }
+
+  if (has_class($container, 'navbar-brand')) {
+    $links = $container->getElementsByTagName('a');
+
+    foreach ($links as $link) {
+      add_style($link, 'text-decoration', 'inherit');
+    }
+  }
+
+  if ($name === 'core/navigation-submenu') {
+
+    
+  }
+
+  // if ($name === 'core/navigation-link') {
+  //   // echo '<br/>';
+  //   // echo 'PAGE LIST';
+  //   print_r($block);
+  //   $item = $container->getElementsByTagName('li')->item(0);
+
+  //   if ($item) {
+  //     add_class($item, 'nav-item');
+  //   }
+
+  //   $link = $container->getElementsByTagName('a')->item(0);
+
+  //   if ($link) {
+  //     add_class($link, 'nav-link');
+  //   }
+
+  //   if ($link && $item && has_class($item, 'current-menu-item')) {
+  //     add_class($link, 'active');
+  //   }
+    
+  //   echo '<br/>';
+  //   echo "<textarea>" . $content . "</textarea>";
+  //   echo '<br/>';
+  // }
+
+  if ($name === 'core/page-list') {
+    add_class($container, 'nav');
+    $walker($container);
+    remove_class($container, '~^wp-block~', true);
+  }
 
   // if ($name === 'core/group') {
   //   echo 'GROUP';
@@ -452,6 +671,11 @@ add_filter('render_block', function($content, $block)  {
     $form = $doc_xpath->query('//form')->item(0);
     $input = $doc_xpath->query('//input[@name="s"]')->item(0);
     $submit = $doc_xpath->query('//input[@type="submit"]|//button')->item(0);
+
+    if (!$form || !$input || !$submit) {
+      return null;
+    }
+
     $common_ancestor = get_common_ancestor($input, $submit);
 
     if ($common_ancestor === $form) {

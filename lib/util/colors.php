@@ -65,7 +65,13 @@ namespace benignware\bootstrap_hooks\util\colors {
     return $u;
   }
 
-  function hex2rgb($hex = '#000000') {
+  function hex2rgb($hex) {
+    $hex = trim($hex);
+
+    if (strpos($hex, '#') !== 0) {
+      return null;
+    }
+
     $f = function ($x) {
       return hexdec($x);
     };
@@ -79,5 +85,46 @@ namespace benignware\bootstrap_hooks\util\colors {
     };
 
     return "#" . implode("", array_map($f, $rgb));
+  }
+
+  function colornames() {
+    global $__bs_color_names;
+
+    if (isset($__bs_color_names)) {
+      return $__bs_color_names;
+    }
+
+    $__bs_color_names = json_decode(file_get_contents(__DIR__ . '/color-names.json'), true);
+
+    return $__bs_color_names;
+  }
+
+  function cn2hex($colorname) {
+    $colornames = colornames();
+
+    return isset($colornames[$colorname]) ? $colornames[$colorname] : null;
+  }
+
+  function rgb($color) {
+    if (strpos($color, '#') === 0) {
+      return hex2rgb($color);
+    }
+
+    if (preg_match('/\s*rgba?\s*\((\d+)\s*,\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/', $color, $matches)) {
+      return [
+        $matches[1],
+        $matches[2],
+        $matches[3],
+        // $matches[4] ?: 1
+      ];
+    }
+
+    $colornames = colornames();
+
+    if (isset($colornames[strtolower($color)])) {
+      return hex2rgb($colornames[strtolower($color)]);
+    }
+
+    return null;
   }
 }

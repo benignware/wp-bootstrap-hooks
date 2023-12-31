@@ -12,6 +12,7 @@
 
 require_once 'lib/util/dom.php';
 require_once 'lib/util/colors.php';
+require_once 'lib/util/object.php';
 require_once 'lib/helpers.php';
 require_once 'features/functions.php';
 
@@ -31,7 +32,8 @@ function wp_bootstrap_hooks() {
       'widgets',
       'header',
       'taxonomies',
-      'thumbnails'
+      'thumbnails',
+      'theme'
     );
   }
 

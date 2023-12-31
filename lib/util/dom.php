@@ -77,6 +77,11 @@ namespace benignware\bootstrap_hooks\util\dom {
       }
       return;
     }
+
+    if (!$element || $element->nodeType !== 1) {
+      return;
+    }
+
     $classes = _parse_class($element->getAttribute('class'));
     $classes = array_filter($classes, function($class) use ($pattern) {
       return $class && $class !== $pattern && !@preg_match($pattern, $class);
@@ -100,9 +105,11 @@ namespace benignware\bootstrap_hooks\util\dom {
   function find_all_by_class($element, ...$classes) {
     $result = [];
     $container = $element instanceof DOMDocument ? $element : $element->ownerDocument;
+
     if (!$container) {
       return [];
     }
+
     $xpath = new DOMXPath($container);
 
     foreach ($classes as $class) {
@@ -232,4 +239,14 @@ namespace benignware\bootstrap_hooks\util\dom {
 
     return $inner_root;
   }
+
+  function append_html($parent, $source) {
+    $tmpDoc = new \DOMDocument();
+    $tmpDoc->loadHTML($source);
+    
+    foreach ($tmpDoc->getElementsByTagName('body')->item(0)->childNodes as $node) {
+      $node = $parent->ownerDocument->importNode($node, true);
+      $parent->appendChild($node);
+    }
+}
 }

@@ -1,0 +1,112 @@
+{
+	"settings": {
+		"border": {
+			"color": true,
+			"radius": true
+		},
+		"color": {
+			"link": true,
+			"palette": [
+				{
+					"color": "blue",
+					"name": "Primary",
+					"slug": "primary"
+				},
+				{
+					"color": "gray",
+					"name": "Secondary",
+					"slug": "secondary"
+				}
+			]
+		},
+		"layout": {
+			"contentSize": "840px",
+			"wideSize": "1100px"
+		},
+		"spacing": {
+			"blockGap": false,
+			"spacingScale": {
+				"steps": 0
+			},
+			"spacingSizes": [
+				{
+					"name": "1",
+					"size": "1rem",
+					"slug": "10"
+				},
+				{
+					"name": "2",
+					"size": "min(1.5rem, 2vw)",
+					"slug": "20"
+				},
+				{
+					"name": "3",
+					"size": "min(2.5rem, 3vw)",
+					"slug": "30"
+				},
+				{
+					"name": "4",
+					"size": "min(4rem, 5vw)",
+					"slug": "40"
+				},
+				{
+					"name": "5",
+					"size": "min(6.5rem, 8vw)",
+					"slug": "50"
+				},
+				{
+					"name": "6",
+					"size": "min(10.5rem, 13vw)",
+					"slug": "60"
+				}
+			],
+			"units": ["%", "px", "em", "rem", "vh", "vw"]
+		},
+		"typography": {
+			"fontFamilies": [
+				{
+					"fontFamily": "system-ui, -apple-system, \"Segoe UI\", Roboto, \"Helvetica Neue\", \"Noto Sans\", \"Liberation Sans\", Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\", \"Noto Color Emoji\"",
+					"name": "System Sans Serif",
+					"slug": "system-sans-serif"
+				},
+				{
+					"fontFamily": "SFMono-Regular, Menlo, Monaco, Consolas, \"Liberation Mono\", \"Courier New\", monospace",
+					"name": "System Monospace",
+					"slug": "system-monospace"
+				}
+			]
+		},
+		"useRootPaddingAwareAlignments": true
+	},
+	"styles": {
+		"border": {
+			"color": "green"
+		},
+		"color": {
+			"background": "white",
+			"text": "black"
+		},
+		"elements": {
+			"link": {
+				":hover": {
+					"color": {
+						"text": "rgb(0, 0, 255)"
+					}
+				},
+				"color": {
+					"text": "var(--wp--preset--color--primary)"
+				}
+			}
+		},
+		"spacing": {
+			"padding": {
+				"bottom": "0px",
+				"left": "2rem",
+				"right": "2rem",
+				"top": "0px"
+			}
+		}
+	},
+	"version": 2,
+	"$schema": "https://schemas.wp.org/wp/6.4/theme.json"
+}

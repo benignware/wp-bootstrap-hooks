@@ -59,6 +59,7 @@ add_action( 'wp_enqueue_scripts', function() {
   }
 
   $options = wp_bootstrap_options();
+
   $caret_class = isset($options['caret_class']) ? $options['caret_class'] : '';
 
   wp_register_script( 'bootstrap-hooks-dropdown-links', '', [], '', true );
@@ -67,6 +68,7 @@ add_action( 'wp_enqueue_scripts', function() {
   (() => {
     const caretSelector = '$caret_class';
     const handler = (e) => {
+      console.log('HELLO CLICK');
       const target = event.target.closest('a[href].dropdown-toggle');
   
       if (!target) {

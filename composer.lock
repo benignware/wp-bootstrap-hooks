@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "b3466008a89604bf78cf79ad22b1324b",
+    "content-hash": "c1c5b35e7c76a67f8f2c9f4ba853bc2b",
     "packages": [
         {
             "name": "composer/installers",
@@ -218,21 +218,39 @@
         },
         {
             "name": "wpackagist-plugin/advanced-random-posts-widget",
-            "version": "2.2.0",
+            "version": "2.2.1",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/advanced-random-posts-widget/",
-                "reference": "tags/2.2.0"
+                "reference": "tags/2.2.1"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/advanced-random-posts-widget.2.2.0.zip"
+                "url": "https://downloads.wordpress.org/plugin/advanced-random-posts-widget.2.2.1.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
             },
             "type": "wordpress-plugin",
             "homepage": "https://wordpress.org/plugins/advanced-random-posts-widget/"
+        },
+        {
+            "name": "wpackagist-plugin/create-block-theme",
+            "version": "1.13.7",
+            "source": {
+                "type": "svn",
+                "url": "https://plugins.svn.wordpress.org/create-block-theme/",
+                "reference": "tags/1.13.7"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://downloads.wordpress.org/plugin/create-block-theme.1.13.7.zip"
+            },
+            "require": {
+                "composer/installers": "^1.0 || ^2.0"
+            },
+            "type": "wordpress-plugin",
+            "homepage": "https://wordpress.org/plugins/create-block-theme/"
         },
         {
             "name": "wpackagist-plugin/disable-full-site-editing",
@@ -254,15 +272,15 @@
         },
         {
             "name": "wpackagist-plugin/fakerpress",
-            "version": "0.6.1",
+            "version": "0.6.2",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/fakerpress/",
-                "reference": "tags/0.6.1"
+                "reference": "tags/0.6.2"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/fakerpress.0.6.1.zip"
+                "url": "https://downloads.wordpress.org/plugin/fakerpress.0.6.2.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -272,15 +290,15 @@
         },
         {
             "name": "wpackagist-plugin/mailchimp-for-wp",
-            "version": "4.9.4",
+            "version": "4.9.10",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/mailchimp-for-wp/",
-                "reference": "tags/4.9.4"
+                "reference": "tags/4.9.10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/mailchimp-for-wp.4.9.4.zip"
+                "url": "https://downloads.wordpress.org/plugin/mailchimp-for-wp.4.9.10.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -290,15 +308,15 @@
         },
         {
             "name": "wpackagist-plugin/menu-image",
-            "version": "3.0.8",
+            "version": "3.10",
             "source": {
                 "type": "svn",
                 "url": "https://plugins.svn.wordpress.org/menu-image/",
-                "reference": "tags/3.0.8"
+                "reference": "tags/3.10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/plugin/menu-image.3.0.8.zip"
+                "url": "https://downloads.wordpress.org/plugin/menu-image.3.10.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -344,15 +362,15 @@
         },
         {
             "name": "wpackagist-theme/twentyseventeen",
-            "version": "3.2",
+            "version": "3.4",
             "source": {
                 "type": "svn",
                 "url": "https://themes.svn.wordpress.org/twentyseventeen/",
-                "reference": "3.2"
+                "reference": "3.4"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/theme/twentyseventeen.3.2.zip"
+                "url": "https://downloads.wordpress.org/theme/twentyseventeen.3.4.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -362,15 +380,15 @@
         },
         {
             "name": "wpackagist-theme/twentytwentytwo",
-            "version": "1.4",
+            "version": "1.6",
             "source": {
                 "type": "svn",
                 "url": "https://themes.svn.wordpress.org/twentytwentytwo/",
-                "reference": "1.4"
+                "reference": "1.6"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://downloads.wordpress.org/theme/twentytwentytwo.1.4.zip"
+                "url": "https://downloads.wordpress.org/theme/twentytwentytwo.1.6.zip"
             },
             "require": {
                 "composer/installers": "^1.0 || ^2.0"
@@ -401,5 +419,5 @@
         "php": ">=5.3.0"
     },
     "platform-dev": [],
-    "plugin-api-version": "2.3.0"
+    "plugin-api-version": "2.6.0"
 }

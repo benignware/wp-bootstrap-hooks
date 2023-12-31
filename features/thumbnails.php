@@ -2,7 +2,7 @@
 
 add_filter('wp_get_attachment_image', function($html) {
   if (!current_theme_supports('bootstrap')) {
-    return $content;
+    return $html;
   }
 
   $options = wp_bootstrap_options();

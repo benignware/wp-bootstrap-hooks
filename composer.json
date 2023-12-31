@@ -61,6 +61,7 @@
     "wpackagist-plugin/disable-full-site-editing": ">=1.0.3",
     "wpackagist-plugin/fakerpress": ">=0.5.2",
     "wpackagist-plugin/menu-image": ">=3.0.5",
+    "wpackagist-plugin/create-block-theme": ">=1.13.7",
     "wpackagist-theme/twentyseventeen": ">=2.9",
     "wpackagist-theme/twentytwentytwo": ">=1.0",
     "wptrt/theme-unit-test": "dev-master"
