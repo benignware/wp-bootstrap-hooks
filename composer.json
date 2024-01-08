@@ -1,6 +1,6 @@
 {
   "name": "benignware/wp-bootstrap-hooks",
-  "version": "1.0.0-beta.26",
+  "version": "1.0.0-beta.27",
   "type": "wordpress-muplugin",
   "license": "MIT",
   "description": "A collection of action and filters for bootstrap based themes",
@@ -55,15 +55,6 @@
     "wemakecustom/wp-mu-loader": "*",
     "benignware/menu-plus": ">=1.0.0-beta.2",
     "wpackagist-plugin/wordpress-importer": ">=0.6.4",
-    "wpackagist-plugin/advanced-random-posts-widget": ">=2.1.1",
-    "wpackagist-plugin/recent-posts-widget-with-thumbnails": ">=7.1.1",
-    "wpackagist-plugin/mailchimp-for-wp": ">=4.8.6",
-    "wpackagist-plugin/disable-full-site-editing": ">=1.0.3",
-    "wpackagist-plugin/fakerpress": ">=0.5.2",
-    "wpackagist-plugin/menu-image": ">=3.0.5",
-    "wpackagist-plugin/create-block-theme": ">=1.13.7",
-    "wpackagist-theme/twentyseventeen": ">=2.9",
-    "wpackagist-theme/twentytwentytwo": ">=1.0",
     "wptrt/theme-unit-test": "dev-master"
   },
   "scripts": {
