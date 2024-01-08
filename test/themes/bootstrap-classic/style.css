@@ -1,0 +1,12 @@
+/*
+Theme Name: Bootstrap Classic
+Author: Rafael Nowrotek
+Author URI: http://benignware.com
+Description: Demo theme for the Bootstrap Hooks wordpress plugin
+Version: 0.0.1
+*/
+
+.navbar-brand img {
+  max-height: 30px;
+  width: auto;
+}

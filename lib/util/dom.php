@@ -66,7 +66,13 @@ namespace benignware\bootstrap_hooks\util\dom {
   
   function add_class($element, $class) {
     $classes = _parse_class($element->getAttribute('class'));
-    $classes[] = $class;
+
+    if (is_array($class)) {
+      $classes = array_merge($classes, $class);
+    } else {
+      $classes[] = $class;
+    }
+    
     $element->setAttribute('class', _stringify_class($classes));
   }
   
@@ -96,7 +102,7 @@ namespace benignware\bootstrap_hooks\util\dom {
     if ($recursive) {
       foreach ($element->childNodes as $node) {
         if ($node->nodeType === 1) {
-          remove_class($node, $pattern);
+          remove_class($node, $pattern, $recursive);
         }
       }
     }
@@ -104,7 +110,13 @@ namespace benignware\bootstrap_hooks\util\dom {
 
   function find_all_by_class($element, ...$classes) {
     $result = [];
-    $container = $element instanceof DOMDocument ? $element : $element->ownerDocument;
+    $container = $element && $element instanceof DOMDocument
+      ? $element
+      : (
+        $element && property_exists($element, 'ownerDocument')
+          ? $element->ownerDocument
+          : null
+      );
 
     if (!$container) {
       return [];
@@ -248,5 +260,15 @@ namespace benignware\bootstrap_hooks\util\dom {
       $node = $parent->ownerDocument->importNode($node, true);
       $parent->appendChild($node);
     }
-}
+  }
+
+  function wrap($element, $tag_name) {
+    $doc = $element->ownerDocument;
+    $parent_node = $element->parentNode;
+    $wrapper_element = $doc->createElement($tag_name);
+    $parent_node->insertBefore($wrapper_element, $element);
+    $wrapper_element->appendChild($element);
+
+    return $wrapper_element;
+  }
 }

@@ -1,6 +1,6 @@
 # wp-bootstrap-hooks
 
-> A collection of filters and actions for bootstrap-based themes
+A collection of filters and actions for bootstrap-based themes
 
 When integrating [Bootstrap](http://getbootstrap.com/) with Wordpress, it is not sufficient to just include assets and add some css-classes to templates. You will also need to inject bootstrap-compatible markup into programmatically generated sections, such as menus, widgets, comments etc.
 Bootstrap Hooks aims to cover most of these cases to make us immediately start implementing the individual application rather than getting hassled by markup incompatibilities.

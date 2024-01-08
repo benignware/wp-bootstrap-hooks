@@ -127,4 +127,16 @@ namespace benignware\bootstrap_hooks\util\colors {
 
     return null;
   }
+
+  function brightness($color) {
+    $rgb = rgb($color);
+
+    if ($rgb) {
+      [$r, $g, $b, $a] = $rgb;
+      
+      return (($r * 299)+($g * 587) + ($b * 114)) / 1000;
+    }
+
+    return -1;
+  }
 }

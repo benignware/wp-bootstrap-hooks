@@ -26,3 +26,7 @@ wp-config
 .plugins
 .mu-plugins
 .uploads
+
+# Demo Themes
+# test/themes/**/public
+

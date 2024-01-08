@@ -31,13 +31,9 @@ services:
       - ./bin/install-wp.sh:/usr/local/bin/install-wp
       - .uploads:/var/www/html/wp-content/uploads
       - .plugins:/var/www/html/wp-content/plugins
-      - ./test/themes/bootstrap-blocks-2024:/var/www/html/wp-content/themes/bootstrap-blocks-2024
-      # - ./test/fixtures/themes/bootstrap-hooks:/var/www/html/wp-content/themes/bootstrap-hooks
-      # - ./test/fixtures/themes/bootstrap-blocks:/var/www/html/wp-content/themes/bootstrap-blocks
-      # - ./test/fixtures/themes/bootstrap-blocks-exp:/var/www/html/wp-content/themes/bootstrap-blocks-exp
-      # - ./test/fixtures/themes/bootstrap-twentyseventeen:/var/www/html/wp-content/themes/bootstrap-twentyseventeen
-      # - ./test/fixtures/themes/bootstrap-twentytwentytwo:/var/www/html/wp-content/themes/bootstrap-twentytwentytwo
-      # - ./test/fixtures/themes/bootstrapblocks:/var/www/html/wp-content/themes/bootstrapblocks
+      - ./test/themes/bootstrap-blocks:/var/www/html/wp-content/themes/bootstrap-blocks
+      - ./test/themes/bootstrap-classic:/var/www/html/wp-content/themes/bootstrap-classic
+      - ./test/themes/bootstrap-classic-custom:/var/www/html/wp-content/themes/bootstrap-classic-custom
     working_dir: /var/www/html
   wp:
     environment:

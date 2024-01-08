@@ -1,7 +1,7 @@
 <?php
 /**
  * Title: No results
- * Slug: twentytwentyfour/hidden-no-results
+ * Slug: bootstrap-hooks/hidden-no-results
  * Inserter: no
  */
 ?>

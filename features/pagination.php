@@ -2,122 +2,7 @@
 use function benignware\bootstrap_hooks\util\dom\add_class;
 use function benignware\bootstrap_hooks\util\dom\has_class;
 
-/**
- * Posts Pagination
- * @deprecatd Use the_posts_pagination instead.
- */
-function wp_bootstrap_posts_pagination( $args = array() ) {
-  if (!current_theme_supports('bootstrap')) {
-    return $args;
-  }
-
-  $navigation = '';
-
-  extract(wp_bootstrap_options());
-
-  // Don't print empty markup if there's only one page.
-  if ( $GLOBALS['wp_query']->max_num_pages > 1 ) {
-    $args = wp_parse_args( $args, array(
-      'mid_size'           => 1,
-      'prev_text'          => _x( 'Previous', 'previous post' ),
-      'next_text'          => _x( 'Next', 'next post' ),
-      'screen_reader_text' => __( 'Posts navigation' )
-    ) );
-
-        // Make sure we get a string back. Plain is the next best thing.
-    if ( isset( $args['type'] ) && 'array' == $args['type'] ) {
-        $args['type'] = 'plain';
-    }
-
-    // Set up paginated links.
-    $links = paginate_links( $args );
-    $document = new DOMDocument();
-    @$document->loadHTML('<?xml encoding="utf-8" ?>' . "<ul class=\"$pagination_class\">" . $links . "</ul>");
-    $page_links = $document->getElementsByTagName('ul')->item(0)->childNodes;
-    
-    foreach($page_links as $page_link) {
-      if ($page_link->nodeType === 1) {
-        $page_link->setAttribute('class', $page_link->getAttribute('class') . ' ' . $page_link_class);
-        // Wrap in $page_item
-        $page_item = $document->createElement('li');
-        $page_item->setAttribute( 'class', $page_item_class . ($page_link->nodeName !== 'a' ? ' active' : '') );
-        $page_link->parentNode->insertBefore($page_item, $page_link);
-      }
-    }
-    
-    $links = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $document->saveHTML());
-    $navigation = _navigation_markup( $links, 'posts-navigation', $args['screen_reader_text'] );
-  }
-
-  echo $navigation;
-
-  return $navigation;
-}
-
-
-function wp_bootstrap_post_navigation($args = array()) {
-  if (!current_theme_supports('bootstrap')) {
-    return $args;
-  }
-
-  $args = wp_parse_args( $args, array(
-      'prev_text'          => '%title',
-      'next_text'          => '%title',
-      // 'in_same_term'       => false,
-      // 'excluded_terms'     => '',
-      // 'taxonomy'           => 'category',
-      // 'screen_reader_text' => __( 'Post navigation' ),
-  ) );
-
-  // FIXME: Safe extract
-  extract($args);
-  extract(wp_bootstrap_options());
-
-  $prev_post = get_previous_post();
-
-  if ( $prev_post ) {
-    // Replace %title with post title
-    $prev_text = preg_replace("~%title~", $prev_post->post_title, $prev_text);
-    $prev_text = apply_filters( 'bootstrap_prev_text', $prev_text, $prev_post);
-
-    // Get Previous Post Link
-    $prev_post_link = get_permalink($prev_post);
-    $previous = "<$post_nav_item_tag class=\"$post_nav_item_class nav-previous\"><a class=\"$post_nav_link_class\" href=\"$prev_post_link\" rel=\"prev\">";
-    $previous.= $prev_text;
-    $previous.= "</a></$post_nav_item_tag>";
-  }
-
-  $next_post = get_next_post();
-  if ( $next_post ) {
-    // Replace %title with post title
-    $next_text = preg_replace("~%title~", $next_post->post_title, $next_text);
-    $next_text = apply_filters( 'bootstrap_next_text', $next_text, $next_post);
-    // Get Next Post Link
-    $next_post_link = get_permalink($next_post);
-    $next = "<$post_nav_item_tag class=\"$post_nav_item_class nav-next\"><a class=\"$post_nav_link_class\" href=\"$next_post_link\" rel=\"next\">";
-    $next.= $next_text;
-    $next.= "</a></$post_nav_item_tag>";
-  }
-
-  // Only add markup if there's somewhere to navigate to.
-  if ( $previous || $next ) {
-    $output = "<$post_nav_tag class=\"navigation post-navigation $post_nav_class\" role=\"navigation\">";
-    if ( $previous ) {
-      $output.= $previous;
-    }
-    if ( $next ) {
-      $output.= $next;
-    }
-    $output.= "</$post_nav_tag>";
-
-    echo $output;
-  }
-
-}
-
-
-// define the wp_link_pages callback 
-function wp_bootstrap_link_pages( $output, $args ) {
+add_filter( 'wp_link_pages', function ( $output, $args ) {
   if (!current_theme_supports('bootstrap')) {
     return $output;
   }
@@ -169,8 +54,7 @@ function wp_bootstrap_link_pages( $output, $args ) {
   }
 
   return preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
-};
-add_filter( 'wp_link_pages', 'wp_bootstrap_link_pages', 10, 2 );
+}, 10, 2 );
 
 
 // Next posts link class
@@ -192,7 +76,7 @@ add_filter('next_posts_link_attributes', function($attrs = '') {
 });
 
 // Previous posts link class
-add_filter('previous_posts_link_attributes', function($attrs = array()) {
+add_filter('previous_posts_link_attributes', function($attrs = '') {
   if (!current_theme_supports('bootstrap')) {
     return $attrs;
   }
@@ -210,6 +94,10 @@ add_filter('previous_posts_link_attributes', function($attrs = array()) {
 });
 
 add_filter('paginate_links_output', function($links, $args = []) {
+  if (!current_theme_supports('bootstrap')) {
+    return $links;
+  }
+
   if (!isset($args['type']) || $args['type'] !== 'list') {
     return $links;
   }
@@ -247,20 +135,84 @@ add_filter('paginate_links_output', function($links, $args = []) {
     }
   }
 
-  // $page_links = $document->getElementsByTagName('ul')->item(0)->childNodes;
-  // foreach($page_links as $page_link) {
-  //   if ($page_link->nodeType === 1) {
-  //     $page_link->setAttribute('class', $page_link->getAttribute('class') . ' ' . $page_link_class);
-  //     // Wrap in $page_item
-  //     $page_item = $document->createElement('li');
-  //     $page_item->setAttribute( 'class', $page_item_class . ($page_link->nodeName !== 'a' ? ' active' : '') );
-  //     $page_link->parentNode->insertBefore($page_item, $page_link);
-  //   }
-  // }
   $links = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
-  // $navigation = _navigation_markup( $links, 'posts-navigation', $args['screen_reader_text'] );
-  // return '<textarea>' . $links . '</textarea>';
-  // return $links;
 
   return $links;
 }, 10, 2);
+
+
+add_filter( "next_post_link", function($output) {
+  if (!current_theme_supports('bootstrap')) {
+    return $output;
+  }
+
+  $options = wp_bootstrap_options();
+
+  $doc = new DOMDocument();
+  @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $output );
+
+  $body = $doc->getElementsByTagName('body')->item(0);
+
+  if (!$body) {
+    return $output;
+  }
+
+  $root = $body->firstChild;
+
+  if (!$root) {
+    return $output;
+  }
+
+  add_class($root, $options['page_item_class']);
+
+  $link = $doc->getElementsByTagName('a')->item(0);
+  add_class($link, $options['post_nav_link_class']);
+
+  $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+
+  return $output;
+} );
+
+add_filter( "previous_post_link", function($output) {
+  if (!current_theme_supports('bootstrap')) {
+    return $output;
+  }
+
+  $options = wp_bootstrap_options();
+
+  $doc = new DOMDocument();
+  @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $output );
+
+  $body = $doc->getElementsByTagName('body')->item(0);
+
+  if (!$body) {
+    return $output;
+  }
+
+  $root = $body->firstChild;
+
+  add_class($root, $options['page_item_class']);
+
+  $link = $doc->getElementsByTagName('a')->item(0);
+  add_class($link, $options['post_nav_link_class']);
+
+  $output = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+
+  return $output;
+} );
+
+
+add_filter('navigation_markup_template', function($template) {
+  if (!current_theme_supports('bootstrap')) {
+    return $template;
+  }
+
+  $options = wp_bootstrap_options();
+
+  return '<nav class="navigation %1$s" aria-label="%4$s">
+    <h2 class="screen-reader-text">%2$s</h2>
+    <div class="nav-links ' . $options['pagination_class'] . '">
+    %3$s
+    </div>
+  </nav>';
+});

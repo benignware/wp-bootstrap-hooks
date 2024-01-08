@@ -1,15 +1,28 @@
 {
   "name": "wp-bootstrap-hooks",
   "version": "1.0.0",
-  "description": "> A collection of filters and actions for bootstrap-based themes",
+  "description": "A collection of filters and actions for bootstrap-based themes",
   "main": "index.js",
   "directories": {
     "lib": "lib",
     "test": "test"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "bootstrap-classic-custom:build": "webpack -c test/themes/bootstrap-classic-custom/webpack.config.js",
+    "bootstrap-classic-custom:watch": "webpack -c test/themes/bootstrap-classic-custom/webpack.config.js --watch"
   },
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "css-loader": "^6.8.1",
+    "mini-css-extract-plugin": "^2.7.6",
+    "sass": "^1.69.7",
+    "sass-loader": "^13.3.3",
+    "webpack": "^5.89.0",
+    "webpack-cli": "^5.1.4"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.2"
+  }
 }

@@ -28,13 +28,6 @@ add_filter('render_block', function($content, $block)  {
 
   $name = $block['blockName'];
 
-  // echo '<br/>';
-  // echo $name;
-  // echo '<br/>';
-  // print_r($block);
-  // echo '<br/>';
-  // echo '<br/>';
-
   if (!$name) {
     return $content;
   }
@@ -45,31 +38,6 @@ add_filter('render_block', function($content, $block)  {
 
   $attrs = $block['attrs'];
 
-  $background_color_name = null;
-
-  if (isset($attrs['backgroundColor'])) {
-    if ($palette) {
-      $background_color_name = array_values(array_map(
-        function($item) {
-          return $item['slug'];
-        },
-        array_filter($palette, function($item) use ($attrs) {
-          return $item['color'] === $attrs['backgroundColor'];
-        })
-      ))[0];
-      $background_color_name = isset($background_color_name) ? $background_color_name : null;
-    }
-
-    // TODO: Custom colors
-    // if (!isset($background_color_name)) {
-    //   $background_color_name = str_replace('#', 'hex-', $attrs['backgroundColor']);
-    // }
-
-    // if (!$background_color_name) {
-    //   $background_color_name = 'primary';
-    // }
-  }
-
   $options = wp_bootstrap_options();
 
   $doc = new DOMDocument();
@@ -77,15 +45,18 @@ add_filter('render_block', function($content, $block)  {
   $doc_xpath = new DOMXpath($doc);
 
   $walker = function($parent, $level = 0) use ($doc_xpath, &$walker) {
-    remove_class($parent, '~^wp-block~');
-
     foreach ($parent->childNodes as $item) {
       if ($level === 0) {
         add_class($item, 'nav-item');
       }
 
+      $item_description = find_by_class($parent, 'wp-block-navigation-item__description');
+
+      if ($item_description) {
+        $item_description->parentNode->removeChild($item_description);
+      }
+
       if ($item->nodeName === 'li') {
-        // echo 'LIST ITEM';
         $link = null;
         $list = null;
         $button = null;
@@ -109,7 +80,7 @@ add_filter('render_block', function($content, $block)  {
         }
 
         remove_class($item, 'open-on-hover-click');
-        remove_class($item, '~^wp-block~');
+        // remove_class($item, '~^wp-block~', true);
         
         if ($link) {
           if ($level === 0) {
@@ -174,52 +145,33 @@ add_filter('render_block', function($content, $block)  {
     }
   }
 
-  // Figures
-  // $figures = $doc_xpath->query("//figure");
-
-  // foreach ($figures as $figure) {
-  //   add_class($figure, $options['img_caption_class']);
-
-    // list($figcaption) = $doc_xpath->query("//figcaption", $figure);
-    // if ($figcaption) {
-    //   add_class($figcaption, $options['img_caption_text_class']);
-    // }
-
-    // list($figimg) = $doc_xpath->query("//img", $figure);
-    // if ($figimg) {
-    //   add_class($figimg, $options['img_caption_img_class']);
-    // }
-  // }
-
   // Inputs
   $inputs = $doc_xpath->query("//textarea|//select|//input[not(@type='checkbox') and not(@type='radio') and not(@type='submit')]");
   foreach ($inputs as $input) {
     add_class($input, $options['text_input_class']);
   }
 
-  // Buttons
-  // $buttons = $doc_xpath->query("//form//button|//form//input[@type='submit']");
-
-  // foreach ($buttons as $button) {
-  //   $class = sprintf($options['button_class'], 'primary');
-  //   add_class($button, $class);
-  // }
-
   // Image
   if ($name === 'core/image') {
-    if ($container->nodeName === 'figure') {
-      add_class($container, $options['img_caption_class']);
+
+    add_class($container, 'clearfix');
+  
+    $figure = $container->nodeName === 'figure' ? $container : $doc_xpath->query(".//figure", $container)->item(0);
+    if ($figure) {
+
+      add_class($figure, $options['img_caption_class']);
+      
       // add_style($container, 'display', 'block');
       // remove_class($container, '~^wp-block~', true);
 
-      $caption = $doc_xpath->query("//figcaption", $container)->item(0);
+      $caption = $doc_xpath->query(".//figcaption", $figure)->item(0);
       
       if ($caption) {
         add_class($caption, $options['img_caption_text_class']);
         remove_class($container, 'wp-element-caption', true);
       }
 
-      $img = $doc_xpath->query("//img", $container)->item(0);
+      $img = $doc_xpath->query(".//img", $figure)->item(0);
 
       if ($img) {
         add_class($img, $options['img_caption_img_class']);
@@ -243,7 +195,7 @@ add_filter('render_block', function($content, $block)  {
   }
 
   if ($name === 'core/buttons') {
-    // print_r($block);
+    // add_class($container, 'my-4');
   }
 
   if ($name === 'core/button') {
@@ -266,18 +218,32 @@ add_filter('render_block', function($content, $block)  {
       add_class($button, $class_size);
     }
 
-    $bg_name = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
     $is_outline = isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']));
+
+    $color_name = isset($attrs['textColor']) ? $attrs['textColor'] : '';
+    $bg_name = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
+
+    $theme_color = $is_outline ? $color_name : $bg_name;
     
     $class = sprintf(
       $is_outline ? $options['button_outline_class'] : $options['button_class'],
-      $bg_name ?: 'primary'
+      $theme_color ?: 'primary'
     );
-
-    $color_name = isset($attrs['textColor']) ? $attrs['textColor'] : '';
     
-    if ($color_name) {
+    if (!$color_name) {
       $class.= ' text-' . $color_name;
+    }
+
+    if ($theme_color) {
+      if ($is_outline) {
+        remove_class($button, 'has-text-color');
+        remove_class($button, "has-$theme_color-color");
+      } else {
+        remove_class($button, 'has-background-color');
+        remove_class($button, "has-$theme_color-background-color");
+      }
+
+      remove_class($button, 'has-link-color');
     }
     
     if (isset($attrs['style'])) {
@@ -335,19 +301,6 @@ add_filter('render_block', function($content, $block)  {
 
     add_class($button, $class);
 
-    // $class = sprintf(
-    //   isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']))
-    //     ? $options['button_outline_class']
-    //     : $options['button_class'],
-    //     isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : 'primary'
-    // );
-
-    // echo $background_color_name;
-
-    // add_class($button, $class);
-
-    // add_style()
-
     $button->setAttribute('role', 'button');
 
     if ($button->nodeName === 'a') {
@@ -377,10 +330,8 @@ add_filter('render_block', function($content, $block)  {
   }
 
   if ($name === 'core/columns') {
-    remove_class($container, '~^wp-block~');
     remove_class($container, 'is-layout-flex');
     remove_class($container, 'is-not-stacked-on-mobile');
-    remove_class($container, '~wp-container-core-columns-layout-\d~');
 
     $columns = isset($block['innerBlocks']) ? count($block['innerBlocks']) : 1;
     $classes = explode(' ', $options['columns_class']);
@@ -407,16 +358,6 @@ add_filter('render_block', function($content, $block)  {
       }
     }
 
-    // $classes[] = $isStackedOnMobile ? 'row-cols-1' : sprintf(
-    //   'row-cols-%s',
-    //   $columns
-    // );
-
-    // $classes[] = sprintf(
-    //   'row-cols-%s-%s',
-    //   $breakpoint, $columns
-    // );
-
     if (isset($block['attrs']['verticalAlignment'])) {
       $classes[] = sprintf('align-items-%s', $block['attrs']['verticalAlignment']);
     }
@@ -432,16 +373,12 @@ add_filter('render_block', function($content, $block)  {
 
     if (isset($block['attrs']['width'])) {
       $width = $block['attrs']['width'];
-      // echo $width;
       preg_match('~([\d]+(?:\.\d+)?)(%|[a-z]+)~', $block['attrs']['width'], $matches);
       $value = floatval($matches[1]);
       $unit = $matches[2];
 
-      // echo $value / (100 / 12) - floor($value / (100 / 12));
-
       if ($unit === '%') {
         if ($value / (100 / 12) - floor($value / (100 / 12)) < 1) {
-          // echo 'DO IT';
           $size = round($width / 100 * 12);
           $breakpoint = 'md'; // TODO: Make breakpoint configurable
           $class = sprintf($options['column_class'], $breakpoint, $size);
@@ -449,33 +386,10 @@ add_filter('render_block', function($content, $block)  {
           remove_style($container, 'flex-basis');
         }
       }
-      // $width = '11.34';
-      // echo $value . '<br/>';
-      // echo 'UNIT: ' . $unit;
-      // echo '<br/>';
-      // echo $value / (100 / 12);
-      // echo '<br/>';
-      // echo floor($value / (100 / 12));
-      // echo '<br/>';
-      // // $size = $width / 100 * 12;
-      // // $size_rounded = round($width / 100 * 12);
-      // echo $value % (100 / 12) . ' = ' . fmod($value, 100 / 12);
-      // echo '<br/>';
-      // echo '<br/>';
     }
-
-    // $breakpoint = 'md'; // TODO: Make breakpoint configurable
-
-    // if ($size) {
-    //   $class = sprintf($options['column_class'], $breakpoint, $size);
-    // } else {
-    //   // $class = sprintf('col-12 col-%s', $breakpoint);
-    // }
-
-    
+  
     // remove_style($container, 'flex-basis');
     remove_class($container, '~^wp-block~');
-
   }
 
   if ($name === 'core/image') {
@@ -488,7 +402,6 @@ add_filter('render_block', function($content, $block)  {
 
   // Block Navigation
   // if ($name === 'core/page-list') {
-  //   // print_r($attrs);
   //   // remove_class($container, '~^wp-block~');
   //   add_class($container, $options['menu_class']);
 
@@ -507,34 +420,7 @@ add_filter('render_block', function($content, $block)  {
   //   }
   // }
 
-  // echo $name . ' - ' . $container->tagName . ' --- ' . $container->getAttribute('class');
-  // echo '<br/>';
-
-  // echo "<textarea>" . $content . "</textarea>";
-  // echo '<br/>';
-  // echo '<br/>';
-
   if ($name === 'core/navigation') {
-    // echo '<br/>';
-    // echo 'NAVIGATION';
-    // print_r($block);
-    // echo '<br/>';
-    // echo '<br/>';
-
-    $list = $doc_xpath->query(".//ul", $container)->item(0);
-
-    if ($list) {
-      // echo 'LIST';
-      add_class($list, 'nav');
-      $walker($list);
-
-      remove_class($list, '~^wp-block~', true);
-    }
-
-    // add_class($container, 'nav');
-    // $walker($container);
-    // remove_class($container, '~^wp-block~', true);
-  
     // remove_class($container, '~^wp-block~', true);
     add_class($container, 'navbar'); 
 
@@ -554,7 +440,7 @@ add_filter('render_block', function($content, $block)  {
       }
 
       add_class($content, 'collapse navbar-collapse');
-      remove_class($content, '~^wp-block~', true);
+      // remove_class($content, '~^wp-block~', true);
     }
 
     if ($button) {
@@ -572,9 +458,26 @@ add_filter('render_block', function($content, $block)  {
       $button->textContent = '';
 
       append_html($button, '<span class="navbar-toggler-icon"></span>');
-      
 
-      // <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarTogglerDemo01" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+    }
+
+    $overlayMenu = isset($attrs['overlayMenu']) ? $attrs['overlayMenu'] : 'mobile';
+
+    if ($overlayMenu !== 'always') {
+      add_class($container,
+        $overlayMenu === 'never'
+          ? 'navbar-expand'
+          : 'navbar-expand-md'
+      );
+    }
+
+
+    $list = $doc_xpath->query(".//ul", $container)->item(0);
+
+    if ($list) {
+      // remove_class($list, '~^wp-block-navigation~', true);
+      add_class($list, 'nav');
+      $walker($list);
     }
 
     $navs = find_all_by_class($container, 'nav');
@@ -584,19 +487,27 @@ add_filter('render_block', function($content, $block)  {
     }
 
     // remove_class($container, '~^wp-block-navigation~');
+
+    remove_class($container, '~^wp-block-navigation~', true);
   }
 
   if (has_class($container, 'navbar')) {
-    $nested = find_by_class($container, 'navbar');
+    $nested_navbar = find_by_class($container, 'navbar');
 
-    if ($nested) {
-      $toggler = find_by_class($nested, 'navbar-toggler');
+    if ($nested_navbar) {
+      $nested_navbar_classes = array_values(array_filter(array_map('trim', explode(' ', $nested_navbar->getAttribute('class'))), function($class) {
+        return strpos($class, 'navbar') === 0;
+      }));
+
+      add_class($container, $nested_navbar_classes);
+
+      $toggler = find_by_class($nested_navbar, 'navbar-toggler');
 
       if ($toggler) {
-        $nested->parentNode->insertBefore($toggler, $nested);
+        $nested_navbar->parentNode->insertBefore($toggler, $nested_navbar);
       }
 
-      add_style($nested, 'display', 'contents');
+      // add_style($nested, 'display', 'contents');
 
       remove_class($container->childNodes, 'navbar', true);
       remove_class($container->childNodes, '~^navbar-expand~', true);
@@ -621,13 +532,9 @@ add_filter('render_block', function($content, $block)  {
 
   if ($name === 'core/navigation-submenu') {
 
-    
   }
 
   // if ($name === 'core/navigation-link') {
-  //   // echo '<br/>';
-  //   // echo 'PAGE LIST';
-  //   print_r($block);
   //   $item = $container->getElementsByTagName('li')->item(0);
 
   //   if ($item) {
@@ -643,25 +550,13 @@ add_filter('render_block', function($content, $block)  {
   //   if ($link && $item && has_class($item, 'current-menu-item')) {
   //     add_class($link, 'active');
   //   }
-    
-  //   echo '<br/>';
-  //   echo "<textarea>" . $content . "</textarea>";
-  //   echo '<br/>';
   // }
 
   if ($name === 'core/page-list') {
     add_class($container, 'nav');
     $walker($container);
-    remove_class($container, '~^wp-block~', true);
+    // remove_class($container, '~^wp-block~', true);
   }
-
-  // if ($name === 'core/group') {
-  //   echo 'GROUP';
-  //   print_r($block);
-  // }
-
-  // echo $name;
-  // echo '<br/>';
 
   if ($name === 'core/separator') {
     remove_class($container, '~^wp-block~', true);
@@ -710,22 +605,8 @@ add_filter('render_block', function($content, $block)  {
   }
 
   if ($name === 'core/query-pagination') {
-    $nav = $container->cloneNode();
-    $nav = replace_tag($nav, 'nav');
-
-    $list = $doc->createElement('ul');
-    $list->setAttribute('class', 'pagination');
-
-    $nav->appendChild($list);
-
-    $items = $doc_xpath->query('./li', $container);
-
-    foreach ($items as $item) {
-      $list->appendChild($item);
-    }
-
-    $container->parentNode->insertBefore($nav, $container);
-    $container->parentNode->removeChild($container);
+    add_class($container, 'pagination');
+    add_style($container, 'gap', '0px');
   }
 
   if ($name === 'core/query-pagination-numbers') {
@@ -734,10 +615,14 @@ add_filter('render_block', function($content, $block)  {
     foreach ($links as $link) {
       if ($link->nodeType === 1) {
         add_class($link, 'page-link');
-        $item = $doc->createElement('li');
+        
+        $item = $doc->createElement('div');
         $item->setAttribute('class', 'page-item');
-        $item->appendChild($link->cloneNode(true));
-        $container->parentNode->appendChild($item);
+        
+        $link->parentNode->insertBefore($item);
+        $item->appendChild($link);
+        
+        $container->parentNode->insertBefore($item->cloneNode(true), $container);
       }
     }
 
@@ -748,7 +633,7 @@ add_filter('render_block', function($content, $block)  {
     add_class($container, 'page-link');
     remove_class($container, 'has-small-font-size');
 
-    $item = $doc->createElement('li');
+    $item = $doc->createElement('div');
     $item->setAttribute('class', 'page-item');
     $item->appendChild($container->cloneNode(true));
     remove_class($container, 'has-small-font-size');
@@ -757,17 +642,19 @@ add_filter('render_block', function($content, $block)  {
     $container->parentNode->removeChild($container);
   }
 
+  if ($name === 'core/post-comments') {
+    $list = $doc_xpath->query('.//ol|.//ul', $container)->item(0);
+
+    if ($list) {
+      $list_items = $doc_xpath->query('./li', $list);
+
+      if (!count($list_items)) {
+        replace_tag($list, 'div');
+      }
+    }
+  }
+
   $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
-  // return $name . ' - ' . var_dump($block) . ' - ' . $result;
   return $result;
 }, 10, 2);
-
-
-//Remove Gutenberg Block Library CSS from loading on the frontend
-// function smartwp_remove_wp_block_library_css(){
-//   wp_dequeue_style( 'wp-block-library' );
-//   wp_dequeue_style( 'wp-block-library-theme' );
-//   wp_dequeue_style( 'wc-blocks-style' ); // Remove WooCommerce block CSS
-// } 
-// add_action( 'wp_enqueue_scripts', 'smartwp_remove_wp_block_library_css', 100 );

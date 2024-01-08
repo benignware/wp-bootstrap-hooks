@@ -4,6 +4,10 @@ use function benignware\bootstrap_hooks\util\dom\add_class;
 use function benignware\bootstrap_hooks\util\dom\remove_class;
 use function benignware\bootstrap_hooks\util\dom\has_class;
 use function benignware\bootstrap_hooks\util\dom\find_all_by_class;
+use function benignware\bootstrap_hooks\util\dom\wrap;
+
+use function benignware\bootstrap_hooks\util\math\ratio;
+
 
 /**
  * Add bootstrap classes to content images
@@ -58,21 +62,21 @@ if (!function_exists('wp_bootstrap_the_content')) {
     $iframe_elements = $doc->getElementsByTagName( 'iframe' );
     foreach ($iframe_elements as $iframe_element) {
       // Adjust class
-      wp_bootstrap_dom_set_class($iframe_element, $embed_class);
+      add_class($iframe_element, $embed_class);
 
       // Setup container
       $iframe_parent = $iframe_element->parentNode;
-      if (!wp_bootstrap_dom_has_class($iframe_element, $embed_container_class)) {
+      if (!has_class($iframe_element, $embed_container_class)) {
 
         // Resolve dimensions
         $width = $iframe_element->getAttribute('width');
         $height = $iframe_element->getAttribute('height');
 
         // Create wrapper
-        $iframe_wrapper = wp_bootstrap_dom_wrap($iframe_element, 'div');
+        $iframe_wrapper = wrap($iframe_element, 'div');
 
         // Set embed container class
-        wp_bootstrap_dom_set_class($iframe_wrapper, $embed_container_class);
+        add_class($iframe_wrapper, $embed_container_class);
 
         $width = is_numeric($width) ? intval($width) : 525;
         $height = is_numeric($height) ? intval($height) : 295;
@@ -92,7 +96,7 @@ if (!function_exists('wp_bootstrap_the_content')) {
           $matched_width = $matched_preset_item['width'];
           $matched_height = $matched_preset_item['height'];
         } else {
-          $gcd_ratio = wp_bootstrap_ratio($width, $height);
+          $gcd_ratio = ratio($width, $height);
           $matched_width = $gcd_ratio[0];
           $matched_height = $gcd_ratio[1];
         }
@@ -111,7 +115,7 @@ if (!function_exists('wp_bootstrap_the_content')) {
         }
 
         // Apply embed ratio class
-        wp_bootstrap_dom_set_class($iframe_wrapper, $embed_ratio_class);
+        add_class($iframe_wrapper, $embed_ratio_class);
       }
     }
 

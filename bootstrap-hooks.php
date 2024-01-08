@@ -13,6 +13,7 @@
 require_once 'lib/util/dom.php';
 require_once 'lib/util/colors.php';
 require_once 'lib/util/object.php';
+require_once 'lib/util/math.php';
 require_once 'lib/helpers.php';
 require_once 'features/functions.php';
 
@@ -26,7 +27,7 @@ function wp_bootstrap_hooks() {
       'comments',
       'blocks',
       'forms',
-      // 'gallery',
+      'gallery',
       'navigation',
       'pagination',
       'widgets',
@@ -60,11 +61,13 @@ function wp_bootstrap_options() {
     'checkbox_input_class' => 'form-check-input',
     'checkbox_label_class' => 'form-check-label',
     'field_class' => 'form-group',
-    'submit_class' => 'btn btn-primary',
+    'submit_class' => 'btn btn-primary mt-3',
     'submit_button_class' => 'btn btn-primary', // FIXME: Redundant option
     // Comments
-    'reply_link_class' => 'btn btn-primary btn-xs',
+    'reply_link_class' => 'btn btn-outline-primary btn-sm mb-3',
     'comment_label' => 'Comment',
+    'comment_text_container' => '<div class="%s">%s</div>',
+    'comment_text_container_class' => 'py-3 my-0',
     // Content
     'align_left_class' => 'float-left',
     'align_right_class' => 'float-right',
@@ -95,10 +98,10 @@ function wp_bootstrap_options() {
     'post_tag_class' => 'btn btn-sm btn-outline-primary text-wrap mb-1',
     'post_tag_count_class' => 'badge bg-primary',
     // Gallery
-    'gallery_thumbnail_size' => 'thumbnail',
-    'gallery_thumbnail_class' => '',
-    'gallery_thumbnail_img_class' => 'img-thumbnail mb-2',
-    'gallery_zoom_size' => 'large',
+    // 'gallery_thumbnail_size' => 'thumbnail',
+    // 'gallery_thumbnail_class' => '',
+    // 'gallery_thumbnail_img_class' => 'img-thumbnail mb-2',
+    // 'gallery_zoom_size' => 'large',
     'carousel_item_class' => 'carousel-item',
     // Grid
     'columns_class' => 'row',
@@ -113,6 +116,7 @@ function wp_bootstrap_options() {
     'menu_item_link_active_class' => 'active',
     'sub_menu_tag' => 'ul',
     'sub_menu_class' => 'dropdown-menu',
+    'sub_menu_toggle_class' => 'dropdown-toggle',
     'sub_menu_header_class' => 'dropdown-header',
     'sub_menu_item_tag' => 'li',
     'sub_menu_item_class' => '',
