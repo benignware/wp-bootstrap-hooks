@@ -132,7 +132,7 @@ namespace benignware\bootstrap_hooks\util\colors {
     $rgb = rgb($color);
 
     if ($rgb) {
-      [$r, $g, $b, $a] = $rgb;
+      [$r, $g, $b] = $rgb;
       
       return (($r * 299)+($g * 587) + ($b * 114)) / 1000;
     }
