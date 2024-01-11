@@ -263,13 +263,18 @@ function _bootstrap_filter_body_html($buffer) {
   return $buffer;
 }
 
-add_action('wp_head', function() {
-  ob_start("_bootstrap_filter_body_html");
-});
+ob_start();
 
-add_action('wp_footer', function() {
-  ob_end_flush();
-});
+add_action('shutdown', function() {
+    $final = '';
+    $levels = ob_get_level();
+
+    for ($i = 0; $i < $levels; $i++) {
+      $final .= ob_get_clean();
+    }
+
+    echo _bootstrap_filter_body_html($final);
+}, 0);
 
 add_action( 'wp_enqueue_scripts', function() {
   wp_enqueue_style(
