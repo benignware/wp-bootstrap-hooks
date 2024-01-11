@@ -352,7 +352,7 @@ add_filter('render_block', function($content, $block)  {
           add_class($child, 'col-12');
         }
 
-        if (!preg_match('/col-md/', $class)) {
+        if (!preg_match('/col-/', $class)) {
           add_class($child, 'col-md');
         }
       }
