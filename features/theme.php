@@ -231,7 +231,7 @@ add_action( 'enqueue_block_assets', function() {
 		wp_register_style('bootstrap-presets', $url);
 		wp_enqueue_style('bootstrap-presets');
 
-    wp_enqueue_script( 'bootstrap-editor',  plugin_dir_url( __FILE__ ) . 'assets/editor.js' );
+    wp_enqueue_script( 'bootstrap-editor',  plugin_dir_url( dirname(__FILE__) ) . '/assets/editor.js' );
 	}
 });
 
