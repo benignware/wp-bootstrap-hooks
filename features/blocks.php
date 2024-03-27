@@ -598,7 +598,7 @@ add_filter('render_block', function($content, $block)  {
     $submit = $doc_xpath->query('//input[@type="submit"]|//button')->item(0);
 
     if (!$form || !$input || !$submit) {
-      return null;
+      return '';
     }
 
     $common_ancestor = get_common_ancestor($input, $submit);
