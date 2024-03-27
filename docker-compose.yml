@@ -31,6 +31,7 @@ services:
       - ./bin/install-wp.sh:/usr/local/bin/install-wp
       - .uploads:/var/www/html/wp-content/uploads
       - .plugins:/var/www/html/wp-content/plugins
+      - .fonts:/var/www/html/wp-content/fonts
       - ./test/themes/bootstrap-blocks:/var/www/html/wp-content/themes/bootstrap-blocks
       - ./test/themes/bootstrap-classic:/var/www/html/wp-content/themes/bootstrap-classic
       - ./test/themes/bootstrap-classic-custom:/var/www/html/wp-content/themes/bootstrap-classic-custom
@@ -75,6 +76,7 @@ services:
       - ./bin/install-wp.sh:/usr/local/bin/install-wp
       - .uploads:/var/www/html/wp-content/uploads
       - .plugins:/var/www/html/wp-content/plugins
+      - .fonts:/var/www/html/wp-content/fonts
       - wordpress:/var/www/html
     links:
       - wordpress:wordpress

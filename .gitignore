@@ -26,6 +26,7 @@ wp-config
 .plugins
 .mu-plugins
 .uploads
+.fonts
 
 # Demo Themes
 # test/themes/**/public
