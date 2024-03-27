@@ -54,7 +54,8 @@
   "require-dev": {
     "wemakecustom/wp-mu-loader": "*",
     "benignware/menu-plus": ">=1.0.0-beta.2",
-    "wpackagist-plugin/wordpress-importer": ">=0.6.4",
+    "wpackagist-plugin/wordpress-importer": "^0.6.4",
+    "wpackagist-plugin/gutenberg": "^17.9.0",
     "wptrt/theme-unit-test": "dev-master"
   },
   "scripts": {
