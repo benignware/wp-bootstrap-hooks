@@ -332,8 +332,8 @@ add_filter('render_block', function($content, $block)  {
   if ($name === 'core/columns') {
     remove_class($container, 'is-layout-flex');
     remove_class($container, 'is-not-stacked-on-mobile');
-
-    $columns = isset($block['innerBlocks']) ? count($block['innerBlocks']) : 1;
+    $columns = isset($block['innerBlocks']) ? $block['innerBlocks'] : [];
+    $column_count = count($columns);
     $classes = explode(' ', $options['columns_class']);
 
     $isStackedOnMobile = 1;
@@ -343,8 +343,26 @@ add_filter('render_block', function($content, $block)  {
       $isStackedOnMobile = $block['attrs']['isStackedOnMobile'] ? 1 : 0;
     }
 
+    $i = 0;
+
     foreach ($container->childNodes as $child) {
       if ($child->nodeType === 1) {
+        $column = isset($columns[$i]) ? $columns[$i] : null;
+        $column_attrs = $column ? $column['attrs'] : [];
+        $width = isset($column_attrs['width']) ? $column_attrs['width'] : '';
+
+        if ($width) {
+          [$value, $unit] = preg_split('/(?<=[0-9])(?=[a-z%])/', $width);
+
+          if ($unit === '%') {
+            $size = round($width / 100 * 12);
+            $class = sprintf($options['column_class'], $breakpoint, $size);
+            add_class($child, $class);
+          } else {
+            add_style($child, 'flex-grow', '0');
+          }
+        }
+
         $class = $child->getAttribute('class');
 
         if ($isStackedOnMobile) {
@@ -352,9 +370,11 @@ add_filter('render_block', function($content, $block)  {
           add_class($child, 'col-12');
         }
 
-        if (!preg_match('/col-/', $class)) {
+        if (!preg_match('/col-md/', $class)) {
           add_class($child, 'col-md');
         }
+
+        $i++;
       }
     }
 
@@ -365,6 +385,16 @@ add_filter('render_block', function($content, $block)  {
     $class = implode(' ', $classes);
 
     add_class($container, $class);
+
+    $row = $doc->createElement('div');
+
+    add_class($row, 'row');
+
+    while ($container->hasChildNodes()) {
+      $row->appendChild($container->firstChild);
+    }
+
+    $container->appendChild($row);
   }
 
   if ($name === 'core/column') {
