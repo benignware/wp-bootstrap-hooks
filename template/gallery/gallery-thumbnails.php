@@ -13,7 +13,7 @@
     <?= wp_get_attachment_image(get_the_ID(), 'small', false, [
       'loading' => 'eager',
       'decoding' => 'sync',
-      'class' => "figure-img img-fluid m-0 h-100 object-fit-cover" . ($wp_query->current_post === 0 ? ' active' : ''),
+      'class' => "figure-img img-fluid m-0 w-100 h-100 object-fit-cover" . ($wp_query->current_post === 0 ? ' active' : ''),
       'style' => "aspect-ratio: 1/1; border-radius: var(--bs-border-radius); cursor: pointer; height: 100%; max-height: 90px; width: auto",
       'data-bs-target' => "#$id-carousel",
       'data-bs-slide-to' => $wp_query->current_post

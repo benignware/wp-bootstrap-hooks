@@ -17,15 +17,17 @@
           data-bs-interval="<?= !$autoplay ? 'false' : $interval; ?>"
         >
           <button type="button" class="btn-close position-absolute top-0 end-0 z-3 m-4" data-bs-dismiss="modal" aria-label="Close"></button>
-          <div class="carousel-indicators">
-            <?php while( have_posts()) : the_post() ?>
-              <button
-                data-bs-target="#<?= $id ?>-fullscreen-carousel"
-                data-bs-slide-to="<?= $wp_query->current_post; ?>"
-                class="<?= $wp_query->current_post === 0 ? 'active' : '' ?>"
-              ></button>
-            <?php endwhile; ?>
-          </div>
+          <?php if ($wp_query->post_count > 1): ?>
+            <div class="carousel-indicators">
+              <?php while( have_posts()) : the_post() ?>
+                <button
+                  data-bs-target="#<?= $id ?>-fullscreen-carousel"
+                  data-bs-slide-to="<?= $wp_query->current_post; ?>"
+                  class="<?= $wp_query->current_post === 0 ? 'active' : '' ?>"
+                ></button>
+              <?php endwhile; ?>
+            </div>
+          <?php endif ?>
           <div class="carousel-inner h-100">
             <?php while( have_posts()) : the_post() ?>
               <div class="carousel-item h-100<?= $wp_query->current_post === 0 ? ' active' : '' ?>">
@@ -53,14 +55,16 @@
               </div>
             <?php endwhile; ?>
           </div>
-          <button class="carousel-control-prev" type="button" data-bs-target="#<?= $id ?>-fullscreen-carousel" data-bs-slide="prev" data-control>
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Previous</span>
-          </button>
-          <button class="carousel-control-next" type="button" data-bs-target="#<?= $id ?>-fullscreen-carousel" data-bs-slide="next" data-control>
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Next</span>
-          </button>
+          <?php if ($wp_query->post_count > 1): ?>
+            <button class="carousel-control-prev" type="button" data-bs-target="#<?= $id ?>-fullscreen-carousel" data-bs-slide="prev" data-control>
+              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Previous</span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#<?= $id ?>-fullscreen-carousel" data-bs-slide="next" data-control>
+              <span class="carousel-control-next-icon" aria-hidden="true"></span>
+              <span class="visually-hidden">Next</span>
+            </button>
+          <?php endif ?>
         </div>
       </div>
     </div>
