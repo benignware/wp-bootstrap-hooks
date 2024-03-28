@@ -18,21 +18,26 @@ function _bootstrap_gallery_render($template, $data = array()) {
 }
 
 function bootstrap_gallery($params, $content = null) {
-	global $wp, $wp_query, $post;
+	global $wp, $wp_query, $post, $__bootstrap_gallery_instance;
+
+  if (!isset($__bootstrap_gallery_instance)) {
+    $__bootstrap_gallery_instance = 0;
+  }
+
+  $__bootstrap_gallery_instance++;
 
 	$params = array_merge([
-		'template' => 'carousel',
+		'type' => '',
 		'format' => '',
-    'id' => null,
+    'id' => 'bootstrap-gallery-' . $__bootstrap_gallery_instance,
     'title' => '',
-    'class' => 'gallery',
+    'class' => 'gallery my-4',
     'columns' => 3,
 		// Query params
 		'ids' => null,
-		'order' => '',
+		'order' => 'ASC',
     'orderby' => '',
     'post_status' => 'publish',
-    'nopaging' => true,
     'post_type' => 'any',
     'post_mime_type' => null,
     'include' => '',
@@ -41,8 +46,8 @@ function bootstrap_gallery($params, $content = null) {
     'post_type' => 'attachment',
     'post_status' => 'inherit',
     'post_mime_type' => 'image',
-    'ids' => is_array($params['ids']) ? implode(',', $params['ids']) : $params['ids'],
-    'size' => 'large',
+    // 'ids' => is_array($params['ids']) ? implode(',', $params['ids']) : $params['ids'],
+    'size' => 'medium',
     'fit' => 'cover',
     'autoplay' => false,
     'interval' => 3000,
@@ -61,9 +66,8 @@ function bootstrap_gallery($params, $content = null) {
     __DIR__ . '/../template/gallery'
   ];
 
-  $template = $params['template'];
-
-  $template_name = $template ? sprintf('gallery-%s.php', $template) : 'gallery.php';
+  $type = $params['type'];
+  $template_name = $type ? sprintf('gallery-%s.php', $type) : 'gallery.php';
   $template_file = array_reduce($template_locations, function($result, $dir) use ($template_name) {
     $file = $dir . '/' . $template_name;
 
@@ -87,32 +91,34 @@ function bootstrap_gallery($params, $content = null) {
     );
   }
 
-  // Transform ids to query params
-	if ( ! empty( $params['ids'] ) ) {
-    // 'ids' is explicitly ordered, unless you specify otherwise.
+  $query_params = array_intersect_key($params, array_flip([
+    'order',
+    'orderby',
+    'include',
+    'exclude',
+    'post_type',
+    'post_mime_type',
+    'post_status',
+    'nopaging',
+  ]));
+
+
+  // TODO: Account for include and exclude params
+  if ( ! empty( $params['ids'] ) ) {
+    $ids = is_array($params['ids']) ? $params['ids'] : explode(',', $params['ids']);   
+    $query_params['post__in'] = $ids;
+    
     if ( empty( $params['orderby'] ) ) {
       $params['orderby'] = 'post__in';
     }
-
-    $params['include'] = $params['ids'];
   }
 
-  $query_params = array_merge(
-    array_intersect_key($params, array_flip([
-      'order',
-      'orderby',
-      'include',
-      'exclude',
-      'post_type',
-      'post_mime_type',
-      'post_status',
-      'nopaging'
-    ])),
-    array(
-      'post__in' => is_array($params['include']) ? $params['include'] : explode(',', $params['include']),
-      'orderby' => $params['order'] === 'RAND' ? 'none' : $params['orderby']
-    )
-  );
+  if (!isset($query_params['post__in'])) {
+    $query_params['posts_per_page'] = 23;
+    $query_params['nopaging'] = false;
+  }
+
+  $query_params['orderby'] = $params['order'] === 'RAND' ? 'none' : $params['orderby'];
 
 	$wp_query = new WP_QUERY($query_params);
 
@@ -153,7 +159,7 @@ function bootstrap_gallery($params, $content = null) {
     'wp_query' => $wp_query,
     'fit' => $params['fit'],
     'align' => $params['align'],
-    'attrs' => $params['attrs'],
+    'attrs' => $attrs,
     'fullscreen' => $params['fullscreen'],
     'thumbnails' => $params['thumbnails']
   ]);
@@ -166,6 +172,7 @@ function bootstrap_gallery($params, $content = null) {
 }
 
 add_filter('render_block', function($html, $block = null) {
+  
   if ($block['blockName'] === 'core/gallery') {
     $attrs = $block['attrs'];
     $captions = [];
@@ -233,9 +240,9 @@ add_filter('render_block', function($html, $block = null) {
 }, 10, 2);
 
 
-add_filter( 'post_gallery', function($output, $attr, $instance) {
-  $html = bootstrap_gallery($attr);
+add_filter( 'post_gallery', function($output, $attr = []) {
+  $output = bootstrap_gallery($attr ?: [], $output);
 
-  return $html;
-}, 10, 3);
+  return $output;
+}, 0, 2);
 

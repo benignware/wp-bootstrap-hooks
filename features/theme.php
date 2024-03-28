@@ -207,14 +207,13 @@ add_action( 'wp_enqueue_scripts', function() {
 
 	$custom_css = <<<EOT
 	@media screen and (min-width: 601px) {
-		.sticky-top,
-		.modal {
+		.sticky-top {
 			top: var(--wp-admin--admin-bar--height, 0);
 		}
+	}
 
-		.modal {
-			height: calc(100% - var(--wp-admin--admin-bar--height, 0));
-		}
+	.modal {
+		z-index: 100000;
 	}
 	EOT;
 

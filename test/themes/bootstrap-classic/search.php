@@ -13,41 +13,30 @@ get_header();
 ?>
 
 	<section id="primary" class="content-area">
-		<main id="main" class="site-main">
-
+		<main id="main" class="site-main container">
+			
 		<?php if ( have_posts() ) : ?>
-
-			<header class="page-header">
+			<header class="page-header mb-4">
 				<h1 class="page-title">
 					<?php _e( 'Search results for:', 'twentynineteen' ); ?>
 				</h1>
 				<div class="page-description"><?php echo get_search_query(); ?></div>
 			</header><!-- .page-header -->
+			<div class="row row-cols-md-3 row-cols-lg-4 g-4">
+				
 
-			<?php
-			// Start the Loop.
-			while ( have_posts() ) :
-				the_post();
+				<?php while ( have_posts() ) : the_post(); ?>
+					<div class="col">
+						<?php get_template_part( 'template-parts/content/content', 'excerpt' ); ?>
+					</div>
 
-				/*
-				 * Include the Post-Format-specific template for the content.
-				 * If you want to override this in a child theme, then include a file
-				 * called content-___.php (where ___ is the Post Format name) and that will be used instead.
-				 */
-				get_template_part( 'template-parts/content/content', 'excerpt' );
+				<?php endwhile; ?>
 
-				// End the loop.
-			endwhile;
+				<?php the_posts_navigation(); ?>
 
-			// Previous/next page navigation.
-			twentynineteen_the_posts_navigation();
-
-			// If no content, include the "No posts found" template.
-		else :
-			get_template_part( 'template-parts/content/content', 'none' );
-
-		endif;
-		?>
+		<?php else : ?>
+			<?php get_template_part( 'template-parts/content/content', 'none' ); ?>
+		<?php endif; ?>
 		</main><!-- #main -->
 	</section><!-- #primary -->
 

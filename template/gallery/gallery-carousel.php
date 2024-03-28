@@ -1,4 +1,4 @@
-<div class="">
+<div class="d-grid">
   <div class="position-relative d-inline-block">
     <?php if (count($wp_query->posts) > 0 && $post = $wp_query->posts[0]): ?>
       <?= wp_get_attachment_image($post->ID, $size, false, [
