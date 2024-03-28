@@ -384,11 +384,9 @@ add_filter('render_block', function($content, $block)  {
 
     $class = implode(' ', $classes);
 
-    add_class($container, $class);
-
     $row = $doc->createElement('div');
 
-    add_class($row, 'row');
+    add_class($row, $class);
 
     while ($container->hasChildNodes()) {
       $row->appendChild($container->firstChild);
@@ -480,7 +478,7 @@ add_filter('render_block', function($content, $block)  {
 
       $button = $new_button;
 
-      add_class($button, 'navbar-toggler');
+      add_class($button, 'navbar-toggler ms-auto');
 
       $button->setAttribute('data-bs-toggle', 'collapse');
       $button->setAttribute('data-bs-target', '#' . $collapse_id);
@@ -488,7 +486,6 @@ add_filter('render_block', function($content, $block)  {
       $button->textContent = '';
 
       append_html($button, '<span class="navbar-toggler-icon"></span>');
-
     }
 
     $overlayMenu = isset($attrs['overlayMenu']) ? $attrs['overlayMenu'] : 'mobile';
@@ -537,10 +534,12 @@ add_filter('render_block', function($content, $block)  {
         $nested_navbar->parentNode->insertBefore($toggler, $nested_navbar);
       }
 
-      // add_style($nested, 'display', 'contents');
-
+      // add_class($nested_navbar, 'w-100', true);
       remove_class($container->childNodes, 'navbar', true);
       remove_class($container->childNodes, '~^navbar-expand~', true);
+      remove_class($container->childNodes, 'navbar-collapse', true);
+
+      add_class($nested_navbar, 'navbar-collapse', true);
     }
   }
 
