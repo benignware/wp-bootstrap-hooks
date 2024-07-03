@@ -27,11 +27,12 @@ use function benignware\bootstrap_hooks\util\dom\find_by_class;
 */
 
 function _bootstrap_get_theme_json() {
+	$merged_data = WP_Theme_JSON_Resolver::get_merged_data();
 	if (!method_exists($merged_data, 'get_data')) {
 		return [];
 	}
 
-	$theme_json = WP_Theme_JSON_Resolver::get_merged_data()->get_data();
+	$theme_json = $merged_data->get_data();
 	$default_theme_json = json_decode(file_get_contents(ABSPATH . WPINC . '/theme.json'), true);
 	
 	$theme_json = array_merge(
@@ -140,27 +141,85 @@ function _bootstrap_presets_css_action() {
       : ''
   );
 
-	$css = [
-		$body_selector => [
+	$palette = query_object($theme_json, 'settings.color.palette');
+
+	$palette_vars = array_reduce($palette, function($acc, $color) {
+		$acc["--bs-{$color['slug']}"] = $color['color'];
+		$acc["--bs-{$color['slug']}-rgb"] = implode(', ', rgb($color['color']) ?: []);
+		$acc["--bs-{$color['slug']}-r"] = rgb($color['color'])[0];
+		$acc["--bs-{$color['slug']}-g"] = rgb($color['color'])[1];
+		$acc["--bs-{$color['slug']}-b"] = rgb($color['color'])[2];
+		return $acc;
+	}, []);
+
+	$blocks = query_object($theme_json, 'styles.blocks');
+
+	$block_css = array_reduce(array_keys($blocks), function($acc, $key) use ($blocks) {
+		$block = $blocks[$key];
+
+		if ($key === 'core/navigation') {
+			$selector = '.navbar';
+			
+			$x = query_object($block, 'spacing.padding.left');
+			$y = query_object($block, 'spacing.padding.top');
+
+			$acc["$selector"] = [
+				'--bs-navbar-padding-x' => $x,
+				'--bs-navbar-padding-y' => $y
+			];
+
+			$lx = query_object($block, 'elements.link.spacing.padding.left');
+			$ly = query_object($block, 'elements.link.spacing.padding.top');
+
+			$acc[".navbar-nav .nav-link"] = [
+				'--bs-navbar-nav-link-padding-x' => $lx,
+				'--bs-navbar-nav-link-padding-y' => $ly,
+			];
+		}
+		
+		return $acc;
+	}, []);
+
+	$shadow_presets = query_object($theme_json, 'settings.shadow.presets');
+
+	$shadow_var = [];
+
+	if ($shadow_presets) {
+		$shadow_vars = array_reduce($shadow_presets, function($acc, $preset) {
+			$slug = $preset['slug'];
+			// $acc["--bs-shadow-{$slug}"] = $preset['shadow'];
+			$acc["--bs-shadow-{$slug}"] = "var(--wp--preset--shadow--{$slug}, {$preset['shadow']})";
+			return $acc;
+		}, []);
+	}
+
+	$css = array_merge([
+		$body_selector => array_merge([
 			'--bs-body-bg' => $background_color,
       '--bs-body-bg-rgb' => implode(', ', rgb($background_color) ?: []),
 			'--bs-body-color' => query_object($theme_json, 'styles.color.text'),
 			'--bs-body-font-family' => query_object($theme_json, 'styles.typography.fontFamily'),
 			'--bs-body-font-size' => query_object($theme_json, 'styles.typography.fontSize'),
 			'--bs-body-font-weight' => query_object($theme_json, 'styles.typography.fontWeight'),
-		],
+			'--bs-gutter-x' => query_object($theme_json, 'styles.spacing.gutter.x'),
+			'--bs-gutter-y' => query_object($theme_json, 'styles.spacing.gutter.y'),
+		], $palette_vars, $shadow_vars),
 		"$body_selector a" => [
 			'--bs-link-color-rgb' => implode(', ', rgb($resolve_preset(query_object($theme_json, 'styles.elements.link.color.text'))) ?: []),
 			'--bs-link-hover-color-rgb' => implode(', ', rgb($resolve_preset(query_object($theme_json, 'styles.elements.link.:hover.color.text'))) ?: [])
+		],
+		"container" => [
+			'max-width' => 'var(--wp--style--global--wide-size, 1200px)'
 		],
 		"figure.alignfull,figure.alignwide" => [
 			'display' => 'block',
 			'max-width' => 'none'
 		],
 		".wp-site-blocks" => [
-			'min-height' => '100vh',
+			// 'min-height' => '100vh',
 			'display' => 'flex',
-			'flex-direction' => 'column'
+			'flex-direction' => 'column',
+			'flex-grow' => '1'
 		],
 		".card-img-top:not(img)" => [
 			'overflow' => 'clip'
@@ -184,7 +243,7 @@ function _bootstrap_presets_css_action() {
 		".navbar-brand a:hover,.navbar-brand a:focus" => [
 			'color' => 'inherit'
 		],
-	];
+	], $block_css);
 
 
 	$css = implode("\n", array_map(function($selector, $properties) {
@@ -214,6 +273,10 @@ add_action( 'wp_enqueue_scripts', function() {
 		.sticky-top {
 			top: var(--wp-admin--admin-bar--height, 0);
 		}
+	}
+
+	body {
+		min-height: calc(100vh - var(--wp-admin--admin-bar--height, 0));
 	}
 
 	.modal {
@@ -286,4 +349,4 @@ add_action( 'wp_enqueue_scripts', function() {
     array(),
     wp_get_theme()->get( 'Version' )
   );
-}, 100);
+}, 100000);
