@@ -40,9 +40,12 @@
 		<div style="margin-top:0;margin-bottom:0;height:var(--wp--preset--spacing--40)" aria-hidden="true" class="wp-block-spacer"></div>
 		<!-- /wp:spacer -->
 
+		
+
 		<!-- wp:query-pagination {"paginationArrow":"arrow","layout":{"type":"flex","justifyContent":"space-between"}} -->
-		<!-- wp:query-pagination-previous /-->
-		<!-- wp:query-pagination-next /-->
+			<!-- wp:query-pagination-previous /-->
+			<!-- wp:query-pagination-numbers /-->
+			<!-- wp:query-pagination-next /-->
 		<!-- /wp:query-pagination -->
 
 	</div>
