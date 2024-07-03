@@ -634,8 +634,19 @@ add_filter('render_block', function($content, $block)  {
   }
 
   if ($name === 'core/query-pagination') {
+    // print_r($attrs);
     add_class($container, 'pagination');
     add_style($container, 'gap', '0px');
+
+    $show_label = isset($attrs['showLabel']) && empty($attrs['showLabel']) ? false : true;
+
+    if (!$show_label) {
+      $arrows = find_all_by_class($container, 'wp-block-query-pagination-previous-arrow', 'wp-block-query-pagination-next-arrow');
+
+      foreach ($arrows as $arrow) {
+        add_class($arrow, 'mx-0');
+      }
+    }
   }
 
   if ($name === 'core/query-pagination-numbers') {

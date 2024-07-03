@@ -132,8 +132,8 @@ namespace benignware\bootstrap_hooks\util\dom {
     return $result;
   }
 
-  function find_by_class($element, $class) {
-    return current(find_all_by_class($element, $class));
+  function find_by_class($element, ...$class) {
+    return current(find_all_by_class($element, ...$class));
   }
 
   function remove_all($parentNode) {

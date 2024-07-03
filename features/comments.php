@@ -11,6 +11,7 @@ function wp_bootstrap_comment_form_default_fields( $fields ) {
 
   $options = wp_bootstrap_options();
   $field_class = $options['field_class'];
+  $label_class = $options['label_class'];
   $text_input_class = $options['text_input_class'];
   $comment_label = $options['comment_label'];
 
@@ -22,19 +23,19 @@ function wp_bootstrap_comment_form_default_fields( $fields ) {
   $fields = array(
     'author' =>
       '<div class="' . $field_class . ' comment-form-author">' .
-        '<label for="author">' . __( 'Name' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
-        '<input class="' . $text_input_class . '" id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="30"' . $aria_req . ' />' .
+        '<label for="author" class="' . $label_class . '">' . __( 'Name' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
+        '<input class="' . $text_input_class . '" id="author" name="author" type="text" value="' . esc_attr( $commenter['comment_author'] ) . '" size="30"' . $aria_req . ' required />' .
       '</div>',
 
     'email' =>
       '<div class="' . $field_class . ' comment-form-email">' .
-        '<label for="email">' . __( 'Email' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
-        '<input class="' . $text_input_class . '" id="email" name="email" ' . ( $html5 ? 'type="email"' : 'type="text"' ) . ' value="' . esc_attr( $commenter['comment_author_email'] ) . '" size="30"' . $aria_req . ' />' .
+        '<label for="email" class="' . $label_class . '">' . __( 'Email' ) . ( $req ? ' <span class="required">*</span>' : '' ) . '</label> ' .
+        '<input class="' . $text_input_class . '" id="email" name="email" ' . ( $html5 ? 'type="email"' : 'type="text"' ) . ' value="' . esc_attr( $commenter['comment_author_email'] ) . '" size="30"' . $aria_req . ' required />' .
       '</div>',
 
     'url' =>
       '<div class="' . $field_class . ' comment-form-url">' .
-        '<label for="url">' . __( 'Website' ) . '</label> ' .
+        '<label for="url" class="' . $label_class . '">' . __( 'Website' ) . '</label> ' .
         '<input class="' . $text_input_class . '" id="url" name="url" ' . ( $html5 ? 'type="url"' : 'type="text"' ) . ' value="' . esc_attr( $commenter['comment_author_url'] ) . '" size="30" />' .
       '</div>',
 
@@ -48,12 +49,16 @@ add_filter( 'comment_form_default_fields', 'wp_bootstrap_comment_form_default_fi
  * Comment Form Defaults
  */
 function wp_bootstrap_comment_form_defaults( $args ) {
+  if (!current_theme_supports('bootstrap')) {
+    return $args;
+  }
+
   extract(wp_bootstrap_options());
 
   $args['comment_field'] =
     '<div class="' . $field_class . ' comment-form-comment">
-      <label for="comment" class="form-label">' . $comment_label . '</label>
-      <textarea class="' . $text_input_class . '" id="comment" name="comment" cols="45" rows="8" aria-required="true"></textarea>
+      <label for="comment" class="form-label">' . $comment_label . ' <span class="required">*</span></label>
+      <textarea class="' . $text_input_class . '" id="comment" name="comment" cols="45" rows="8" aria-required="true" required></textarea>
     </div>';
 
   $args['comment_notes_after'] = $args['comment_notes_after'];
@@ -120,3 +125,34 @@ add_filter( 'get_avatar', function($avatar) {
   return $avatar;
 }, 10, 2 );
 
+
+add_action('comment_form_after', function() {
+  echo <<<EOT
+  <script>
+  // Example starter JavaScript for disabling form submissions if there are invalid fields
+  (() => {
+    'use strict'
+  
+    // Fetch all the forms we want to apply custom Bootstrap validation styles to
+    const forms = document.querySelectorAll('.comment-form')
+  
+    // Loop over them and prevent submission
+    Array.from(forms).forEach(form => {
+      form.addEventListener('submit', event => {
+        console.log('SUBMIT');
+        event.preventDefault()
+        event.stopPropagation()
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+  
+        form.classList.add('was-validated')
+      }, false)
+    });
+
+    
+  })()
+  </script>
+EOT;
+});

@@ -27,6 +27,10 @@ use function benignware\bootstrap_hooks\util\dom\find_by_class;
 */
 
 function _bootstrap_get_theme_json() {
+	if (!method_exists($merged_data, 'get_data')) {
+		return [];
+	}
+
 	$theme_json = WP_Theme_JSON_Resolver::get_merged_data()->get_data();
 	$default_theme_json = json_decode(file_get_contents(ABSPATH . WPINC . '/theme.json'), true);
 	

@@ -60,12 +60,12 @@ function wp_bootstrap_options() {
     'checkbox_container_class' => 'form-check',
     'checkbox_input_class' => 'form-check-input',
     'checkbox_label_class' => 'form-check-label',
-    'field_class' => 'form-group',
+    'field_class' => 'form-group mb-3',
     'submit_class' => 'btn btn-primary mt-3',
     'submit_button_class' => 'btn btn-primary', // FIXME: Redundant option
     // Comments
     'reply_link_class' => 'btn btn-outline-primary btn-sm mb-3',
-    'comment_label' => 'Comment',
+    'comment_label' => __('Comment'),
     'comment_text_container' => '<div class="%s">%s</div>',
     'comment_text_container_class' => 'py-3 my-0',
     // Content
