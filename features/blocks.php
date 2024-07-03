@@ -384,9 +384,11 @@ add_filter('render_block', function($content, $block)  {
 
     $class = implode(' ', $classes);
 
+    add_class($container, $class);
+
     $row = $doc->createElement('div');
 
-    add_class($row, $class);
+    add_class($row, 'row');
 
     while ($container->hasChildNodes()) {
       $row->appendChild($container->firstChild);
@@ -478,7 +480,7 @@ add_filter('render_block', function($content, $block)  {
 
       $button = $new_button;
 
-      add_class($button, 'navbar-toggler ms-auto');
+      add_class($button, 'navbar-toggler');
 
       $button->setAttribute('data-bs-toggle', 'collapse');
       $button->setAttribute('data-bs-target', '#' . $collapse_id);
@@ -486,6 +488,7 @@ add_filter('render_block', function($content, $block)  {
       $button->textContent = '';
 
       append_html($button, '<span class="navbar-toggler-icon"></span>');
+
     }
 
     $overlayMenu = isset($attrs['overlayMenu']) ? $attrs['overlayMenu'] : 'mobile';
@@ -519,27 +522,77 @@ add_filter('render_block', function($content, $block)  {
   }
 
   if (has_class($container, 'navbar')) {
-    $nested_navbar = find_by_class($container, 'navbar');
+    $nested_navbars = find_all_by_class($container, 'navbar');
+    $toggler = null;
+    $collapse = find_by_class($container, 'navbar-collapse');
 
-    if ($nested_navbar) {
+    if (!$collapse) {
+      $collapse = $doc->createElement('div');
+    }
+
+    add_class($collapse, 'collapse navbar-collapse');
+    remove_class($collapse, 'is-layout-flex');
+
+    foreach ($nested_navbars as $index => $nested_navbar) {
       $nested_navbar_classes = array_values(array_filter(array_map('trim', explode(' ', $nested_navbar->getAttribute('class'))), function($class) {
         return strpos($class, 'navbar') === 0;
       }));
 
       add_class($container, $nested_navbar_classes);
 
-      $toggler = find_by_class($nested_navbar, 'navbar-toggler');
-
-      if ($toggler) {
-        $nested_navbar->parentNode->insertBefore($toggler, $nested_navbar);
+      foreach ($nested_navbar_classes as $class) {
+        remove_class($nested_navbar, $class, true);
       }
 
-      // add_class($nested_navbar, 'w-100', true);
-      remove_class($container->childNodes, 'navbar', true);
-      remove_class($container->childNodes, '~^navbar-expand~', true);
-      remove_class($container->childNodes, 'navbar-collapse', true);
+      $nested_toggler = find_by_class($nested_navbar, 'navbar-toggler');
 
-      add_class($nested_navbar, 'navbar-collapse', true);
+      if ($nested_toggler) {
+        if (!$toggler) {
+          $toggler = $nested_toggler;
+          $target = $toggler->getAttribute('data-bs-target');
+          $collapse->setAttribute('id', preg_replace('/^#/', '', $target));
+
+          $collapse->parentNode->insertBefore($toggler, $collapse);
+        } else {
+          $nested_toggler->parentNode->removeChild($nested_toggler);
+        }
+      }
+
+      $nested_collapse = find_by_class($nested_navbar, 'navbar-collapse');
+
+      if ($nested_collapse) {
+        remove_class($nested_collapse, 'navbar-collapse', true);
+        remove_class($nested_collapse, 'collapse', true);
+        $nested_collapse->removeAttribute('id');
+
+        if (!$collapse->parentNode) {
+          $nested_navbar->parentNode->insertBefore($collapse, $nested_navbar);
+        }
+        
+        // if (!$collapse) {
+        //   $collapse = $nested_collapse;
+        //   $container->appendChild($collapse);
+        // } else {
+        //   // $frag = $doc->createDocumentFragment();
+
+        //   // while ($nested_collapse->hasChildNodes()) {
+        //   //   $frag->appendChild($nested_collapse->firstChild);
+        //   // }
+
+        //   // $nested_collapse->parentNode->removeChild($nested_collapse);
+
+        //   // while ($frag->hasChildNodes()) {
+        //   //   $collapse->appendChild($frag->firstChild);
+        //   // }
+          
+        // }
+      }
+
+      remove_class($nested_navbar, 'is-layout-flex');
+      $collapse->appendchild($nested_navbar);
+
+      // remove_class($container->childNodes, 'navbar', true);
+      // remove_class($container->childNodes, '~^navbar-expand~', true);
     }
   }
 
@@ -634,19 +687,8 @@ add_filter('render_block', function($content, $block)  {
   }
 
   if ($name === 'core/query-pagination') {
-    // print_r($attrs);
     add_class($container, 'pagination');
     add_style($container, 'gap', '0px');
-
-    $show_label = isset($attrs['showLabel']) && empty($attrs['showLabel']) ? false : true;
-
-    if (!$show_label) {
-      $arrows = find_all_by_class($container, 'wp-block-query-pagination-previous-arrow', 'wp-block-query-pagination-next-arrow');
-
-      foreach ($arrows as $arrow) {
-        add_class($arrow, 'mx-0');
-      }
-    }
   }
 
   if ($name === 'core/query-pagination-numbers') {
