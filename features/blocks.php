@@ -349,6 +349,8 @@ add_filter('render_block', function($content, $block)  {
       if ($child->nodeType === 1) {
         $column = isset($columns[$i]) ? $columns[$i] : null;
         $column_attrs = $column ? $column['attrs'] : [];
+
+        
         $width = isset($column_attrs['width']) ? $column_attrs['width'] : '';
 
         if ($width) {
@@ -359,8 +361,12 @@ add_filter('render_block', function($content, $block)  {
             $class = sprintf($options['column_class'], $breakpoint, $size);
             add_class($child, $class);
           } else {
-            add_style($child, 'flex-grow', '0');
+            
           }
+
+          // add_style($child, 'flex-grow', '0');
+          add_class($child, 'flex-grow-0');
+
         }
 
         $class = $child->getAttribute('class');
@@ -389,6 +395,7 @@ add_filter('render_block', function($content, $block)  {
     $row = $doc->createElement('div');
 
     add_class($row, 'row');
+    remove_class($row, 'is-layout-flex');
 
     while ($container->hasChildNodes()) {
       $row->appendChild($container->firstChild);
@@ -683,7 +690,7 @@ add_filter('render_block', function($content, $block)  {
   
     $wrapper->setAttribute('class', $options['input_group_class']);
 
-    $submit->setAttribute('class', $submit->getAttribute('class') . ' ' . $options['submit_button_class']);
+    $submit->setAttribute('class', $submit->getAttribute('class') . ' ' . $options['submit_class']);
   }
 
   if ($name === 'core/query-pagination') {
@@ -723,6 +730,14 @@ add_filter('render_block', function($content, $block)  {
     $container->parentNode->appendChild($item);
     $container->parentNode->removeChild($container);
   }
+  
+  if ($name === 'core/comments') {
+    $input = $doc_xpath->query('//input[@type="submit"]')->item(0);
+
+    if ($input) {
+      add_class($input, $options['submit_class']);
+    }
+  }
 
   if ($name === 'core/post-comments') {
     $list = $doc_xpath->query('.//ol|.//ul', $container)->item(0);
@@ -739,4 +754,4 @@ add_filter('render_block', function($content, $block)  {
   $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
   return $result;
-}, 10, 2);
+}, 11, 2);
