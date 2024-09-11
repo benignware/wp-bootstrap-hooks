@@ -1,6 +1,7 @@
 <?php
 
 use function benignware\bootstrap_hooks\util\colors\rgb;
+use function benignware\bootstrap_hooks\util\colors\rgb2hex;
 use function benignware\bootstrap_hooks\util\colors\brightness;
 use function benignware\bootstrap_hooks\util\object\query_object;
 use function benignware\bootstrap_hooks\util\dom\find_by_class;
@@ -144,11 +145,16 @@ function _bootstrap_presets_css_action() {
 	$palette = query_object($theme_json, 'settings.color.palette');
 
 	$palette_vars = array_reduce($palette, function($acc, $color) {
-		$acc["--bs-{$color['slug']}"] = $color['color'];
-		$acc["--bs-{$color['slug']}-rgb"] = implode(', ', rgb($color['color']) ?: []);
-		$acc["--bs-{$color['slug']}-r"] = rgb($color['color'])[0];
-		$acc["--bs-{$color['slug']}-g"] = rgb($color['color'])[1];
-		$acc["--bs-{$color['slug']}-b"] = rgb($color['color'])[2];
+		[$r, $g, $b] = rgb($color['color']);
+		$hex = rgb2hex([$r, $g, $b]);
+		$rgb = implode(', ', [$r, $g, $b]);
+
+
+		$acc["--bs-{$color['slug']}"] = $hex;
+		$acc["--bs-{$color['slug']}-rgb"] = $rgb;
+		$acc["--bs-{$color['slug']}-r"] = $r;
+		$acc["--bs-{$color['slug']}-g"] = $g;
+		$acc["--bs-{$color['slug']}-b"] = $b;
 		return $acc;
 	}, []);
 
@@ -193,6 +199,9 @@ function _bootstrap_presets_css_action() {
 		}, []);
 	}
 
+	$link_color = query_object($theme_json, 'styles.elements.link.color.text');
+
+
 	$css = array_merge([
 		$body_selector => array_merge([
 			'--bs-body-bg' => $background_color,
@@ -203,11 +212,12 @@ function _bootstrap_presets_css_action() {
 			'--bs-body-font-weight' => query_object($theme_json, 'styles.typography.fontWeight'),
 			'--bs-gutter-x' => query_object($theme_json, 'styles.spacing.gutter.x'),
 			'--bs-gutter-y' => query_object($theme_json, 'styles.spacing.gutter.y'),
+			'--bs-link-color' => $link_color,
 		], $palette_vars, $shadow_vars),
-		"$body_selector a" => [
-			'--bs-link-color-rgb' => implode(', ', rgb($resolve_preset(query_object($theme_json, 'styles.elements.link.color.text'))) ?: []),
-			'--bs-link-hover-color-rgb' => implode(', ', rgb($resolve_preset(query_object($theme_json, 'styles.elements.link.:hover.color.text'))) ?: [])
-		],
+		// "$body_selector a" => [
+		// 	'--bs-link-color-rgb' => implode(', ', rgb($resolve_preset(query_object($theme_json, 'styles.elements.link.color.text'))) ?: []),
+		// 	'--bs-link-hover-color-rgb' => implode(', ', rgb($resolve_preset(query_object($theme_json, 'styles.elements.link.:hover.color.text'))) ?: [])
+		// ],
 		"container" => [
 			'max-width' => 'var(--wp--style--global--wide-size, 1200px)'
 		],
