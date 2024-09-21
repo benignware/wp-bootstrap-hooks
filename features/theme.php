@@ -130,7 +130,7 @@ function _bootstrap_get_preset_resolver($theme_json) {
 
 
 function _bootstrap_presets_css_action() {
-	$is_editor = stripslashes($_GET['is_editor']) == 1;
+	$is_editor = isset($_GET['is_editor']) ? stripslashes($_GET['is_editor']) == 1 : false;
 	$body_selector = $is_editor ? '.editor-styles-wrapper' : 'body';
 	
 	$theme_json = _bootstrap_get_theme_json();
@@ -188,7 +188,7 @@ function _bootstrap_presets_css_action() {
 
 	$shadow_presets = query_object($theme_json, 'settings.shadow.presets');
 
-	$shadow_var = [];
+	$shadow_vars = [];
 
 	if ($shadow_presets) {
 		$shadow_vars = array_reduce($shadow_presets, function($acc, $preset) {
