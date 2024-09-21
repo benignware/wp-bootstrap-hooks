@@ -8,7 +8,7 @@ add_filter('get_header_image_tag_attributes', function($attr) {
   $options = wp_bootstrap_options();
 
   $classes = isset($attr['class']) ? explode(' ', $attr['class']) : [];
-  $classes.= $options['img_class'];
+  $classes[]= $options['img_class'];
 
   $attr['class'] = implode(' ', $classes);
 
