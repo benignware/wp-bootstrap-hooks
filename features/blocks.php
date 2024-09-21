@@ -201,6 +201,8 @@ add_filter('render_block', function($content, $block)  {
   if ($name === 'core/button') {
     list($button) = $doc_xpath->query("//a|//button");
 
+    
+
     if (isset($attrs['width'])) {
       add_class($container, sprintf('w-%s', $attrs['width']));
       add_class($button, 'd-block');
@@ -220,81 +222,101 @@ add_filter('render_block', function($content, $block)  {
 
     $is_outline = isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']));
 
-    $color_name = isset($attrs['textColor']) ? $attrs['textColor'] : '';
-    $bg_name = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
+    $color_value = isset($attrs['textColor']) ? $attrs['textColor'] : '';
+    $color_name = strpos($color_value, '#') === 0 || strpos($color_value, 'rgb') === 0
+    ? null
+    : $color_value;
 
-    $theme_color = $is_outline ? $color_name : $bg_name;
-    
-    $class = sprintf(
-      $is_outline ? $options['button_outline_class'] : $options['button_class'],
-      $theme_color ?: 'primary'
-    );
-    
-    if (!$color_name) {
-      $class.= ' text-' . $color_name;
-    }
+    $bg_value = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
 
-    if ($theme_color) {
-      if ($is_outline) {
-        remove_class($button, 'has-text-color');
-        remove_class($button, "has-$theme_color-color");
-      } else {
-        remove_class($button, 'has-background-color');
-        remove_class($button, "has-$theme_color-background-color");
+    $bg_name = strpos($bg_value, '#') === 0 || strpos($bg_value, 'rgb') === 0
+      ? null
+      : $bg_value;
+
+    // Theme Colors
+    if ($bg_name) {
+      $theme_color = $is_outline ? $color_name : $bg_name;
+      
+      $class = sprintf(
+        $is_outline ? $options['button_outline_class'] : $options['button_class'],
+        $theme_color ?: 'primary'
+      );
+      
+      if (!$color_name) {
+        $class.= ' text-' . $color_name;
       }
 
-      remove_class($button, 'has-link-color');
+      if ($theme_color) {
+        if ($is_outline) {
+          remove_class($button, 'has-text-color');
+          remove_class($button, "has-$theme_color-color");
+        } else {
+          remove_class($button, 'has-background-color');
+          remove_class($button, "has-$theme_color-background-color");
+        }
+
+        remove_class($button, 'has-link-color');
+      }
+    } else {
+      $class = 'btn';
     }
     
+    // Custom colors
+
+    $color = $color_value;
+    $bg = $bg_value;
+
+    if (isset($attrs['style'])) {
+      if (isset($attrs['style']['color'])) {
+        $color = isset($attrs['style']['color']['text']) ? $attrs['style']['color']['text'] : $color;
+        $bg = isset($attrs['style']['color']['background']) ? $attrs['style']['color']['background'] : $bg;
+      }
+    }
+
+    if ($color) {
+      add_style($button, '--bs-btn-color', $color);
+      remove_style($button, 'color');
+
+      $hover_color = shade($color, 0.9);
+      $hover_color = $is_outline ? ($bg ?: 'initial') : shade($color, 0.9);
+
+      add_style($button, '--bs-btn-hover-color', $hover_color);
+      add_style($button, '--bs-btn-active-color', $color);
+    }
+
+    if ($bg) {
+      add_style($button, '--bs-btn-bg', $bg);
+      remove_style($button, 'background-color');
+
+      add_style($button, '--bs-btn-border-color', $is_outline ? ($color ?: 'initial') : $bg);
+      remove_style($button, 'border-color');
+
+      $hover_bg = $is_outline ? ($color ?: 'initial') : shade($bg, 0.9);
+
+      add_style($button, '--bs-btn-hover-bg', $hover_bg);
+      add_style($button, '--bs-btn-hover-border-color', $hover_bg);
+
+      add_style($button, '--bs-btn-active-bg', $bg);
+      add_style($button, '--bs-btn-active-border-color', $bg);
+    }
+  
+
+    if (isset($attrs['style']) && isset($attrs['style']['border'])) {
+      if (isset($attrs['style']['border']['radius'])) {
+        $radius = $attrs['style']['border']['radius'];
+        
+        add_style($button, '--bs-btn-border-radius', $radius);
+        remove_style($button, 'border-radius');
+      }
+    }
+
+    // Font size
     if (isset($attrs['style'])) {
       if (isset($attrs['style']['typography'])) {
         if (isset($attrs['style']['typography']['fontSize'])) {
           $font_size = $attrs['style']['typography']['fontSize'];
           
           add_style($button, '--bs-btn-font-size', $font_size);
-        }
-      }
-      
-      if (isset($attrs['style']['color'])) {
-        $color = isset($attrs['style']['color']['text']) ? $attrs['style']['color']['text'] : '';
-        $bg = isset($attrs['style']['color']['background']) ? $attrs['style']['color']['background'] : '';
-
-        if ($color) {
-          $color = $attrs['style']['color']['text'];
-
-          add_style($button, '--bs-btn-color', $color);
-          remove_style($button, 'color');
-
-          $hover_color = shade($color, 0.9);
-          $hover_color = $is_outline ? ($bg ?: 'initial') : shade($color, 0.9);
-
-          add_style($button, '--bs-btn-hover-color', $hover_color);
-          add_style($button, '--bs-btn-active-color', $color);
-        }
-
-        if ($bg) {
-          add_style($button, '--bs-btn-bg', $bg);
-          remove_style($button, 'background-color');
-
-          add_style($button, '--bs-btn-border-color', $is_outline ? ($color ?: 'initial') : $bg);
-          remove_style($button, 'border-color');
-
-          $hover_bg = $is_outline ? ($color ?: 'initial') : shade($bg, 0.9);
-
-          add_style($button, '--bs-btn-hover-bg', $hover_bg);
-          add_style($button, '--bs-btn-hover-border-color', $hover_bg);
-
-          add_style($button, '--bs-btn-active-bg', $bg);
-          add_style($button, '--bs-btn-active-border-color', $bg);
-        }
-      }
-
-      if (isset($attrs['style']['border'])) {
-        if (isset($attrs['style']['border']['radius'])) {
-          $radius = $attrs['style']['border']['radius'];
-          
-          add_style($button, '--bs-btn-border-radius', $radius);
-          remove_style($button, 'border-radius');
         }
       }
     }
