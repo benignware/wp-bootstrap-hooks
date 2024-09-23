@@ -194,14 +194,14 @@ add_filter('render_block', function($content, $block)  {
     }
   }
 
+
+
   if ($name === 'core/buttons') {
     // add_class($container, 'my-4');
   }
 
   if ($name === 'core/button') {
     list($button) = $doc_xpath->query("//a|//button");
-
-    
 
     if (isset($attrs['width'])) {
       add_class($container, sprintf('w-%s', $attrs['width']));
@@ -222,101 +222,81 @@ add_filter('render_block', function($content, $block)  {
 
     $is_outline = isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']));
 
-    $color_value = isset($attrs['textColor']) ? $attrs['textColor'] : '';
-    $color_name = strpos($color_value, '#') === 0 || strpos($color_value, 'rgb') === 0
-    ? null
-    : $color_value;
+    $color_name = isset($attrs['textColor']) ? $attrs['textColor'] : '';
+    $bg_name = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
 
-    $bg_value = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
+    $theme_color = $is_outline ? $color_name : $bg_name;
+    
+    $class = sprintf(
+      $is_outline ? $options['button_outline_class'] : $options['button_class'],
+      $theme_color ?: 'primary'
+    );
+    
+    if (!$color_name) {
+      $class.= ' text-' . $color_name;
+    }
 
-    $bg_name = strpos($bg_value, '#') === 0 || strpos($bg_value, 'rgb') === 0
-      ? null
-      : $bg_value;
-
-    // Theme Colors
-    if ($bg_name) {
-      $theme_color = $is_outline ? $color_name : $bg_name;
-      
-      $class = sprintf(
-        $is_outline ? $options['button_outline_class'] : $options['button_class'],
-        $theme_color ?: 'primary'
-      );
-      
-      if (!$color_name) {
-        $class.= ' text-' . $color_name;
+    if ($theme_color) {
+      if ($is_outline) {
+        remove_class($button, 'has-text-color');
+        remove_class($button, "has-$theme_color-color");
+      } else {
+        remove_class($button, 'has-background-color');
+        remove_class($button, "has-$theme_color-background-color");
       }
 
-      if ($theme_color) {
-        if ($is_outline) {
-          remove_class($button, 'has-text-color');
-          remove_class($button, "has-$theme_color-color");
-        } else {
-          remove_class($button, 'has-background-color');
-          remove_class($button, "has-$theme_color-background-color");
-        }
-
-        remove_class($button, 'has-link-color');
-      }
-    } else {
-      $class = 'btn';
+      remove_class($button, 'has-link-color');
     }
     
-    // Custom colors
-
-    $color = $color_value;
-    $bg = $bg_value;
-
-    if (isset($attrs['style'])) {
-      if (isset($attrs['style']['color'])) {
-        $color = isset($attrs['style']['color']['text']) ? $attrs['style']['color']['text'] : $color;
-        $bg = isset($attrs['style']['color']['background']) ? $attrs['style']['color']['background'] : $bg;
-      }
-    }
-
-    if ($color) {
-      add_style($button, '--bs-btn-color', $color);
-      remove_style($button, 'color');
-
-      $hover_color = shade($color, 0.9);
-      $hover_color = $is_outline ? ($bg ?: 'initial') : shade($color, 0.9);
-
-      add_style($button, '--bs-btn-hover-color', $hover_color);
-      add_style($button, '--bs-btn-active-color', $color);
-    }
-
-    if ($bg) {
-      add_style($button, '--bs-btn-bg', $bg);
-      remove_style($button, 'background-color');
-
-      add_style($button, '--bs-btn-border-color', $is_outline ? ($color ?: 'initial') : $bg);
-      remove_style($button, 'border-color');
-
-      $hover_bg = $is_outline ? ($color ?: 'initial') : shade($bg, 0.9);
-
-      add_style($button, '--bs-btn-hover-bg', $hover_bg);
-      add_style($button, '--bs-btn-hover-border-color', $hover_bg);
-
-      add_style($button, '--bs-btn-active-bg', $bg);
-      add_style($button, '--bs-btn-active-border-color', $bg);
-    }
-  
-
-    if (isset($attrs['style']) && isset($attrs['style']['border'])) {
-      if (isset($attrs['style']['border']['radius'])) {
-        $radius = $attrs['style']['border']['radius'];
-        
-        add_style($button, '--bs-btn-border-radius', $radius);
-        remove_style($button, 'border-radius');
-      }
-    }
-
-    // Font size
     if (isset($attrs['style'])) {
       if (isset($attrs['style']['typography'])) {
         if (isset($attrs['style']['typography']['fontSize'])) {
           $font_size = $attrs['style']['typography']['fontSize'];
           
           add_style($button, '--bs-btn-font-size', $font_size);
+        }
+      }
+      
+      if (isset($attrs['style']['color'])) {
+        $color = isset($attrs['style']['color']['text']) ? $attrs['style']['color']['text'] : '';
+        $bg = isset($attrs['style']['color']['background']) ? $attrs['style']['color']['background'] : '';
+
+        if ($color) {
+          $color = $attrs['style']['color']['text'];
+
+          add_style($button, '--bs-btn-color', $color);
+          remove_style($button, 'color');
+
+          $hover_color = shade($color, 0.9);
+          $hover_color = $is_outline ? ($bg ?: 'initial') : shade($color, 0.9);
+
+          add_style($button, '--bs-btn-hover-color', $hover_color);
+          add_style($button, '--bs-btn-active-color', $color);
+        }
+
+        if ($bg) {
+          add_style($button, '--bs-btn-bg', $bg);
+          remove_style($button, 'background-color');
+
+          add_style($button, '--bs-btn-border-color', $is_outline ? ($color ?: 'initial') : $bg);
+          remove_style($button, 'border-color');
+
+          $hover_bg = $is_outline ? ($color ?: 'initial') : shade($bg, 0.9);
+
+          add_style($button, '--bs-btn-hover-bg', $hover_bg);
+          add_style($button, '--bs-btn-hover-border-color', $hover_bg);
+
+          add_style($button, '--bs-btn-active-bg', $bg);
+          add_style($button, '--bs-btn-active-border-color', $bg);
+        }
+      }
+
+      if (isset($attrs['style']['border'])) {
+        if (isset($attrs['style']['border']['radius'])) {
+          $radius = $attrs['style']['border']['radius'];
+          
+          add_style($button, '--bs-btn-border-radius', $radius);
+          remove_style($button, 'border-radius');
         }
       }
     }
@@ -335,6 +315,7 @@ add_filter('render_block', function($content, $block)  {
 
   if ($name === 'core/buttons') {
   }
+
 
   if ($name === 'core/table') {
     add_class($container, $options['table_container_class']);
@@ -479,7 +460,11 @@ add_filter('render_block', function($content, $block)  {
   //   }
   // }
 
+
+
+
   if ($name === 'core/navigation') {
+    
     // remove_class($container, '~^wp-block~', true);
     add_class($container, 'navbar'); 
 
@@ -488,18 +473,17 @@ add_filter('render_block', function($content, $block)  {
 
     $button = $doc_xpath->query("./button", $container)->item(0);
 
-    $content = find_by_class($container, $content_class);
+    $nav_content = find_by_class($container, $content_class);
 
-    if ($content) {
-      $collapse_id = $content->getAttribute('id');
-      $close = find_by_class($content, $close_class);
+    if ($nav_content) {
+      $collapse_id = $nav_content->getAttribute('id');
+      $close = find_by_class($nav_content, $close_class);
 
       if ($close) {
         $close->parentNode->removeChild($close);
       }
 
-      add_class($content, 'collapse navbar-collapse');
-      // remove_class($content, '~^wp-block~', true);
+      add_class($nav_content, 'collapse navbar-collapse');
     }
 
     if ($button) {
@@ -545,12 +529,12 @@ add_filter('render_block', function($content, $block)  {
       add_class($nav, 'navbar-nav');
     }
 
-    // remove_class($container, '~^wp-block-navigation~');
-
     remove_class($container, '~^wp-block-navigation~', true);
   }
 
-  if (has_class($container, 'navbar')) {
+ 
+
+  if ($name !== 'core/navigation' && has_class($container, 'navbar')) {
     $nested_navbars = find_all_by_class($container, 'navbar');
     $toggler = null;
     $collapse = find_by_class($container, 'navbar-collapse');
@@ -597,33 +581,14 @@ add_filter('render_block', function($content, $block)  {
         if (!$collapse->parentNode) {
           $nested_navbar->parentNode->insertBefore($collapse, $nested_navbar);
         }
-        
-        // if (!$collapse) {
-        //   $collapse = $nested_collapse;
-        //   $container->appendChild($collapse);
-        // } else {
-        //   // $frag = $doc->createDocumentFragment();
-
-        //   // while ($nested_collapse->hasChildNodes()) {
-        //   //   $frag->appendChild($nested_collapse->firstChild);
-        //   // }
-
-        //   // $nested_collapse->parentNode->removeChild($nested_collapse);
-
-        //   // while ($frag->hasChildNodes()) {
-        //   //   $collapse->appendChild($frag->firstChild);
-        //   // }
-          
-        // }
       }
 
       remove_class($nested_navbar, 'is-layout-flex');
       $collapse->appendchild($nested_navbar);
-
-      // remove_class($container->childNodes, 'navbar', true);
-      // remove_class($container->childNodes, '~^navbar-expand~', true);
     }
   }
+
+  
 
   // if (has_class($container, 'alignwide')) {
   //   add_class($container, 'container');
@@ -662,6 +627,7 @@ add_filter('render_block', function($content, $block)  {
   //     add_class($link, 'active');
   //   }
   // }
+
 
   if ($name === 'core/page-list') {
     add_class($container, 'nav');
@@ -773,7 +739,7 @@ add_filter('render_block', function($content, $block)  {
     }
   }
 
-  $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+  $result = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|body))[^>]*>)\s*~i', '', $doc->saveHTML());
 
   return $result;
 }, 11, 2);
