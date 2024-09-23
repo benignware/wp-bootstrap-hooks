@@ -28,7 +28,8 @@ use function benignware\bootstrap_hooks\util\dom\find_by_class;
 */
 
 function _bootstrap_get_theme_json() {
-	$merged_data = WP_Theme_JSON_Resolver::get_merged_data();
+	$merged_data = \WP_Theme_JSON_Resolver::get_merged_data();
+	
 	if (!method_exists($merged_data, 'get_data')) {
 		return [];
 	}
