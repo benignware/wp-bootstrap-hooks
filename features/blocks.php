@@ -532,11 +532,10 @@ add_filter('render_block', function($content, $block)  {
     remove_class($container, '~^wp-block-navigation~', true);
   }
 
- 
-
   if ($name !== 'core/navigation' && has_class($container, 'navbar')) {
     $nested_navbars = find_all_by_class($container, 'navbar');
     $toggler = null;
+    
     $collapse = find_by_class($container, 'navbar-collapse');
 
     if (!$collapse) {
@@ -574,9 +573,13 @@ add_filter('render_block', function($content, $block)  {
       $nested_collapse = find_by_class($nested_navbar, 'navbar-collapse');
 
       if ($nested_collapse) {
-        remove_class($nested_collapse, 'navbar-collapse', true);
-        remove_class($nested_collapse, 'collapse', true);
-        $nested_collapse->removeAttribute('id');
+        if ($nested_collapse->getAttribute('id') !== $collapse->getAttribute('id')) {
+          $nested_collapse->removeAttribute('id');
+
+          remove_class($nested_collapse, 'navbar-collapse', true);
+          remove_class($nested_collapse, 'collapse', true);
+        }
+        
 
         if (!$collapse->parentNode) {
           $nested_navbar->parentNode->insertBefore($collapse, $nested_navbar);
@@ -584,7 +587,13 @@ add_filter('render_block', function($content, $block)  {
       }
 
       remove_class($nested_navbar, 'is-layout-flex');
-      $collapse->appendchild($nested_navbar);
+      
+      try {
+        $collapse->appendchild($nested_navbar);
+      } catch (Exception $e) {
+        // ignore
+      }
+      
     }
   }
 
