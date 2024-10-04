@@ -15,3 +15,19 @@ function get_theme_css_var($input) {
 
   return $input;
 }
+
+
+/**
+ * Parse the color name from a WordPress CSS variable.
+ *
+ * @param string $css_variable The CSS variable string to parse.
+ * @return string|null The extracted color name or null if not found.
+ */
+function parse_color_name($css_variable) {
+  // Use a regular expression to match the color name.
+  if (preg_match('/^var\(--wp--preset--color--([a-zA-Z0-9\-_]+)\)$/', $css_variable, $matches)) {
+      return $matches[1]; // Return the captured color name.
+  }
+  
+  return $css_variable; // Return the original input if the variable does not match.
+}

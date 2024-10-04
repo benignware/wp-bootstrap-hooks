@@ -13,7 +13,10 @@ use function benignware\bootstrap_hooks\util\dom\contains_node;
 use function benignware\bootstrap_hooks\util\dom\append_html;
 
 use function benignware\bootstrap_hooks\util\colors\shade;
+
 use function benignware\bootstrap_hooks\util\theme\get_theme_css_var;
+use function benignware\bootstrap_hooks\util\theme\parse_color_name;
+
 
 add_filter('render_block', function($content, $block)  {
   if (!current_theme_supports('bootstrap')) {
@@ -224,7 +227,10 @@ add_filter('render_block', function($content, $block)  {
     $is_outline = isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']));
 
     $color_name = isset($attrs['textColor']) ? $attrs['textColor'] : '';
+    $color_name = parse_color_name($color_name);
+    
     $bg_name = isset($attrs['backgroundColor']) ? $attrs['backgroundColor'] : '';
+    $bg_name = parse_color_name($bg_name);
 
     $theme_color = $is_outline ? $color_name : $bg_name;
     
@@ -232,10 +238,6 @@ add_filter('render_block', function($content, $block)  {
       $is_outline ? $options['button_outline_class'] : $options['button_class'],
       $theme_color ?: 'primary'
     );
-    
-    if (!$color_name) {
-      $class.= ' text-' . $color_name;
-    }
 
     if ($theme_color) {
       if ($is_outline) {
