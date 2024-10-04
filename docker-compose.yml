@@ -23,7 +23,7 @@ services:
       - db
     image: wordpress:latest
     ports:
-      - 3070:80
+      - 8020:80
     restart: always
     volumes:
       - wordpress:/var/www/html
@@ -61,7 +61,7 @@ services:
       - PMA_ARBITRARY=1
     restart: always
     ports:
-      - 3071:80
+      - 8021:80
     volumes:
       - /sessions
   composer:

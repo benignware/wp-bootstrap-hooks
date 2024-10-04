@@ -13,6 +13,7 @@ use function benignware\bootstrap_hooks\util\dom\contains_node;
 use function benignware\bootstrap_hooks\util\dom\append_html;
 
 use function benignware\bootstrap_hooks\util\colors\shade;
+use function benignware\bootstrap_hooks\util\theme\get_theme_css_var;
 
 add_filter('render_block', function($content, $block)  {
   if (!current_theme_supports('bootstrap')) {
@@ -337,14 +338,35 @@ add_filter('render_block', function($content, $block)  {
     remove_class($container, 'is-not-stacked-on-mobile');
     $columns = isset($block['innerBlocks']) ? $block['innerBlocks'] : [];
     $column_count = count($columns);
-    $classes = explode(' ', $options['columns_class']);
+
+    $row = $doc->createElement('div');
+
+    // $classes = explode(' ', $options['columns_class']);
+    // $class = implode(' ', $classes);
 
     $isStackedOnMobile = 1;
     $breakpoint = 'md';
 
-    if (isset($block['attrs']['isStackedOnMobile'])) {
-      $isStackedOnMobile = $block['attrs']['isStackedOnMobile'] ? 1 : 0;
+    if (isset($attrs['isStackedOnMobile'])) {
+      $isStackedOnMobile = $attrs['isStackedOnMobile'] ? 1 : 0;
     }
+
+    $style = isset($column_attrs['style']) ? $attrs['style'] : [];
+    $spacing = isset($column_attrs['spacing']) ? $attrs['spacing'] : [];
+    $blockGap = isset($column_attrs['blockGap']) ? $attrs['blockGap'] : null;
+    $blockGapValue = null;
+
+    if ($blockGap !== null) {
+      $blockGapValue = get_theme_css_var($blockGap);
+      
+      add_style($row, '--bs-gutter-y', $blockGapValue);
+      add_style($row, '--bs-gutter-x', $blockGapValue);
+    } else {
+      add_class($row, 'g-4');
+    }
+
+    add_class($row, 'row');
+    // remove_class($row, 'is-layout-flex');
 
     $i = 0;
 
@@ -353,25 +375,6 @@ add_filter('render_block', function($content, $block)  {
         $column = isset($columns[$i]) ? $columns[$i] : null;
         $column_attrs = $column ? $column['attrs'] : [];
 
-        
-        $width = isset($column_attrs['width']) ? $column_attrs['width'] : '';
-
-        if ($width) {
-          [$value, $unit] = preg_split('/(?<=[0-9])(?=[a-z%])/', $width);
-
-          if ($unit === '%') {
-            $size = round($width / 100 * 12);
-            $class = sprintf($options['column_class'], $breakpoint, $size);
-            add_class($child, $class);
-          } else {
-            
-          }
-
-          // add_style($child, 'flex-grow', '0');
-          add_class($child, 'flex-grow-0');
-
-        }
-
         $class = $child->getAttribute('class');
 
         if ($isStackedOnMobile) {
@@ -379,10 +382,33 @@ add_filter('render_block', function($content, $block)  {
           add_class($child, 'col-12');
         }
 
+        $width = isset($column_attrs['width']) ? $column_attrs['width'] : '';
+
+        if ($width) {
+          [$value, $unit] = preg_split('/(?<=[0-9])(?=[a-z%])/', $width);
+
+          if ($unit === '%') {
+            $size = $width / 100 * 12;
+            $grid_size = round($width / 100 * 12);
+
+            if (abs($grid_size - $size)) {
+              $class = sprintf($options['column_class'], $grid_size, $breakpoint);
+              add_class($child, $class);
+              remove_style($child, 'flex-basis');
+            }
+          } else {
+            $abs_width = "calc($width + var(--bs-gutter-x))";
+
+            add_style($child, 'flex-basis', $abs_width);
+            add_class($child, 'flex-grow-0');
+          }
+        }
+
         if (!preg_match('/col-md/', $class)) {
           add_class($child, 'col-md');
         }
 
+        
         $i++;
       }
     }
@@ -391,14 +417,7 @@ add_filter('render_block', function($content, $block)  {
       $classes[] = sprintf('align-items-%s', $block['attrs']['verticalAlignment']);
     }
 
-    $class = implode(' ', $classes);
-
-    add_class($container, $class);
-
-    $row = $doc->createElement('div');
-
-    add_class($row, 'row');
-    remove_class($row, 'is-layout-flex');
+    
 
     while ($container->hasChildNodes()) {
       $row->appendChild($container->firstChild);
@@ -411,25 +430,31 @@ add_filter('render_block', function($content, $block)  {
     $size = '';
     $class = '';
 
-    if (isset($block['attrs']['width'])) {
-      $width = $block['attrs']['width'];
-      preg_match('~([\d]+(?:\.\d+)?)(%|[a-z]+)~', $block['attrs']['width'], $matches);
-      $value = floatval($matches[1]);
-      $unit = $matches[2];
+    // if (isset($block['attrs']['width'])) {
+    //   $width = $block['attrs']['width'];
+    //   preg_match('~([\d]+(?:\.\d+)?)(%|[a-z]+)~', $block['attrs']['width'], $matches);
+    //   $width_value = floatval($matches[1]);
+    //   $unit = $matches[2];
 
-      if ($unit === '%') {
-        if ($value / (100 / 12) - floor($value / (100 / 12)) < 1) {
-          $size = round($width / 100 * 12);
-          $breakpoint = 'md'; // TODO: Make breakpoint configurable
-          $class = sprintf($options['column_class'], $breakpoint, $size);
-          add_class($container, $class);
-          remove_style($container, 'flex-basis');
-        }
-      }
-    }
+    //   if ($unit === '%') {
+    //     $size = $width_value / 100 * 12;
+    //     $grid_size = round($width_value / 100 * 12);
+    //     $delta = abs($grid_size - $size);
+    //     echo abs($grid_size - $size);
+
+    //     if ($delta < 0.2) {
+    //       $class = sprintf($options['column_class'], $breakpoint, $grid_size);
+    //       add_class($container, $class);
+    //       $breakpoint = 'md'; // TODO: Make breakpoint configurable
+    //       $class = sprintf($options['column_class'], $breakpoint, $grid_size);
+    //       add_class($container, $class);
+    //       remove_style($container, 'flex-basis');
+    //     }
+    //   }
+    // }
   
     // remove_style($container, 'flex-basis');
-    remove_class($container, '~^wp-block~');
+    // remove_class($container, '~^wp-block~');
   }
 
   if ($name === 'core/image') {
@@ -691,8 +716,7 @@ add_filter('render_block', function($content, $block)  {
   }
 
   if ($name === 'core/query-pagination') {
-    add_class($container, 'pagination');
-    add_style($container, 'gap', '0px');
+    add_class($container, 'pagination gap-0');
   }
 
   if ($name === 'core/query-pagination-numbers') {
@@ -745,6 +769,74 @@ add_filter('render_block', function($content, $block)  {
       if (!count($list_items)) {
         replace_tag($list, 'div');
       }
+    }
+  }
+
+  if ($name === 'core/post-title') {
+    if (has_class($container, 'card-title')) {
+      replace_tag($container, 'h5');
+    }
+  }
+
+   if ($name === 'core/post-template') {
+    $list = $container;
+
+    remove_class($list, "~^wp-container-core-post-template~");
+    remove_class($list, "~^wp-block-post-template-is-layout~");
+    
+    remove_class($list, 'is-layout-grid');
+    
+    remove_class($list, 'columns-3');
+    add_class($list, 'row');
+    remove_class($list, 'wp-block-post-template');
+
+
+    $style = isset($attrs['style']) ? $attrs['style'] : [];
+    $spacing = isset($style['spacing']) ? $style['spacing'] : [];
+    $blockGap = isset($spacing['blockGap']) ? $spacing['blockGap'] : null;
+
+    if ($blockGap !== null) {
+      $blockGapValue = get_theme_css_var($blockGap);
+      
+      add_style($list, '--bs-gutter-y', $blockGapValue);
+      add_style($list, '--bs-gutter-x', $blockGapValue);
+    } else {
+      add_class($list, 'g-4');
+    }
+ 
+    if ($list) {
+      $list_items = $doc_xpath->query('./li', $list);
+
+      foreach ($list_items as $list_item) {
+        add_class($list_item, 'col-12 col-md-4');
+        replace_tag($list_item, 'div');
+        
+        // $card = find_by_class($list_item, 'card');
+
+        // if ($card) {
+          // remove_class($card, 'is-layout-flex');
+
+          // $list_item->parentNode->insertBefore($card, $list_item);
+          // $list_item->parentNode->removeChild($list_item);
+        // }
+      }
+
+      replace_tag($list, 'div');
+      add_class($list, 'row');
+    }
+  }
+
+  $cards = find_all_by_class($container, 'card');
+
+  foreach ($cards as $card) {
+    remove_class($card, 'is-layout-flex');
+    remove_class($card, "~^wp-container-core-group-is-layout~");
+    
+    $card_bodies = find_all_by_class($container, 'card-body');
+
+    foreach ($card_bodies as $card_body) {
+      remove_class($card_body, 'is-layout-flex');
+      remove_class($card_body, "~^wp-container-core-group-is-layout~");
     }
   }
 

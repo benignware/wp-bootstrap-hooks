@@ -1,7 +1,7 @@
 {
   "name": "benignware/wp-bootstrap-hooks",
-  "version": "1.0.5",
-  "type": "wordpress-muplugin",
+  "version": "1.0.6",
+  "type": "wordpress-plugin",
   "license": "MIT",
   "description": "A collection of action and filters for bootstrap based themes",
   "homepage": "http://github.com/benignware/wp-bootstrap-hooks",
@@ -13,9 +13,7 @@
     }
   ],
   "keywords": [
-    "wordpress",
-    "wordpress-muplugin",
-    "bootstrap"
+    "wordpress-mlugin"
   ],
   "support": {
     "issues": "https://github.com/benignware/wp-bootstrap-hooks/issues"
@@ -37,13 +35,13 @@
   }, {
     "type": "package",
     "package": {
-      "name": "benignware/menu-plus",
-      "version": "v1.0.0-beta.2",
+      "name": "benignware/benignware-connect",
+      "version": "v1.0.4",
       "type": "wordpress-plugin",
       "source": {
         "type": "git",
-        "url": "https://github.com/benignware/wp-menu-plus.git",
-        "reference": "v1.0.0-beta.2"
+        "url": "https://github.com/benignware/wp-benignware-connect.git",
+        "reference": "v1.0.4"
       }
     }
   }],
@@ -52,16 +50,10 @@
     "composer/installers": "~1.0"
   },
   "require-dev": {
-    "wemakecustom/wp-mu-loader": "*",
-    "benignware/menu-plus": ">=1.0.0-beta.2",
+    "benignware/benignware-connect": ">=1.0.4",
     "wpackagist-plugin/wordpress-importer": "^0.6.4",
     "wpackagist-plugin/gutenberg": "^17.9.0",
     "wptrt/theme-unit-test": "dev-master"
-  },
-  "scripts": {
-    "post-autoload-dump": [
-      "php -r \"copy('wp-content/mu-plugins/mu-loader/mu-require.php', 'wp-content/mu-plugins/mu-require.php');\""
-    ]
   },
   "extra": {
     "webroot-dir": "wp-core",

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "bce6adaf64f910256427776e39444301",
+    "content-hash": "83980e87888a1c80c0734e82f6438c38",
     "packages": [
         {
             "name": "composer/installers",
@@ -160,61 +160,14 @@
     ],
     "packages-dev": [
         {
-            "name": "benignware/menu-plus",
-            "version": "v1.0.0-beta.2",
+            "name": "benignware/benignware-connect",
+            "version": "v1.0.4",
             "source": {
                 "type": "git",
-                "url": "https://github.com/benignware/wp-menu-plus.git",
-                "reference": "v1.0.0-beta.2"
+                "url": "https://github.com/benignware/wp-benignware-connect.git",
+                "reference": "v1.0.4"
             },
             "type": "wordpress-plugin"
-        },
-        {
-            "name": "wemakecustom/wp-mu-loader",
-            "version": "v1.0.2",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/wemakecustom/wp-mu-loader.git",
-                "reference": "36cb5b0939da619dc07392529fa0253d4017bde4"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/wemakecustom/wp-mu-loader/zipball/36cb5b0939da619dc07392529fa0253d4017bde4",
-                "reference": "36cb5b0939da619dc07392529fa0253d4017bde4",
-                "shasum": ""
-            },
-            "require": {
-                "composer/installers": "~1.0"
-            },
-            "suggest": {
-                "wemakecustom/wp-mu-composer": "Composer includer"
-            },
-            "type": "wordpress-muplugin",
-            "extra": {
-                "installer-name": "mu-loader"
-            },
-            "notification-url": "https://packagist.org/downloads/",
-            "license": [
-                "GPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "WeMakeCustom",
-                    "email": "info@wemakecustom.com",
-                    "homepage": "http://www.wemakecustom.com"
-                }
-            ],
-            "description": "Enables the loading of Wordpress plugins sitting in mu-plugins (as folders)",
-            "keywords": [
-                "plugins",
-                "wordpress"
-            ],
-            "support": {
-                "issues": "https://github.com/wemakecustom/wp-mu-loader/issues",
-                "source": "https://github.com/wemakecustom/wp-mu-loader/tree/master"
-            },
-            "abandoned": true,
-            "time": "2015-01-21T14:32:26+00:00"
         },
         {
             "name": "wpackagist-plugin/gutenberg",
@@ -266,7 +219,6 @@
     "aliases": [],
     "minimum-stability": "stable",
     "stability-flags": {
-        "benignware/menu-plus": 10,
         "wptrt/theme-unit-test": 20
     },
     "prefer-stable": false,
