@@ -139,4 +139,22 @@ namespace benignware\bootstrap_hooks\util\colors {
 
     return -1;
   }
+
+  function is_color($color) {
+    return strpos($color, '#') === 0 || preg_match('/\s*rgba?\s*\((\d+)\s*,\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/', $color);
+  }
+
+  function contrast_color($color) {
+    $rgb = rgb($color);
+
+    if ($rgb) {
+      [$r, $g, $b] = $rgb;
+
+      $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
+
+      return $yiq >= 128 ? '#000000' : '#ffffff';
+    }
+
+    return null;
+  }
 }

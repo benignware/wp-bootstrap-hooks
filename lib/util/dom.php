@@ -19,7 +19,7 @@ namespace benignware\bootstrap_hooks\util\dom {
   }
   
   function _stringify_style($styles) {
-    $styles = array_filter($styles);
+    // $styles = array_filter($styles);
 
     return implode(';', array_map(function($key, $value) {
       return trim($key) . ': ' . trim($value);
@@ -56,6 +56,10 @@ namespace benignware\bootstrap_hooks\util\dom {
   }
 
   function has_class($element, $pattern) {
+    if ($element->nodeType !== 1) {
+      return;
+    }
+
     $classes = _parse_class($element->getAttribute('class'));
     $classes = array_filter($classes, function($class) use ($pattern) {
       return $class === $pattern || @preg_match($pattern, $class);
@@ -65,6 +69,10 @@ namespace benignware\bootstrap_hooks\util\dom {
   }
   
   function add_class($element, $class) {
+    if ($element->nodeType !== 1) {
+      return;
+    }
+  
     $classes = _parse_class($element->getAttribute('class'));
 
     if (is_array($class)) {

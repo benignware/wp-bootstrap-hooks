@@ -22,6 +22,8 @@ use function benignware\bootstrap_hooks\util\dom\find_by_class;
 
 	return false;
  }
+
+ 
  /**
 * Add color styling from settings
 * Inserted with an enqueued CSS file
