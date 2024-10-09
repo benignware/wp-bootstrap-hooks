@@ -25,7 +25,8 @@ function get_theme_palette() {
 }
 
 function get_palette_color($color) {
-  $color = parse_color_name($color);
+  $css_var = get_theme_css_var($color);
+  $color = parse_color_name($css_var);
   $palette = get_theme_palette();
   $matches = array_filter($palette, function($item) use ($color) {
     return $item['slug'] === $color || $item['color'] === $color;
@@ -43,7 +44,7 @@ function get_theme_css_var($input) {
     $output = str_replace('|', '--', $output);
     
     // Wrap it in the CSS var() function
-    return 'var(' . $output . ');';
+    return 'var(' . $output . ')';
   }
 
   return $input;

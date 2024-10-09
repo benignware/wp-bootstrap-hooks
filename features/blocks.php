@@ -233,6 +233,8 @@ add_filter('render_block', function($content, $block)  {
       add_class($button, $class_size);
     }
 
+    
+
     $is_outline = isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']));
 
     $color = isset($attrs['textColor']) ? $attrs['textColor'] : '';

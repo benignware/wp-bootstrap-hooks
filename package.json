@@ -1,6 +1,6 @@
 {
   "name": "wp-bootstrap-hooks",
-  "version": "1.0.8",
+  "version": "1.0.9",
   "description": "A collection of filters and actions for bootstrap-based themes",
   "main": "index.js",
   "directories": {
