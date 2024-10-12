@@ -123,35 +123,53 @@ add_filter('render_block', function($content, $block)  {
     return $content;
   }
 
-  // Images
-  $imgs = $doc_xpath->query("//img");
+  // // Images
+  // $imgs = $doc_xpath->query("//img");
 
-  foreach ($imgs as $img) {
-    add_class($img, $options['img_class']);
-  }
+  // foreach ($imgs as $img) {
+  //   add_class($img, $options['img_class']);
+  // }
 
   // Blockquotes
-  $blockquotes = $doc_xpath->query("//blockquote");
+  // $blockquotes = $doc_xpath->query("//blockquote");
 
-  foreach ($blockquotes as $blockquote) {
-    add_class($blockquote, $options['blockquote_class']);
+  // foreach ($blockquotes as $blockquote) {
+  //   add_class($blockquote, $options['blockquote_class']);
 
-    list($cite) = $doc_xpath->query("//cite", $blockquote);
+  //   list($cite) = $doc_xpath->query("//cite", $blockquote);
 
-    if ($cite) {
-      list($figure) = $doc_xpath->query("..//figure", $blockquote);
+  //   if ($cite) {
+  //     list($figure) = $doc_xpath->query("..//figure", $blockquote);
 
-      if (!$figure) {
-        $figure = $doc->createElement('figure');
-        $blockquote->parentNode->insertBefore($figure, $blockquote->nextSibling);
-        $figure->appendChild($blockquote);
+  //     if (!$figure) {
+  //       $figure = $doc->createElement('figure');
+  //       $blockquote->parentNode->insertBefore($figure, $blockquote->nextSibling);
+  //       $figure->appendChild($blockquote);
+  //     }
+
+  //     $figcaption = $doc->createElement('figcaption');
+  //     $figcaption->setAttribute('class', 'blockquote-footer');
+
+  //     $blockquote->parentNode->insertBefore($figcaption, $blockquote->nextSibling);
+  //     $figcaption->appendChild($cite);
+  //   }
+  // }
+
+  if ($name === 'core/pullquote') {
+    $blockquote = $doc_xpath->query("//blockquote", $blockquote)->item(0);
+
+    if ($blockquote) {
+      // remove_class($container, '~^wp-block~');
+      add_class($container, $options['blockquote_class']);
+      $cite = $doc_xpath->query("//cite", $blockquote)->item(0);
+
+      if ($cite) {
+        $figcaption = $doc->createElement('figcaption');
+        $figcaption->setAttribute('class', 'blockquote-footer');
+  
+        $cite->parentNode->insertBefore($figcaption, $cite);
+        $figcaption->appendChild($cite);
       }
-
-      $figcaption = $doc->createElement('figcaption');
-      $figcaption->setAttribute('class', 'blockquote-footer');
-
-      $blockquote->parentNode->insertBefore($figcaption, $blockquote->nextSibling);
-      $figcaption->appendChild($cite);
     }
   }
 
@@ -221,18 +239,7 @@ add_filter('render_block', function($content, $block)  {
       add_class($button, 'd-block');
     }
 
-    if (isset($attrs['fontSize'])) {
-      $class_size = $attrs['fontSize'] === 'small'
-        ? 'btn-sm'
-        : (
-          $attrs['fontSize'] === 'large'
-            ? 'btn-lg'
-            : ''
-        );
-
-      add_class($button, $class_size);
-    }
-
+    
     
 
     $is_outline = isset($attrs['className']) && in_array('is-style-outline', preg_split('/\s+/', $attrs['className']));
@@ -320,6 +327,19 @@ add_filter('render_block', function($content, $block)  {
       }
     }
 
+    if (isset($attrs['fontSize'])) {
+      $class_size = $attrs['fontSize'] === 'small'
+        ? 'btn-sm'
+        : (
+          $attrs['fontSize'] === 'large'
+            ? 'btn-lg'
+            : ''
+        );
+
+      add_class($button, $class_size);
+    }
+
+
     if (isset($attrs['style'])) {
       if (isset($attrs['style']['typography'])) {
         if (isset($attrs['style']['typography']['fontSize'])) {
@@ -378,6 +398,7 @@ add_filter('render_block', function($content, $block)  {
 
     // $classes = explode(' ', $options['columns_class']);
     // $class = implode(' ', $classes);
+    add_style($container, 'display', 'flow');
 
     $isStackedOnMobile = 1;
     $breakpoint = 'md';
@@ -494,9 +515,7 @@ add_filter('render_block', function($content, $block)  {
     // remove_class($container, '~^wp-block~');
   }
 
-  if ($name === 'core/pullquote' || $name === 'core/quote') {
-    // remove_class($container, '~^wp-block~');
-  }
+
 
   // Block Navigation
   // if ($name === 'core/page-list') {
@@ -527,6 +546,7 @@ add_filter('render_block', function($content, $block)  {
     add_class($container, 'navbar'); 
 
     $content_class = 'wp-block-navigation__responsive-container';
+    // $content_class = 'is-responsive';
     $close_class = 'wp-block-navigation__responsive-container-close';
 
     $button = $doc_xpath->query("./button", $container)->item(0);
@@ -593,12 +613,23 @@ add_filter('render_block', function($content, $block)  {
   if ($name !== 'core/navigation' && has_class($container, 'navbar')) {
     $nested_navbars = find_all_by_class($container, 'navbar');
     $toggler = null;
-    
-    $collapse = find_by_class($container, 'navbar-collapse');
+    $nav = $nested_navbars[0];
 
-    if (!$collapse) {
-      $collapse = $doc->createElement('div');
+    $wrapper = find_by_class($container, 'container');
+
+    if (!$wrapper) {
+      $wrapper = $container;
     }
+
+    add_style($wrapper, 'row-gap', '0px');
+    
+    // $collapse = find_by_class($container, 'navbar-collapse');
+
+    // if (!$collapse) {
+      $collapse = $doc->createElement('div');
+
+      $wrapper->appendChild($collapse);
+    // }
 
     add_class($collapse, 'collapse navbar-collapse');
     remove_class($collapse, 'is-layout-flex');
@@ -631,12 +662,10 @@ add_filter('render_block', function($content, $block)  {
       $nested_collapse = find_by_class($nested_navbar, 'navbar-collapse');
 
       if ($nested_collapse) {
-        if ($nested_collapse->getAttribute('id') !== $collapse->getAttribute('id')) {
-          $nested_collapse->removeAttribute('id');
 
-          remove_class($nested_collapse, 'navbar-collapse', true);
-          remove_class($nested_collapse, 'collapse', true);
-        }
+        remove_class($nested_collapse, 'navbar-collapse', true);
+        remove_class($nested_collapse, 'collapse', true);
+        $nested_collapse->removeAttribute('id');
         
 
         if (!$collapse->parentNode) {
@@ -646,13 +675,30 @@ add_filter('render_block', function($content, $block)  {
 
       remove_class($nested_navbar, 'is-layout-flex');
       
-      try {
+      // try {
         $collapse->appendchild($nested_navbar);
-      } catch (Exception $e) {
-        // ignore
-      }
+      // } catch (Exception $e) {
+      //   // ignore
+      // }
       
     }
+
+    // print_r( $nav);
+
+    
+
+    $collapse->parentNode->insertBefore($toggler, $collapse);
+
+    // $nav->setAttribute('id', $collapse->id);
+    // $collapse->removeAttribute('id');
+
+    // remove_class($nav, 'navbar-collapse', true);
+    // remove_class($nav, 'collapse', true);
+
+    // add_class($nav, 'collapse navbar-collapse');
+
+    
+    // $container->appendChild($toggler);
   }
 
   
@@ -671,6 +717,11 @@ add_filter('render_block', function($content, $block)  {
     foreach ($links as $link) {
       add_style($link, 'text-decoration', 'inherit');
     }
+
+    $logo_block = find_by_class($container, 'wp-block-site-logo');
+
+    remove_class($logo_block, '~^wp-block~', true);
+    add_class($logo_block, 'd-flex');
   }
 
   if ($name === 'core/navigation-submenu') {
