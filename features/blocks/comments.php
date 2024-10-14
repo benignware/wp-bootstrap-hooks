@@ -14,6 +14,7 @@ function render_block_comments($content, $block) {
   $options = wp_bootstrap_options();
   $attrs = $block['attrs'];
   $doc = parse_html($content);
+  $doc_xpath = new \DOMXPath($doc);
   $container = root_element($doc);
 
   $input = $doc_xpath->query('//input[@type="submit"]')->item(0);
