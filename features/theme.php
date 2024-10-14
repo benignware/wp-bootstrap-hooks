@@ -1,12 +1,12 @@
 <?php
 
-use function benignware\bootstrap_hooks\util\colors\rgb;
-use function benignware\bootstrap_hooks\util\colors\rgb2hex;
-use function benignware\bootstrap_hooks\util\colors\brightness;
-use function benignware\bootstrap_hooks\util\object\query_object;
-use function benignware\bootstrap_hooks\util\dom\find_by_class;
+use function benignware\wp\bootstrap_hooks\rgb;
+use function benignware\wp\bootstrap_hooks\rgb2hex;
+use function benignware\wp\bootstrap_hooks\brightness;
+use function benignware\wp\bootstrap_hooks\query_object;
+use function benignware\wp\bootstrap_hooks\find_by_class;
 
- function _bootstrap_is_block_editor() {
+function _bootstrap_is_block_editor() {
 	global $current_screen;
 
 	if (!function_exists('get_current_screen')) {
@@ -21,7 +21,7 @@ use function benignware\bootstrap_hooks\util\dom\find_by_class;
 	}
 
 	return false;
- }
+}
 
  
  /**

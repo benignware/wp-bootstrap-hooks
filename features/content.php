@@ -1,12 +1,11 @@
 <?php
 
-use function benignware\bootstrap_hooks\util\dom\add_class;
-use function benignware\bootstrap_hooks\util\dom\remove_class;
-use function benignware\bootstrap_hooks\util\dom\has_class;
-use function benignware\bootstrap_hooks\util\dom\find_all_by_class;
-use function benignware\bootstrap_hooks\util\dom\wrap;
-
-use function benignware\bootstrap_hooks\util\math\ratio;
+use function benignware\wp\bootstrap_hooks\add_class;
+use function benignware\wp\bootstrap_hooks\remove_class;
+use function benignware\wp\bootstrap_hooks\has_class;
+use function benignware\wp\bootstrap_hooks\find_all_by_class;
+use function benignware\wp\bootstrap_hooks\wrap;
+use function benignware\wp\bootstrap_hooks\ratio;
 
 
 /**

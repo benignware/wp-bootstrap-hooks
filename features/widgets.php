@@ -1,16 +1,15 @@
 <?php
 
-use function benignware\bootstrap_hooks\util\dom\add_class;
-use function benignware\bootstrap_hooks\util\dom\has_class;
-use function benignware\bootstrap_hooks\util\dom\remove_class;
-use function benignware\bootstrap_hooks\util\dom\add_style;
-use function benignware\bootstrap_hooks\util\dom\find_by_class;
-use function benignware\bootstrap_hooks\util\dom\find_all_by_class;
-use function benignware\bootstrap_hooks\util\dom\trim_nodes;
-use function benignware\bootstrap_hooks\util\dom\remove_all;
-use function benignware\bootstrap_hooks\util\dom\inner_root;
-use function benignware\bootstrap_hooks\util\dom\replace_tag;
-
+use function benignware\wp\bootstrap_hooks\add_class;
+use function benignware\wp\bootstrap_hooks\has_class;
+use function benignware\wp\bootstrap_hooks\remove_class;
+use function benignware\wp\bootstrap_hooks\add_style;
+use function benignware\wp\bootstrap_hooks\find_by_class;
+use function benignware\wp\bootstrap_hooks\find_all_by_class;
+use function benignware\wp\bootstrap_hooks\trim_nodes;
+use function benignware\wp\bootstrap_hooks\remove_all;
+use function benignware\wp\bootstrap_hooks\inner_root;
+use function benignware\wp\bootstrap_hooks\replace_tag;
 
 add_filter('register_sidebar_defaults', function($defaults) {
   if (!current_theme_supports('bootstrap')) {

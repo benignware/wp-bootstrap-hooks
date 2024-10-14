@@ -1,6 +1,6 @@
 <?php
 
-use function benignware\bootstrap_hooks\util\dom\add_class;
+use function benignware\wp\bootstrap_hooks\add_class;
 
 include __DIR__ . '/comments-walker.php' ;
 

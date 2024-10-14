@@ -1,7 +1,6 @@
 <?php
-namespace benignware\bootstrap_hooks\util\theme;
 
-use function benignware\bootstrap_hooks\util\object\query_object;
+namespace benignware\wp\bootstrap_hooks;
 
 function get_theme_json() {
   $merged_data = \WP_Theme_JSON_Resolver::get_merged_data();

@@ -1,6 +1,7 @@
 <?php
-use function benignware\bootstrap_hooks\util\dom\add_class;
-use function benignware\bootstrap_hooks\util\dom\has_class;
+
+use function benignware\wp\bootstrap_hooks\add_class;
+use function benignware\wp\bootstrap_hooks\has_class;
 
 add_filter( 'wp_link_pages', function ( $output, $args ) {
   if (!current_theme_supports('bootstrap')) {
