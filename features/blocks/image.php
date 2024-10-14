@@ -14,6 +14,7 @@ function render_block_image($content, $block) {
   $options = wp_bootstrap_options();
   $attrs = $block['attrs'];
   $doc = parse_html($content);
+  $doc_xpath = new \DOMXPath($doc);
   $container = root_element($doc);
 
   add_class($container, 'clearfix');
