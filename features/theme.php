@@ -204,6 +204,11 @@ function _bootstrap_presets_css_action() {
 
 	$link_color = query_object($theme_json, 'styles.elements.link.color.text');
 
+	$button_border_radius = query_object($theme_json, 'styles.elements.button.border.radius');
+
+	if (!$button_border_radius) {
+		$button_border_radius = query_object($theme_json, 'styles.blocks.core/button.border.radius');
+	}
 
 	$css = array_merge([
 		$body_selector => array_merge([
@@ -255,6 +260,9 @@ function _bootstrap_presets_css_action() {
 		],
 		".navbar-brand a:hover,.navbar-brand a:focus" => [
 			'color' => 'inherit'
+		],
+		".btn" => [
+			'border-radius' => $button_border_radius
 		],
 	], $block_css);
 
