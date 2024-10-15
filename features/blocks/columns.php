@@ -103,37 +103,6 @@ function render_block_columns($content, $block) {
   }
 
   $container->appendChild($row);
-}
-
-if ($name === 'core/column') {
-  $size = '';
-  $class = '';
-
-  // if (isset($block['attrs']['width'])) {
-  //   $width = $block['attrs']['width'];
-  //   preg_match('~([\d]+(?:\.\d+)?)(%|[a-z]+)~', $block['attrs']['width'], $matches);
-  //   $width_value = floatval($matches[1]);
-  //   $unit = $matches[2];
-
-  //   if ($unit === '%') {
-  //     $size = $width_value / 100 * 12;
-  //     $grid_size = round($width_value / 100 * 12);
-  //     $delta = abs($grid_size - $size);
-  //     echo abs($grid_size - $size);
-
-  //     if ($delta < 0.2) {
-  //       $class = sprintf($options['column_class'], $breakpoint, $grid_size);
-  //       add_class($container, $class);
-  //       $breakpoint = 'md'; // TODO: Make breakpoint configurable
-  //       $class = sprintf($options['column_class'], $breakpoint, $grid_size);
-  //       add_class($container, $class);
-  //       remove_style($container, 'flex-basis');
-  //     }
-  //   }
-  // }
-
-  // remove_style($container, 'flex-basis');
-  // remove_class($container, '~^wp-block~');
 
   return serialize_html($doc);
 }
