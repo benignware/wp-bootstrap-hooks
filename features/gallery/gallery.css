@@ -1,0 +1,7 @@
+.carousel-slide-backdrop {
+  object-fit: cover;
+  object-position: center;
+  transform: scale(1.7);
+  transform-origin: center;
+  filter: blur(70px);
+}
