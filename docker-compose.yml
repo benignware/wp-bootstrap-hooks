@@ -27,10 +27,9 @@ services:
     restart: always
     volumes:
       - wordpress:/var/www/html
-      - .:/var/www/html/wp-content/mu-plugins/bootstrap-hooks
+      - .:/var/www/html/wp-content/plugins/bootstrap-hooks
       - ./bin/install-wp.sh:/usr/local/bin/install-wp
       - .uploads:/var/www/html/wp-content/uploads
-      - .plugins:/var/www/html/wp-content/plugins
       - .fonts:/var/www/html/wp-content/fonts
       - ./test/themes/bootstrap-blocks:/var/www/html/wp-content/themes/bootstrap-blocks
       - ./test/themes/bootstrap-classic:/var/www/html/wp-content/themes/bootstrap-classic
@@ -48,7 +47,7 @@ services:
       - wordpress
     volumes:
       - wordpress:/var/www/html
-      - .:/var/www/html/wp-content/mu-plugins/bootstrap-hooks
+      - .:/var/www/html/wp-content/plugins/bootstrap-hooks
       - ./bin/install-wp.sh:/usr/local/bin/install-wp
       - .uploads:/var/www/html/wp-content/uploads
       - .plugins:/var/www/html/wp-content/plugins
@@ -75,7 +74,6 @@ services:
       - ./composer.lock:/var/www/html/composer.lock
       - ./bin/install-wp.sh:/usr/local/bin/install-wp
       - .uploads:/var/www/html/wp-content/uploads
-      - .plugins:/var/www/html/wp-content/plugins
       - .fonts:/var/www/html/wp-content/fonts
       - wordpress:/var/www/html
     links:
