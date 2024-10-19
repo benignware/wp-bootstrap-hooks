@@ -49,11 +49,6 @@
               <div class="carousel-item h-100<?= $wp_query->current_post === 0 ? ' active' : '' ?>">
                 <div class="position-relative w-100 h-100 overflow-hidden">
                   <?= wp_get_attachment_image(get_the_ID(), 'large', false, [
-                    'class' => 'carousel-slide-backdrop img-fluid m-0 w-100 h-100 position-absolute opacity-75',
-                    'loading' => 'lazy',
-                    'data-bs-dismiss' => "modal"
-                  ]) ?>
-                  <?= wp_get_attachment_image(get_the_ID(), 'large', false, [
                     'class' => 'img-fluid m-0 w-100 h-100 position-relative',
                     'style' => "object-fit: contain; object-position: center",
                     'loading' => 'lazy',

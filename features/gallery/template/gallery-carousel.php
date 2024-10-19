@@ -8,7 +8,7 @@
   <div class="position-relative d-inline-block">
     <?php if (count($wp_query->posts) > 0 && $post = $wp_query->posts[0]): ?>
       <?= wp_get_attachment_image($post->ID, $size, false, [
-        'class' => 'invisible w-100 img-fluid border border-danger',
+        'class' => 'invisible w-100 img-fluid border border-danger bootstrap-gallery-sizer',
       ]) ?>
     <?php endif ?>
     <div
@@ -45,12 +45,6 @@
                   data-bs-slide-to="<?= $wp_query->current_post ?>"
                 <?php endif; ?>
               >
-                <?= wp_get_attachment_image(get_the_ID(), $size, false, [
-                  'class' => 'img-fluid m-0 w-100 h-100 position-absolute opacity-75',
-                  'style' => "object-fit: cover; object-position: center; transform: scale(1.7); transform-origin: center; filter: blur(70px);",
-                  'loading' => 'lazy',
-                  'data-bs-dismiss' => "modal"
-                ]) ?>
                 <?= wp_get_attachment_image(get_the_ID(), $size, false, [
                   'class' => 'img-fluid m-0 w-100 h-100 position-relative',
                   'style' => "object-fit: $fit; object-position: center",

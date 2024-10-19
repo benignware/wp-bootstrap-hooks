@@ -1,5 +1,5 @@
 <?php $column_width = 72 ?>
-<div class="position-relative" style="height: 100px; ">
+<div class="position-relative d-block" style="height: 100px; ">
   <div
     <?php foreach (array_merge($attrs, [
       'id' => $id . '-thumbnails',

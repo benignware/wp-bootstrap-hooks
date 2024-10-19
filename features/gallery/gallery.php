@@ -147,14 +147,6 @@ function bootstrap_gallery($params, $content = null) {
     }
   }
 
-  $class = implode(' ', [
-    $params['class'],
-    // $attrs['class'],
-    // "align$align"
-  ]);
-
-  $attrs['class'] = $class;
-
   $data = array_merge([
     'id' => $params['id'],
     'columns' => $params['columns'],

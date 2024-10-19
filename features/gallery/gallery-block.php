@@ -39,6 +39,11 @@ function render_block_gallery($html, $block = null) {
     @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html);
     $doc_xpath = new \DOMXpath($doc);
 
+    $container = root_element($doc);
+
+    remove_class($container, 'wp-block-gallery');
+    remove_class($container, 'is-layout-flex');
+
     $gallery_caption_class = 'blocks-gallery-caption';
     $gallery_caption = $doc_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $gallery_caption_class ')]")->item(0);
 
@@ -53,9 +58,11 @@ function render_block_gallery($html, $block = null) {
     $fit = !isset($attrs['imageCrop']) || $attrs['imageCrop'] ? 'cover' : false;
 
     $align = isset($attrs['align']) ? $attrs['align'] : '';
+    $class = isset($attrs['className']) ? $attrs['className'] : $container->getAttribute('class');
 
     $html = bootstrap_gallery([
       'ids' => $ids,
+      'class' => $class,
       'columns' => $columns,
       'title' => $title,
       'size' => $size,
