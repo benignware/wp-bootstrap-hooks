@@ -147,6 +147,11 @@ function bootstrap_gallery($params, $content = null) {
     }
   }
 
+  $attrs = array_merge([
+    'id' => $params['id'],
+    'class' => $params['class'],
+  ], $params['attrs']);
+
   $data = array_merge([
     'id' => $params['id'],
     'columns' => $params['columns'],
