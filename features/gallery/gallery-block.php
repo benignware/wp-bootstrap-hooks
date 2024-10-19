@@ -60,6 +60,8 @@ function render_block_gallery($html, $block = null) {
     $align = isset($attrs['align']) ? $attrs['align'] : '';
     $class = isset($attrs['className']) ? $attrs['className'] : $container->getAttribute('class');
 
+    $attrs = get_attributes($container);
+
     $html = bootstrap_gallery([
       'ids' => $ids,
       'class' => $class,
@@ -68,7 +70,8 @@ function render_block_gallery($html, $block = null) {
       'size' => $size,
       'captions' => $captions,
       'fit' => $fit,
-      'align' => $align
+      'align' => $align,
+      'attrs' => $attrs
     ]);
   }
 

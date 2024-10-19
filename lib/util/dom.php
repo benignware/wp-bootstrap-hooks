@@ -69,6 +69,16 @@ function get_style($element, $name) {
   return isset($styles[$name]) ? $styles[$name] : null;
 }
 
+function get_attributes($element) {
+  $attributes = [];
+
+  foreach ($element->attributes as $attrName => $attrNode) {
+    $attributes[$attrName] = $attrNode->value;
+  }
+
+  return $attributes;
+}
+
 function remove_style($element, $name) {
   $styles = _parse_style($element->getAttribute('style'));
   unset($styles[$name]);
