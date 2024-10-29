@@ -38,8 +38,15 @@ function render_block_gallery($html, $block = null) {
     $doc = new \DOMDocument();
     @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html);
     $doc_xpath = new \DOMXpath($doc);
+    
+    $block_element = find_by_class($doc, 'wp-block-gallery');
+    $container = $block_element ?? root_element($doc);
 
-    $container = root_element($doc);
+    if (!$container) {
+      return $html;
+    }
+
+    $id = $container->getAttribute('id');
 
     remove_class($container, 'wp-block-gallery');
     remove_class($container, 'is-layout-flex');
@@ -63,6 +70,7 @@ function render_block_gallery($html, $block = null) {
     $attrs = get_attributes($container);
 
     $html = bootstrap_gallery([
+      'id' => $id,
       'ids' => $ids,
       'class' => $class,
       'columns' => $columns,

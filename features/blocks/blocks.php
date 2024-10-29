@@ -6,6 +6,7 @@ require "comments.php";
 require "functions.php";
 require "group-card.php";
 require "group-navbar.php";
+require "group-container.php";
 require "group-navbar-brand.php";
 require "image.php";
 require "navigation.php";

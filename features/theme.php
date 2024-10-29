@@ -16,7 +16,6 @@ function _bootstrap_is_block_editor() {
 	$current_screen = get_current_screen();
 
 	if ( $current_screen && method_exists($current_screen, 'is_block_editor') && $current_screen->is_block_editor() ) {
-			// DO SOMETHING
 			return true;
 	}
 
@@ -163,31 +162,32 @@ function _bootstrap_presets_css_action() {
 
 	$blocks = query_object($theme_json, 'styles.blocks');
 
-	$block_css = array_reduce(array_keys($blocks), function($acc, $key) use ($blocks) {
-		$block = $blocks[$key];
+	// $block_css = array_reduce(array_keys($blocks), function($acc, $key) use ($blocks) {
+	// 	$block = $blocks[$key];
 
-		if ($key === 'core/navigation') {
-			$selector = '.navbar';
+	// 	if ($key === 'core/navigation') {
+	// 		$selector = '.navbar';
 			
-			$x = query_object($block, 'spacing.padding.left');
-			$y = query_object($block, 'spacing.padding.top');
+	// 		$x = query_object($block, 'spacing.padding.left');
+	// 		$y = query_object($block, 'spacing.padding.top');
 
-			$acc["$selector"] = [
-				'--bs-navbar-padding-x' => $x,
-				'--bs-navbar-padding-y' => $y
-			];
+	// 		$acc["$selector"] = [
+	// 			'--bs-navbar-padding-x' => $x,
+	// 			'--bs-navbar-padding-y' => $y
+	// 		];
 
-			$lx = query_object($block, 'elements.link.spacing.padding.left');
-			$ly = query_object($block, 'elements.link.spacing.padding.top');
+	// 		$lx = query_object($block, 'elements.link.spacing.padding.left');
+	// 		$ly = query_object($block, 'elements.link.spacing.padding.top');
 
-			$acc[".navbar-nav .nav-link"] = [
-				'--bs-navbar-nav-link-padding-x' => $lx,
-				'--bs-navbar-nav-link-padding-y' => $ly,
-			];
-		}
+	// 		$acc[".navbar-nav .nav-link"] = [
+	// 			'--bs-navbar-nav-link-padding-x' => $lx,
+	// 			'--bs-navbar-nav-link-padding-y' => $ly,
+	// 		];
+	// 	}
 		
-		return $acc;
-	}, []);
+	// 	return $acc;
+	// }, []);
+	$block_css = [];
 
 	$shadow_presets = query_object($theme_json, 'settings.shadow.presets');
 
@@ -226,8 +226,14 @@ function _bootstrap_presets_css_action() {
 		// 	'--bs-link-color-rgb' => implode(', ', rgb($resolve_preset(query_object($theme_json, 'styles.elements.link.color.text'))) ?: []),
 		// 	'--bs-link-hover-color-rgb' => implode(', ', rgb($resolve_preset(query_object($theme_json, 'styles.elements.link.:hover.color.text'))) ?: [])
 		// ],
-		"container" => [
-			'max-width' => 'var(--wp--style--global--wide-size, 1200px)'
+		".container" => [
+			'max-width' => 'var(--wp--style--global--wide-size, 1200px)',
+		],
+		".container-fluid.alignfull" => [
+			'margin-left' => 'auto',
+			'margin-right' => 'auto',
+			'padding-left' => 'var(--wp--style--root--padding-left)',
+			'padding-right' => 'var(--wp--style--root--padding-right)'
 		],
 		"figure.alignfull,figure.alignwide" => [
 			'display' => 'block',
