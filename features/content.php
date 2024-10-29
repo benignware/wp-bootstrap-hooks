@@ -485,7 +485,7 @@ EOT;
         margin-left: auto;
       }
       .figure {
-        max-width: 100%;
+        /*max-width: 100%;*/
       }
       .figure.aligncenter {
         display: block;
