@@ -25,14 +25,22 @@
 <div class="modal fade" id="<?= $id ?>-modal" tabindex="-1" role="dialog" aria-hidden="true" data-controls="true">
   <div class="modal-dialog modal-fullscreen" role="document">
     <div class="modal-content">
-      <div class="modal-body p-0" data-bs-theme="light">
+      <?php if ($title): ?>
+        <div class="modal-header">
+          <h5 class="modal-title"><?= $title ?></h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+      <?php endif; ?>
+      <div class="modal-body p-0">
         <div
           id="<?= $id ?>-fullscreen-carousel"
           class="carousel slide h-100"
           data-bs-ride="false"
           data-bs-interval="<?= !$autoplay ? 'false' : $interval; ?>"
         >
-          <button type="button" class="btn-close position-absolute top-0 end-0 z-3 m-4" data-bs-dismiss="modal" aria-label="Close"></button>
+          <?php if (!$title): ?>
+            <button type="button" class="btn-close position-absolute top-0 end-0 z-3 m-4" data-bs-dismiss="modal" aria-label="Close"></button>
+          <?php endif; ?>
           <?php if ($wp_query->post_count > 1): ?>
             <div class="carousel-indicators">
               <?php while( have_posts()) : the_post() ?>
@@ -50,7 +58,7 @@
                 <div class="position-relative w-100 h-100 overflow-hidden">
                   <?= wp_get_attachment_image(get_the_ID(), 'large', false, [
                     'class' => 'img-fluid m-0 w-100 h-100 position-relative',
-                    'style' => "object-fit: contain; object-position: center",
+                    'style' => "object-fit: cover; object-position: center",
                     'loading' => 'lazy',
                     'data-bs-dismiss' => "modal"
                   ]) ?>
