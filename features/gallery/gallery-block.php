@@ -69,6 +69,9 @@ function render_block_gallery($html, $block = null) {
 
     $attrs = get_attributes($container);
 
+    unset($attrs['id']);
+    unset($attrs['class']);
+
     $html = bootstrap_gallery([
       'id' => $id,
       'ids' => $ids,
