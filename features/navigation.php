@@ -70,7 +70,6 @@ add_action( 'wp_enqueue_scripts', function() {
   (() => {
     const caretSelector = '$caret_class';
     const handler = (e) => {
-      console.log('HELLO CLICK');
       const target = event.target.closest('a[href].dropdown-toggle');
   
       if (!target) {
@@ -120,7 +119,3 @@ add_action( 'wp_enqueue_scripts', function() {
   })();
 EOT);
 } );
-
-// add_filter( 'nav_menu_item_title', function($title) {
-//   return '<span>' . $title . '</span>';
-// }, 2);
