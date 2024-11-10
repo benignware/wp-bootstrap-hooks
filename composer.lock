@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "5d86fe192372b8b6679f00baaf549055",
+    "content-hash": "fb68b46404e1d470a80bb49d0d9c8b3f",
     "packages": [
         {
             "name": "composer/installers",
@@ -160,12 +160,42 @@
     ],
     "packages-dev": [
         {
+            "name": "benignware/agnosticon",
+            "version": "v0.0.10",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/benignware/wp-agnosticon",
+                "reference": "v0.0.10"
+            },
+            "type": "wordpress-plugin"
+        },
+        {
             "name": "benignware/benignware-connect",
             "version": "v1.0.6",
             "source": {
                 "type": "git",
                 "url": "https://github.com/benignware/wp-benignware-connect.git",
                 "reference": "v1.0.6"
+            },
+            "type": "wordpress-plugin"
+        },
+        {
+            "name": "benignware/mediacontrols",
+            "version": "v0.1.5",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/benignware/wp-mediacontrols",
+                "reference": "v0.1.5"
+            },
+            "type": "wordpress-plugin"
+        },
+        {
+            "name": "benignware/menu-plus",
+            "version": "v1.1.8",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/benignware/wp-menu-plus",
+                "reference": "v1.1.8"
             },
             "type": "wordpress-plugin"
         },

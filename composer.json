@@ -44,6 +44,42 @@
         "reference": "v1.0.6"
       }
     }
+  }, {
+    "type": "package",
+    "package": {
+      "name": "benignware/agnosticon",
+      "version": "v0.0.10",
+      "type": "wordpress-plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/benignware/wp-agnosticon",
+        "reference": "v0.0.10"
+      }
+    }
+  }, {
+    "type": "package",
+    "package": {
+      "name": "benignware/menu-plus",
+      "version": "v1.1.8",
+      "type": "wordpress-plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/benignware/wp-menu-plus",
+        "reference": "v1.1.8"
+      }
+    }
+  }, {
+    "type": "package",
+    "package": {
+      "name": "benignware/mediacontrols",
+      "version": "v0.1.5",
+      "type": "wordpress-plugin",
+      "source": {
+        "type": "git",
+        "url": "https://github.com/benignware/wp-mediacontrols",
+        "reference": "v0.1.5"
+      }
+    }
   }],
   "require": {
     "php": ">=5.3.0",
@@ -51,6 +87,9 @@
   },
   "require-dev": {
     "benignware/benignware-connect": ">=1.0.6",
+    "benignware/agnosticon": ">=0.0.10",
+    "benignware/menu-plus": ">=1.1.8",
+    "benignware/mediacontrols": ">=0.1.5",
     "wpackagist-plugin/wordpress-importer": "^0.6.4",
     "wpackagist-plugin/gutenberg": "^17.9.0",
     "wptrt/theme-unit-test": "dev-master"
