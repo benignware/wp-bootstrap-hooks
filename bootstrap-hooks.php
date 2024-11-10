@@ -62,7 +62,7 @@ function wp_bootstrap_options() {
     'checkbox_input_class' => 'form-check-input',
     'checkbox_label_class' => 'form-check-label',
     'field_class' => 'form-group mb-3',
-    'submit_class' => 'btn btn-primary mt-3',
+    'submit_class' => 'btn btn-primary',
     'submit_button_class' => 'btn btn-primary', // FIXME: Redundant option
     // Comments
     'reply_link_class' => 'btn btn-outline-primary btn-sm mb-3',

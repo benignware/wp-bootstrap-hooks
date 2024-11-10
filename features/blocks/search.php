@@ -11,6 +11,10 @@ function render_block_search($content, $block) {
     return $content;
   }
 
+  if (trim($content) === '') {
+    return $content;
+  }
+
   $options = wp_bootstrap_options();
   $attrs = $block['attrs'];
   $doc = parse_html($content);
@@ -22,7 +26,7 @@ function render_block_search($content, $block) {
   $submit = $doc_xpath->query('//input[@type="submit"]|//button')->item(0);
 
   if (!$form || !$input || !$submit) {
-    return '';
+    return $content;
   }
 
   $common_ancestor = get_common_ancestor($input, $submit);
@@ -53,9 +57,14 @@ function render_block_search($content, $block) {
     $wrapper = $common_ancestor;
   }
 
-  $wrapper->setAttribute('class', $options['input_group_class']);
+  add_class($wrapper, $options['input_group_class']);
+  add_class($submit, $options['submit_class']);
+  remove_class($submit, '~^wp-~');
 
-  $submit->setAttribute('class', $submit->getAttribute('class') . ' ' . $options['submit_class']);
+  remove_class($input, '~^wp-~');
+  add_class($input, $options['text_input_class']);
+
+  return serialize_html($doc);
 }
 
-add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_table', 10, 2);
+add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_search', 10, 2);
