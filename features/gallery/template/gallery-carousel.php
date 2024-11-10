@@ -15,7 +15,7 @@
       id="<?= $id ?>-carousel"
       class="carousel slide h-100 rounded overflow-hidden position-absolute top-0 start-0 w-100"
       data-bs-ride="<?= $autoplay ? 'carousel' : 'false'; ?>"
-      data-bs-interval="<?= !$autoplay ? 'false' : $interval; ?>"
+      data-bs-interval="<?= $interval ?>"
     >
       <?php if ($wp_query->post_count > 1): ?>
         <div class="carousel-indicators">
@@ -72,19 +72,21 @@
           <span class="visually-hidden">Next</span>
         </button>
       <?php endif ?>
-      <button
-        class="carousel-control-play position-absolute z-2 start-0 bottom-0 p-1 m-2 lh-1<?= !$autoplay ? ' is-paused' : '' ?>"
-        style="width: 1.5rem"
-        data-bs-target="#<?= $id ?>-carousel"
-        data-bs-toggle="play"
-      >
-        <span class="carousel-icon-play">
-          <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">▶</i>', 'play') ?>
-        </span>
-        <span class="carousel-icon-pause">
-          <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">⏸</i>', 'pause') ?>
-        </span>
-      </button>
+      <?php if ($autoplay): ?>
+        <button
+          class="carousel-control-play position-absolute z-2 start-0 bottom-0 p-1 m-2 lh-1<?= !$autoplay ? ' is-paused' : '' ?>"
+          style="width: 1.5rem"
+          data-bs-target="#<?= $id ?>-carousel"
+          data-bs-toggle="play"
+        >
+          <span class="carousel-icon-play">
+            <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">▶</i>', 'play') ?>
+          </span>
+          <span class="carousel-icon-pause">
+            <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">⏸</i>', 'pause') ?>
+          </span>
+        </button>
+      <?php endif ?>
       <?php if ($lightbox): ?>
         <button
           class="btn carousel-control position-absolute end-0 bottom-0 p-1 z-2 m-2 lh-1"

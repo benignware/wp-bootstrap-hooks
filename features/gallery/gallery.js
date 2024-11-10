@@ -153,6 +153,9 @@ class CarouselController {
 
     indicatorContainers.forEach(container => {
       const item = container.querySelector(`[data-bs-slide-to="${targetIndex}"]`);
+
+      if (!item) return;
+
       const bi = item.getBoundingClientRect();
       const bp = container.getBoundingClientRect();
       const x = bi.left - bp.left;
@@ -279,9 +282,10 @@ class CarouselController {
 
   setupModalEventListeners() {
     const modalEl = this.relatedModal;
-    const isModal = modalEl.contains(this.carouselEl);
 
     if (modalEl) {
+      const isModal = modalEl.contains(this.carouselEl);
+
       modalEl.addEventListener('show.bs.modal', () => {
         this.isVisible = isModal;
         this.handleVisibilityChange();

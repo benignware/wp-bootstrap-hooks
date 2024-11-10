@@ -10,7 +10,7 @@
       <div class="col-md-<?= intval(12 / $columns) ?> flex-grow-1">
         <figure
           class="figure m-0 position-relative w-100<?= $fit ? ' h-100' : ''; ?>"
-          <?php if ($lightbox !== false): ?>
+          <?php if ($lightbox): ?>
             data-bs-toggle="modal"
             data-bs-target="#<?= $id ?>-modal"
           <?php endif; ?>
@@ -18,8 +18,8 @@
           <?= wp_get_attachment_image(get_the_ID(), $size, false, [
             'class' => 'figure-img img-fluid m-0 w-100' . ($fit ? " object-fit-$fit h-100" : ''),
             'style' => "border-radius: var(--bs-border-radius);" . ($lightbox ? 'cursor: pointer; ' : ''),
-            'data-bs-target' => "#$id-lightbox-carousel",
-            'data-bs-slide-to' => $wp_query->current_post,
+            'data-bs-target' => $lightbox ? "#$id-lightbox-carousel" : null,
+            'data-bs-slide-to' => $lightbox ? $wp_query->current_post : null,
             'loading' => 'lazy'
           ]) ?>
           <?php if ($caption = wp_get_attachment_caption()): ?>
@@ -39,5 +39,7 @@
       </div>
     <?php endwhile; ?>
   </div>
-  <?php include __DIR__ . '/gallery-modal.php' ?>
+  <?php if ($lightbox): ?>
+    <?php include __DIR__ . '/gallery-lightbox.php' ?>
+  <?php endif ?>
 </div>

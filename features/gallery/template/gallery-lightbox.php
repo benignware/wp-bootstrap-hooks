@@ -99,19 +99,21 @@
       <?php if ($lightbox['footer']): ?>
         <div class="modal-footer justify-content-center">
           <div class="col-2">
-            <button
-              class="btn btn-outline-secondary<?= !$autoplay ? ' is-paused' : '' ?>"
-              style="width: 2.2em"
-              data-bs-target="#<?= $id ?>-lightbox-carousel"
-              data-bs-toggle="play"
-            >
-              <span class="carousel-icon-play">
-                <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">▶</i>', 'play') ?>
-              </span>
-              <span class="carousel-icon-pause">
-                <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">⏸</i>', 'pause') ?>
-              </span>
-            </button>
+            <?php if ($autoplay): ?>
+              <button
+                class="btn btn-outline-secondary<?= !$autoplay ? ' is-paused' : '' ?>"
+                style="width: 2.2em"
+                data-bs-target="#<?= $id ?>-lightbox-carousel"
+                data-bs-toggle="play"
+              >
+                <span class="carousel-icon-play">
+                  <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">▶</i>', 'play') ?>
+                </span>
+                <span class="carousel-icon-pause">
+                  <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">⏸</i>', 'pause') ?>
+                </span>
+              </button>
+            <?php endif ?>
           </div>
           <div class="flex-grow-1">
             <?php if ($wp_query->post_count > 1): ?>
