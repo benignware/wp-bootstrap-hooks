@@ -98,7 +98,7 @@ function _stringify_class($classes) {
 }
 
 function has_class($element, $pattern) {
-  if ($element->nodeType !== 1) {
+  if (!$element || $element->nodeType !== 1) {
     return;
   }
 

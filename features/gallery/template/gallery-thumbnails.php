@@ -1,9 +1,12 @@
 <?php $column_width = 72 ?>
-<div class="position-relative d-block" style="height: 100px; ">
+<div
+  class="position-relative d-block"
+  style="height: 100px; "
+>
   <div
-    <?php foreach (array_merge($attrs, [
+    <?php foreach (array_merge($thumbnails['attrs'] ?? [], [
       'id' => $id . '-thumbnails',
-      'class' => 'mt-2 d-grid column-gap-2 overflow-hidden position-absolute',
+      'class' => 'bs-gallery-thumbnails mt-2 d-grid column-gap-2 overflow-hidden position-absolute',
       'style' => "left:0; right: 0; width: 100%; grid-template-columns: repeat(auto-fill, minmax({$column_width}px, 1fr)); grid-template-rows: 1fr; grid-auto-rows: 0;"
     ]) as $name => $value): ?>
       <?= $name ?>="<?= $value ?>"
@@ -51,6 +54,8 @@
     window.addEventListener('resize', resize);
 
     resize();
+
+    return;
 
     const carousel = document.getElementById('<?= $id ?>-carousel');
 

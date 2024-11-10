@@ -14,7 +14,7 @@
     <div
       id="<?= $id ?>-carousel"
       class="carousel slide h-100 rounded overflow-hidden position-absolute top-0 start-0 w-100"
-      data-bs-ride="false"
+      data-bs-ride="<?= $autoplay ? 'carousel' : 'false'; ?>"
       data-bs-interval="<?= !$autoplay ? 'false' : $interval; ?>"
     >
       <?php if ($wp_query->post_count > 1): ?>
@@ -33,15 +33,15 @@
           <div class="carousel-item h-100<?= $wp_query->current_post === 0 ? ' active' : '' ?>">
             <div
               class="position-relative w-100 h-100 overflow-hidden"
-              <?php if ($fullscreen !== false): ?>
+              <?php if ($lightbox): ?>
                 data-bs-toggle="modal"
                 data-bs-target="#<?= $id ?>-modal"
                 style="cursor: pointer"
               <?php endif; ?>
             >
               <div class="position-relative w-100 h-100"
-                <?php if ($fullscreen !== false): ?>
-                  data-bs-target="#<?= $id ?>-fullscreen-carousel"
+                <?php if ($lightbox): ?>
+                  data-bs-target="#<?= $id ?>-lightbox-carousel"
                   data-bs-slide-to="<?= $wp_query->current_post ?>"
                 <?php endif; ?>
               >
@@ -49,7 +49,6 @@
                   'class' => 'img-fluid m-0 w-100 h-100 position-relative',
                   'style' => "object-fit: $fit; object-position: center",
                   'loading' => 'lazy',
-                  'data-bs-dismiss' => "modal"
                 ]) ?>
               </div>
             </div>
@@ -64,13 +63,36 @@
         <?php endwhile; ?>
       </div>
       <?php if ($wp_query->post_count > 1): ?>
-        <button class="carousel-control-prev" type="button" data-bs-target="#<?= $id ?>-carousel" data-bs-slide="prev" data-control>
+        <button class="carousel-control-prev" type="button" data-bs-target="#<?= $id ?>-carousel" data-bs-slide="prev">
           <span class="carousel-control-prev-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Previous</span>
         </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#<?= $id ?>-carousel" data-bs-slide="next" data-control>
+        <button class="carousel-control-next" type="button" data-bs-target="#<?= $id ?>-carousel" data-bs-slide="next">
           <span class="carousel-control-next-icon" aria-hidden="true"></span>
           <span class="visually-hidden">Next</span>
+        </button>
+      <?php endif ?>
+      <button
+        class="carousel-control-play position-absolute z-2 start-0 bottom-0 p-1 m-2 lh-1<?= !$autoplay ? ' is-paused' : '' ?>"
+        style="width: 1.5rem"
+        data-bs-target="#<?= $id ?>-carousel"
+        data-bs-toggle="play"
+      >
+        <span class="carousel-icon-play">
+          <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">▶</i>', 'play') ?>
+        </span>
+        <span class="carousel-icon-pause">
+          <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">⏸</i>', 'pause') ?>
+        </span>
+      </button>
+      <?php if ($lightbox): ?>
+        <button
+          class="btn carousel-control position-absolute end-0 bottom-0 p-1 z-2 m-2 lh-1"
+          style="width: 1.5rem"
+          data-bs-toggle="modal"
+          data-bs-target="#<?= $id ?>-modal"
+        >
+          <?= apply_filters('bootstrap_icon', '<i>⌕</i>', 'search') ?>
         </button>
       <?php endif ?>
     </div>
@@ -80,21 +102,7 @@
     <?php include __DIR__ . '/gallery-thumbnails.php' ?>
   <?php endif ?>
 
-  <?php if ($fullscreen !== false): ?>
-    <?php include __DIR__ . '/gallery-modal.php' ?>
-
-    <script>
-      (() => {
-        const carouselEl = document.getElementById('<?= $id ?>-carousel');
-        const fsCarouselEl = document.getElementById('<?= $id ?>-fullscreen-carousel');
-
-        fsCarouselEl.addEventListener('slide.bs.carousel', event => {
-          const carousel = bootstrap.Carousel.getOrCreateInstance(carouselEl);
-          console.log('CAROUSEL: ', carousel);
-
-          carousel.to(event.to);
-        });
-      })();
-    </script>
+  <?php if ($lightbox): ?>
+    <?php include __DIR__ . '/gallery-lightbox.php' ?>
   <?php endif ?>
 </div>

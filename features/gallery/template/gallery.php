@@ -10,15 +10,15 @@
       <div class="col-md-<?= intval(12 / $columns) ?> flex-grow-1">
         <figure
           class="figure m-0 position-relative w-100<?= $fit ? ' h-100' : ''; ?>"
-          <?php if ($fullscreen !== false): ?>
+          <?php if ($lightbox !== false): ?>
             data-bs-toggle="modal"
             data-bs-target="#<?= $id ?>-modal"
           <?php endif; ?>
         >
           <?= wp_get_attachment_image(get_the_ID(), $size, false, [
             'class' => 'figure-img img-fluid m-0 w-100' . ($fit ? " object-fit-$fit h-100" : ''),
-            'style' => "border-radius: var(--bs-border-radius);" . ($fullscreen ? 'cursor: pointer; ' : ''),
-            'data-bs-target' => "#$id-fullscreen-carousel",
+            'style' => "border-radius: var(--bs-border-radius);" . ($lightbox ? 'cursor: pointer; ' : ''),
+            'data-bs-target' => "#$id-lightbox-carousel",
             'data-bs-slide-to' => $wp_query->current_post,
             'loading' => 'lazy'
           ]) ?>

@@ -19,6 +19,9 @@ function render_block_group_container($content, $block) {
     return $content;
   }
 
+  remove_class($container, 'container');
+  remove_class($container, 'container-fluid');
+
   if ($is_alignfull) {
     add_class($container, 'container-fluid');
   } else if ($is_alignwide) {
