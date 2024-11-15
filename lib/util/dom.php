@@ -339,3 +339,17 @@ function get_inner_html($element) {
 function get_outer_html($element) {
   return $element->ownerDocument->saveHTML($element);
 }
+
+function remove_text_nodes($element) {
+  // Get all child nodes as an array (static snapshot)
+  $childNodes = iterator_to_array($element->childNodes);
+
+  // Iterate over the child nodes
+  foreach ($childNodes as $node) {
+
+      // Only remove text nodes (nodeType 3)
+      if ($node->nodeType === 3) {
+          $element->removeChild($node);  // Remove the text node
+      }
+  }
+}

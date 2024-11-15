@@ -16,6 +16,10 @@ function render_block_query_pagination_previous($content, $block) {
   $doc = parse_html($content);
   $container = root_element($doc);
 
+  if (!$container) {
+    return $content;
+  }
+
   add_class($container, 'page-link');
   remove_class($container, 'has-small-font-size');
 

@@ -4,7 +4,7 @@
  * Plugin Name: Bootstrap Hooks
  * Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  * Description: A collection of action and filters for bootstrap based themes
- * Version: 1.1.11
+ * Version: 1.1.12
  * Author: Benignware
  * Author URI: http://benignware.com
  * License: MIT
@@ -17,6 +17,8 @@ require_once 'lib/util/math.php';
 require_once 'lib/util/theme.php';
 require_once 'lib/helpers.php';
 require_once 'features/functions.php';
+
+require_once 'features/addons/addons.php';
 
 function wp_bootstrap_hooks() {
   $args = func_get_args();
@@ -96,8 +98,9 @@ function wp_bootstrap_options() {
     'edit_post_link_class' => 'btn btn-sm btn-outline-secondary',
     'edit_post_link_container_class' => 'btn-group btn-group-sm d-block my-2',
     // Tags
-    'post_tag_class' => 'btn btn-sm btn-outline-primary text-wrap mb-1',
+    'post_tag_class' => 'btn btn-sm btn-outline-primary text-wrap mb-1', // Tag cloud
     'post_tag_count_class' => 'badge bg-primary',
+    'post_tag_link_class' => 'badge text-bg-primary',
     // Gallery
     // 'gallery_thumbnail_size' => 'thumbnail',
     // 'gallery_thumbnail_class' => '',

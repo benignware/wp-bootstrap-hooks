@@ -1,0 +1,35 @@
+.dropdown-menu:not(.is-hierarchical) {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+/* Hide submenus by default */
+.dropdown-menu .dropdown-submenu {
+  display: none;
+}
+
+/* Show submenu on hover */
+.dropdown-menu li:hover > .dropdown-submenu {
+  display: block;
+  position: absolute;
+  top: 0;
+  left: 100%;
+  margin-top: -5px;
+}
+
+
+/* Ensure the dropdown link has space between the category label and badge */
+.dropdown-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Align the badge to the right */
+.dropend .dropdown-item .badge {
+  order: 1;
+}
+
+.dropend .dropdown-toggle::after {
+  margin-left: 0.5rem;
+}

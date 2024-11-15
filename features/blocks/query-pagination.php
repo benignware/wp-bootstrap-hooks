@@ -18,6 +18,15 @@ function render_block_query_pagination($content, $block) {
 
   add_class($container, 'pagination gap-0');
 
+  // Page numbers won't work with space-between layout
+  $has_page_numbers = !!find_by_class($container, 'page-numbers');
+  $layout = $attrs['layout'] ?? null;
+  $justify_content = $layout['justifyContent'] ?? null;
+
+  if ($has_page_numbers && $justify_content === 'space-between') {
+    add_class($container, 'justify-content-center');
+  }
+
   return serialize_html($doc);
 }
 
