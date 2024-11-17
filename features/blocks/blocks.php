@@ -20,6 +20,7 @@ require "navigation.php";
 require "page-list.php";
 require "post-author.php";
 require "post-comments.php";
+require "post-navigation-link.php";
 require "post-template.php";
 require "post-terms.php";
 require "post-title.php";
