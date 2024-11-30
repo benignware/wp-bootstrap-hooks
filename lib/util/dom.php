@@ -97,14 +97,16 @@ function _stringify_class($classes) {
   return implode(' ', array_unique($classes));
 }
 
-function has_class($element, $pattern) {
+function has_class($element, ...$patterns) {
   if (!$element || $element->nodeType !== 1) {
     return;
   }
 
   $classes = _parse_class($element->getAttribute('class'));
-  $classes = array_filter($classes, function($class) use ($pattern) {
-    return $class === $pattern || @preg_match($pattern, $class);
+  $classes = array_filter($classes, function($class) use ($patterns) {
+    return array_reduce($patterns, function($result, $pattern) use ($class) {
+      return $result || $class === $pattern || @preg_match($pattern, $class);
+    }, false);
   });
 
   return count($classes) > 0;
@@ -326,7 +328,6 @@ function wrap_element($element, $tag_name) {
 
   return $wrapper_element;
 }
-
 
 function get_inner_html($element) {
   $innerHTML = '';
