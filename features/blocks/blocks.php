@@ -32,3 +32,7 @@ require "query-pagination.php";
 require "search.php";
 require "separator.php";
 require "table.php";
+
+// Common
+require "common.php";
+require "styles.php";
