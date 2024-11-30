@@ -1,14 +1,14 @@
 <?php
 
-use function benignware\wp\bootstrap_hooks\add_class;
+namespace benignware\wp\bootstrap_hooks;
+
 
 include __DIR__ . '/comments-walker.php' ;
 
 /**
  * Comment Form Default Fields
  */
-function wp_bootstrap_comment_form_default_fields( $fields ) {
-
+function comment_form_default_fields( $fields ) {
   $options = wp_bootstrap_options();
   $field_class = $options['field_class'];
   $label_class = $options['label_class'];
@@ -42,13 +42,13 @@ function wp_bootstrap_comment_form_default_fields( $fields ) {
   );
   return $fields;
 }
-add_filter( 'comment_form_default_fields', 'wp_bootstrap_comment_form_default_fields' );
+add_filter( 'comment_form_default_fields', 'benignware\wp\bootstrap_hooks\comment_form_default_fields' );
 
 
 /**
  * Comment Form Defaults
  */
-function wp_bootstrap_comment_form_defaults( $args ) {
+function comment_form_defaults( $args ) {
   if (!current_theme_supports('bootstrap')) {
     return $args;
   }
@@ -67,12 +67,12 @@ function wp_bootstrap_comment_form_defaults( $args ) {
   
   return $args;
 }
-add_filter( 'comment_form_defaults', 'wp_bootstrap_comment_form_defaults' );
+add_filter( 'comment_form_defaults', 'benignware\wp\bootstrap_hooks\comment_form_defaults' );
 
 /**
  * List Comment Args
  */
-add_action('wp_list_comments_args', function($args) {
+function wp_list_comments_args($args) {
   if (!current_theme_supports('bootstrap')) {
     return $args;
   }
@@ -88,13 +88,14 @@ add_action('wp_list_comments_args', function($args) {
     $args['walker'] = new Bootstrap_Walker_Comment();
   }
   return $args;
-});
+}
+add_action('wp_list_comments_args', 'benignware\wp\bootstrap_hooks\wp_list_comments_args');
 
 
 /**
  * Add bootstrap classes to the comment reply link
  */
-add_filter('comment_reply_link', function($link, $args, $comment, $post) {
+function comment_reply_link($link, $args, $comment, $post) {
   if (!current_theme_supports('bootstrap')) {
     return $link;
   }
@@ -104,15 +105,16 @@ add_filter('comment_reply_link', function($link, $args, $comment, $post) {
   $reply_link_class = $options['reply_link_class'];
 
   return str_replace("class='comment-reply-link", "class='comment-reply-link $reply_link_class", $link);
-}, 10, 4);
+}
+add_filter('comment_reply_link', 'benignware\wp\bootstrap_hooks\comment_reply_link', 10, 4);
 
-add_filter( 'get_avatar', function($avatar) {
+
+function get_avatar($avatar) {
   if (!current_theme_supports('bootstrap')) {
     return $avatar;
   }
 
-  $doc = new DOMDocument();
-  @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $avatar );
+  $doc = parse_html($avatar);
 
   $img = $doc->getElementsByTagName('img')->item(0);
 
@@ -120,13 +122,13 @@ add_filter( 'get_avatar', function($avatar) {
     add_class($img, 'rounded-circle');
   }
 
-  $avatar = preg_replace('~(?:<\?[^>]*>|<(?:!DOCTYPE|/?(?:html|head|body))[^>]*>)\s*~i', '', $doc->saveHTML());
+  $avatar = serialize_html($doc);
 
   return $avatar;
-}, 10, 2 );
+}
+add_filter( 'get_avatar', 'benignware\wp\bootstrap_hooks\get_avatar' );
 
-
-add_action('comment_form_after', function() {
+function comment_form_after() {
   echo <<<EOT
   <script>
   // Example starter JavaScript for disabling form submissions if there are invalid fields
@@ -155,4 +157,29 @@ add_action('comment_form_after', function() {
   })()
   </script>
 EOT;
-});
+}
+add_action('comment_form_after', 'benignware\wp\bootstrap_hooks\comment_form_after');
+
+
+function comment_form_submit_button($submit_button) {
+  if (!current_theme_supports('bootstrap')) {
+    return $submit_button;
+  }
+
+  $options = wp_bootstrap_options();
+  $submit_class = $options['submit_class'] ?? 'btn btn-primary';
+
+  $doc = parse_html($submit_button);
+
+  $input = $doc->getElementsByTagName('input')->item(0);
+
+  if (!$input) {
+    return $submit_button;
+  }
+
+  add_class($input, $submit_class);
+  remove_class($input, '~^wp-~');
+
+  return serialize_html($doc);
+}
+add_filter('comment_form_submit_button', 'benignware\wp\bootstrap_hooks\comment_form_submit_button');
