@@ -23,8 +23,6 @@ function render_block_button($content, $block) {
     return $content;
   }
 
-  //echo '<textarea style="width: 100%; height: 100vh;">' . $content . '</textarea>';
-
   if (isset($attrs['width'])) {
     add_class($container, sprintf('w-%s', $attrs['width']));
     add_class($button, 'd-block');
