@@ -63,3 +63,29 @@ function parse_color_name($css_variable) {
   
   return $css_variable; // Return the original input if the variable does not match.
 }
+
+function parse_preset_name($input, $group = null) {
+  $output = null;
+
+  if (strpos($input, 'var:preset|') === 0) {
+    // Remove the 'var:preset|' prefix
+    $output = str_replace('var:preset|', '--wp--preset--', $input);
+    
+    // Replace any remaining '|' characters with double hyphens '--'
+    $output = str_replace('|', '--', $output);
+    
+    // Wrap it in the CSS var() function
+    $input = 'var(' . $output . ')';
+  }
+
+  // Use a regular expression to match the color name.
+  if (preg_match('/^var\(--wp--preset--([a-zA-Z0-9\-_]+)\)$/', $input, $matches)) {
+      $output = $matches[1]; // Return the captured color name.
+  }
+
+  if ($output && $group && strpos($output, $group) === 0) {
+    $output = ltrim(str_replace($group . '-', '', $output), '-');
+  }
+  
+  return $output;
+}
