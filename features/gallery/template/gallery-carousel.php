@@ -5,10 +5,10 @@
     <?= $name ?>="<?= $value ?>"
   <?php endforeach; ?>
 >
-  <div class="position-relative d-inline-block">
+  <div class="position-relative d-inline-flex">
     <?php if (count($wp_query->posts) > 0 && $post = $wp_query->posts[0]): ?>
       <?= wp_get_attachment_image($post->ID, $size, false, [
-        'class' => 'invisible w-100 img-fluid border border-danger bootstrap-gallery-sizer',
+        'class' => 'invisible img-fluid border border-danger bootstrap-gallery-sizer',
       ]) ?>
     <?php endif ?>
     <div
