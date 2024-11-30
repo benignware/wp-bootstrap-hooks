@@ -29,7 +29,7 @@ function bootstrap_gallery($params, $content = null) {
 
   $__bootstrap_gallery_instance++;
 
-	$params = array_merge([
+  $defaults = [
 		'type' => '',
 		'format' => '',
     'id' => 'bootstrap-gallery-' . $__bootstrap_gallery_instance,
@@ -59,11 +59,11 @@ function bootstrap_gallery($params, $content = null) {
     'attrs' => [],
     'lightbox' => true,
     'thumbnails' => true
-  ], $params);
+  ];
+  $params = apply_filters('bootstrap_gallery_args', $params);
+	$params = array_merge($defaults, $params);
 
   $params['title'] = $params['title'] ?: get_the_title();
-
-  $params = apply_filters('bootstrap_gallery_args', $params);
   $params['lightbox'] = $params['lightbox'] === 'false' ? false : $params['lightbox'];
   $params['lightbox'] = $params['lightbox'] ? array_merge([
     'fit' => 'contain',
