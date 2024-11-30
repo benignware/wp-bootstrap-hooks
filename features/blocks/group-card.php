@@ -14,6 +14,7 @@ function render_block_group_card($content, $block) {
   $options = wp_bootstrap_options();
   $attrs = $block['attrs'];
   $doc = parse_html($content);
+  $xpath = new \DOMXPath($doc);
   $container = root_element($doc);
 
   if (!has_class($container, 'card')) {
@@ -30,6 +31,18 @@ function render_block_group_card($content, $block) {
   foreach ($card_bodies as $card_body) {
     remove_class($card_body, 'is-layout-flex');
     remove_class($card_body, "~^wp-container-core-group-is-layout~");
+  }
+
+  // Find read-more block and add stretched-link class
+  $read_more = find_by_class($container, 'wp-block-read-more');
+  
+  if ($read_more) {
+    $href = $read_more->getAttribute('href');
+    $links = $xpath->query('.//a[@href="' . $href . '"]', $container);
+
+    foreach ($links as $link) {
+      add_class($link, 'stretched-link');
+    }
   }
 
   return serialize_html($doc);
