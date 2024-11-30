@@ -11,7 +11,11 @@ function get_options($context = null) {
 }
 
 function get_markup($content) {
-  $content = wp_bootstrap_the_content($content);
+  $content = the_content_alerts($content);
+  $content = the_content_images($content);
+  $content = the_content_tables($content);
+  $content = the_content_forms($content);
+  $content = the_content_buttons($content);
 
   return $content;
 }
