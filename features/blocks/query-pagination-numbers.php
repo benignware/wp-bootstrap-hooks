@@ -11,6 +11,10 @@ function render_block_query_pagination_numbers($content, $block) {
     return $content;
   }
 
+  if (empty(trim($content))) {
+    return $content;
+  }
+
   $options = wp_bootstrap_options();
   $attrs = $block['attrs'];
   $doc = parse_html($content);
