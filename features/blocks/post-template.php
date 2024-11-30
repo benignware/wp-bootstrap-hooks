@@ -7,12 +7,15 @@ function render_block_post_template($content, $block) {
     return $content;
   }
 
-  if ($block['blockName'] !== 'core/post-comments') {
+  if ($block['blockName'] !== 'core/post-template') {
     return $content;
   }
 
   $options = wp_bootstrap_options();
   $attrs = $block['attrs'];
+
+  $column_count = get_option('posts_grid_columns', $attrs['layout']['columnCount'] ?? 4);
+
   $doc = parse_html($content);
   $doc_xpath = new \DOMXPath($doc);
   $container = root_element($doc);
@@ -24,9 +27,10 @@ function render_block_post_template($content, $block) {
 
   remove_class($list, 'is-layout-grid');
 
-  remove_class($list, 'columns-3');
+  remove_class($list, '~^columns-~');
   add_class($list, 'row');
   remove_class($list, 'wp-block-post-template');
+  remove_class($list, '~^is-layout-~');
 
   $style = isset($attrs['style']) ? $attrs['style'] : [];
   $spacing = isset($style['spacing']) ? $style['spacing'] : [];
@@ -42,20 +46,19 @@ function render_block_post_template($content, $block) {
   }
 
   if ($list) {
-    $list_items = $doc_xpath->query('./li', $list);
+    $list_items = iterator_to_array($doc_xpath->query('./li', $list));
 
     foreach ($list_items as $list_item) {
-      add_class($list_item, 'col-12 col-md-4');
-      replace_tag($list_item, 'div');
-      
-      // $card = find_by_class($list_item, 'card');
+      if (has_class($list_item, '~col-~')) {
+        continue;
+      }
 
-      // if ($card) {
-        // remove_class($card, 'is-layout-flex');
+      $column = $doc->createElement('div');
 
-        // $list_item->parentNode->insertBefore($card, $list_item);
-        // $list_item->parentNode->removeChild($list_item);
-      // }
+      add_class($column, sprintf('col-12 col-sm-6 col-md-3 col-lg-%s', 12 / $column_count));
+      $list_item = replace_tag($list_item, 'div');
+      $list_item->parentNode->insertBefore($column, $list_item);
+      $column->appendChild($list_item);
     }
 
     replace_tag($list, 'div');
