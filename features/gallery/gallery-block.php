@@ -76,12 +76,13 @@ function render_block_gallery($html, $block = null) {
     $align = isset($attrs['align']) ? $attrs['align'] : '';
     $class = isset($attrs['className']) ? $attrs['className'] : $container->getAttribute('class');
 
-    $attrs = get_attributes($container);
+    $html_attrs = get_attributes($container);
 
-    unset($attrs['id']);
-    unset($attrs['class']);
+    unset($html_attrs['id']);
+    unset($html_attrs['class']);
 
-    $html = bootstrap_gallery([
+    $block_attr_params = $attrs;
+    $determined_params = [
       'id' => $id,
       'ids' => $ids,
       'class' => $class,
@@ -91,8 +92,11 @@ function render_block_gallery($html, $block = null) {
       'captions' => $captions,
       'fit' => $fit,
       'align' => $align,
-      'attrs' => $attrs
-    ]);
+      'attrs' => $html_attrs
+    ];
+    $params = array_merge($block_attr_params, $determined_params);
+
+    $html = bootstrap_gallery($params);
   }
 
   return $html;
