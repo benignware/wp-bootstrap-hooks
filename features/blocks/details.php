@@ -48,7 +48,7 @@ function render_block_details($content, $block) {
 
     // Create the switch container
     $switch = $doc->createElement('div');
-    add_class($switch, 'form-check form-switch mb-0');
+    add_class($switch, 'form-check form-switch mb-0 d-flex gap-2 align-items-baseline');
 
     // Create the input element (checkbox)
     $input = $doc->createElement('input');
@@ -75,7 +75,7 @@ function render_block_details($content, $block) {
     // Create a new div for the collapsible content
     $collapse = $doc->createElement('div');
     $collapse->setAttribute('id', $collapse_id);
-    add_class($collapse, 'collapse is-layout-flow');
+    add_class($collapse, 'collapse is-layout-flow my-0');
 
     // Move all non-summary children of <details> into the collapsible content
     foreach ($block_element->childNodes as $child) {
@@ -92,6 +92,19 @@ function render_block_details($content, $block) {
     // Add the switch and collapse content as children of the block wrapper
     $block_element->appendChild($switch);
     $block_element->appendChild($collapse);
+
+
+    // SVG
+    // $svg = $doc->createElementNS('http://www.w3.org/2000/svg', 'svg');
+    // $svg->setAttribute('xmlns', 'http://www.w3.org/2000/svg');
+    // $svg->setAttribute('fill', 'var(--bs-primary)');
+    // $svg->setAttribute('class', 'bi bi-chevron-down');
+    // $svg->setAttribute('viewBox', '-4 -4 8 8');
+    // $circle = $doc->createElementNS('http://www.w3.org/2000/svg', 'circle');
+    // $circle->setAttribute('r', '3');
+    // $svg->appendChild($circle);
+
+    // $switch->insertBefore($svg, $input->nextSibling);
 
     return serialize_html($doc);
 }

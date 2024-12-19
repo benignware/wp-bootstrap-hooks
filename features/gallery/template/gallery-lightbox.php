@@ -1,3 +1,4 @@
+<?php $lightbox_in = true ?>
 <div
   <?php foreach (array_merge($lightbox['attrs'] ?? [], [
     'id' => "$id-modal",
@@ -25,22 +26,30 @@
           data-bs-interval="<?= !$autoplay ? 'false' : $interval; ?>"
         >
           <?php if (!$lightbox['header']): ?>
-            <button type="button" class="btn-close position-absolute top-0 end-0 z-3 m-4" data-bs-dismiss="modal" aria-label="Close"></button>
+            <button
+              type="button"
+              class="carousel-control-action btn-close position-absolute top-0 end-0 z-3 m-3"
+              data-bs-dismiss="modal"
+              aria-label="Close"
+            >
+              <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">x</i>', 'close') ?>
+            </button>
           <?php endif; ?>
           <?php if (!$lightbox['footer']): ?>
-            <button
-              class="carousel-control-play btn position-absolute start-0 bottom-0 z-2 m-1<?= !$autoplay ? ' is-paused' : '' ?>"
-              style="width: 2.2em"
-              data-bs-target="#<?= $id ?>-lightbox-carousel"
-              data-bs-toggle="play"
-            >
-              <span class="carousel-icon-play">
-                <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">▶</i>', 'play') ?>
-              </span>
-              <span class="carousel-icon-pause">
-                <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">⏸</i>', 'pause') ?>
-              </span>
-            </button>
+            <?php if ($autoplay): ?>
+              <button
+                class="carousel-control-action carousel-control-play position-absolute start-0 bottom-0 z-2 m-3<?= !$autoplay ? ' is-paused' : '' ?>"
+                data-bs-target="#<?= $id ?>-lightbox-carousel"
+                data-bs-toggle="play"
+              >
+                <span class="carousel-icon-play">
+                  <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">▶</i>', 'play') ?>
+                </span>
+                <span class="carousel-icon-pause">
+                  <?= apply_filters('bootstrap_icon', '<i class="fst-normal font-monospace">⏸</i>', 'pause') ?>
+                </span>
+              </button>
+            <?php endif ?>
             <?php if ($wp_query->post_count > 1): ?>
               <div class="carousel-indicators">
                 <?php while( have_posts()) : the_post() ?>
@@ -129,6 +138,30 @@
             <?php endif ?>
           </div>
           <div class="col-2 text-end">
+            <?php if ($download): ?>
+              <!-- Download All as ZIP -->
+              <?php
+                $accessible_ids = array_values(array_filter($attachment_ids, function($attachment_id) {
+                    return apply_filters('bootstrap_gallery_is_accessible', true, $attachment_id);
+                }));
+              ?>
+                <div class="mt-2">
+                  <div class="text-end px-2">
+                      <a 
+                        class="btn btn-primary <?= count($accessible_ids) === 0 ? 'disabled' : '' ?>"
+                        <?php if (count($accessible_ids) === 0): ?>
+                          disabled
+                          title="No files are accessible"
+                        <?php else: ?>
+                          href="<?= admin_url('admin-ajax.php') . '?action=generate_download_zip&attachment_ids=' . implode(',', $accessible_ids) ?>"
+                        <?php endif; ?>
+                        download
+                      >
+                      <span class="ms-1 d-inline-block"><?= __('Download All', 'WooCommerce') ?></span>
+                    </a>
+                </div>
+              </div>
+            <?php endif; ?>
             <!-- <button
               class="d-none d-md-inline-block btn btn-outline-secondary"
               data-toggle="zoom"

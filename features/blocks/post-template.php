@@ -25,12 +25,12 @@ function render_block_post_template($content, $block) {
   remove_class($list, "~^wp-container-core-post-template~");
   remove_class($list, "~^wp-block-post-template-is-layout~");
 
-  remove_class($list, 'is-layout-grid');
-
   remove_class($list, '~^columns-~');
   add_class($list, 'row');
+
   remove_class($list, 'wp-block-post-template');
   remove_class($list, '~^is-layout-~');
+  add_class($list, 'gap-0');
 
   $style = isset($attrs['style']) ? $attrs['style'] : [];
   $spacing = isset($style['spacing']) ? $style['spacing'] : [];
@@ -41,6 +41,7 @@ function render_block_post_template($content, $block) {
     
     add_style($list, '--bs-gutter-y', $blockGapValue);
     add_style($list, '--bs-gutter-x', $blockGapValue);
+    
   } else {
     add_class($list, 'g-4');
   }
@@ -61,8 +62,12 @@ function render_block_post_template($content, $block) {
       $column->appendChild($list_item);
     }
 
-    replace_tag($list, 'div');
-    add_class($list, 'row');
+    $list = replace_tag($list, 'div');
+    
+    add_class($list, 'row d-flex');
+    remove_class($list, '~^is-layout-~');
+    remove_class($list, 'is-layout-grid');
+    add_clasS($list, 'd-flex');
   }
 
   return serialize_html($doc);

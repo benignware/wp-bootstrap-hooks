@@ -4,20 +4,21 @@
  * Plugin Name: Bootstrap Hooks
  * Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  * Description: A collection of action and filters for bootstrap based themes
- * Version: 1.1.15
+ * Version: 1.1.16
  * Author: Benignware
  * Author URI: http://benignware.com
  * License: MIT
 */
 
-require_once 'lib/util/dom.php';
-require_once 'lib/util/colors.php';
-require_once 'lib/util/object.php';
-require_once 'lib/util/math.php';
-require_once 'lib/util/theme.php';
+require_once 'lib/dom.php';
+require_once 'lib/editor.php';
+require_once 'lib/colors.php';
+require_once 'lib/object.php';
+require_once 'lib/math.php';
+require_once 'lib/theme.php';
 require_once 'lib/helpers.php';
-require_once 'features/functions.php';
 
+require_once 'features/functions.php';
 require_once 'features/addons/addons.php';
 
 function wp_bootstrap_hooks() {
@@ -83,6 +84,7 @@ function wp_bootstrap_options() {
     'img_caption_img_class' => 'figure-img',
     'table_class' => 'table',
     'table_striped_class' => 'table-striped',
+    'table_bordered_class' => 'table-bordered',
     'table_container_tag' => 'div',
     'table_container_class' => 'table-responsive',
     'blockquote_class' => 'blockquote',
@@ -138,6 +140,9 @@ function wp_bootstrap_options() {
     'post_nav_link_class' => 'page-link',
     'next_posts_link_class' => 'btn btn-outline-secondary float-right',
     'previous_posts_link_class' => 'btn btn-outline-secondary float-left',
+    // Pagination (dev)
+    'post_navigation_link_wrapper_class' => 'pagination',
+    'post_navigation_link_class' => 'page-link',
     // Deprecated
     'paginated_class' => 'pagination',
     'paginated_tag' => 'ul',
@@ -196,3 +201,8 @@ add_filter('bootstrap_options', function($options, $args) {
 
   return $options;
 }, 1, 2);
+
+add_action('wp_enqueue_scripts', function() {
+  wp_enqueue_style('bootstrap-hooks', plugin_dir_url(__FILE__) . 'assets/style.css');
+  wp_enqueue_script('bootstrap-hooks', plugin_dir_url(__FILE__) . 'assets/script.js', [], null, false);
+});

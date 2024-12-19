@@ -11,6 +11,7 @@ function render_block_gallery($html, $block = null) {
 
   if ($block['blockName'] === 'core/gallery') {
     $attrs = $block['attrs'];
+    // print_r($attrs);
     $captions = [];
 
     foreach ($block['innerBlocks'] as $index => $inner_block) {
@@ -55,9 +56,6 @@ function render_block_gallery($html, $block = null) {
 
     $id = $container->getAttribute('id');
 
-    remove_class($container, 'wp-block-gallery');
-    remove_class($container, 'is-layout-flex');
-
     $gallery_caption_class = 'blocks-gallery-caption';
     $gallery_caption = $doc_xpath->query("//*[contains(concat(' ', normalize-space(@class), ' '), ' $gallery_caption_class ')]")->item(0);
 
@@ -73,19 +71,34 @@ function render_block_gallery($html, $block = null) {
     $size = isset($attrs['sizeSlug']) ? $attrs['sizeSlug'] : 'large';
     $fit = !isset($attrs['imageCrop']) || $attrs['imageCrop'] ? 'cover' : false;
 
-    $align = isset($attrs['align']) ? $attrs['align'] : '';
-    $class = isset($attrs['className']) ? $attrs['className'] : $container->getAttribute('class');
+    $align = $attrs['align'] ?? 'center';
+    
+    $class = $attrs['className'] ?? '';
+    $class.= ' ' . ($container->getAttribute('class') ?? '');
+    $classes = array_values(array_unique(explode(' ', $class)));
+    $classes = array_diff($classes, ['is-layout-flex']);
+    $class = implode(' ', $classes);
+    
+    $style = $container->getAttribute('style');
+
+    // echo '<br/>';
+    // echo '<pre>';
+    // echo $style;
+    // echo '</pre>';
+    // echo '<br/>';
 
     $html_attrs = get_attributes($container);
 
     unset($html_attrs['id']);
     unset($html_attrs['class']);
+    unset($html_attrs['style']);
 
     $block_attr_params = $attrs;
     $determined_params = [
       'id' => $id,
       'ids' => $ids,
       'class' => $class,
+      'style' => $style,
       'columns' => $columns,
       'title' => $title,
       'size' => $size,
@@ -102,4 +115,4 @@ function render_block_gallery($html, $block = null) {
   return $html;
 }
 
-add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_gallery', 10, 2);
+add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_gallery', 100, 2);

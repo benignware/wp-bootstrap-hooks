@@ -23,11 +23,20 @@ function render_block_table($content, $block) {
 
   add_class($table, $options['table_class']);
 
-  if (isset($attrs['className']) && in_array('is-style-stripes', explode(' ', $attrs['className']))) {
+  $classes = explode(' ', ($attrs['className'] ?? ''));
+
+  if (in_array('is-style-stripes', $classes)) {
     add_class($table, $options['table_striped_class']);
   };
 
+  if (in_array('is-style-bordered', $classes)) {
+    add_class($table, $options['table_bordered_class']);
+  };
+
   remove_class($container, '~^wp-block-table~', true);
+
+
+  return serialize_html($doc);
 }
 
 add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_table', 10, 2);

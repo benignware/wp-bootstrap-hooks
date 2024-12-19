@@ -1,0 +1,30 @@
+/* Base styles for the input group */
+.input-group.is-expandable {
+  overflow: hidden; /* Ensure smooth clipping during transitions */
+  border-radius: var(--bs-form-control-border-radius, var(--bs-border-radius, 0.25rem)); /* Use the same border radius as form controls */
+  width: auto; /* Ensure it adjusts to the input/button size */
+}
+
+/* Input field: initial compact state */
+.input-group.is-expandable input[type="search"] {
+  flex: 0 1 0%; /* Start fully collapsed */
+  max-width: 40px; /* Minimum width when collapsed */
+  padding-left: 0;
+  padding-right: 0;
+  transition: flex 0.4s ease, max-width 0.4s ease, padding 0.4s ease; /* Smooth animation */
+  border-right: none; /* Remove border between input and button */
+}
+
+/* Input field: expand on focus */
+.input-group.is-expandable:focus-within input[type="search"] {
+  flex: 1 1 auto; /* Expand to fill available space */
+  max-width: 100%; /* Remove width restriction */
+  border-right: none; /* Keep border alignment during focus */
+  padding-left: var(--bs-form-control-padding-x, 0.75rem); /* Restore padding */
+  padding-right: var(--bs-form-control-padding-x, 0.75rem); /* Restore padding */ 
+}
+
+/* Fix border alignment between input and button */
+.input-group.is-expandable input[type="search"] + button {
+  border-left: none; /* Remove overlapping border */
+}

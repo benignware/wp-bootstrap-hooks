@@ -7,9 +7,9 @@ function render_block_with_styles($content, $block) {
         return $content;
     }
 
-    $is_button = $block['blockName'] === 'core/button';
+    $supported_blocks = ['core/group'];
 
-    if ($is_button) {
+    if (!in_array($block['blockName'], $supported_blocks)) {
         return $content;
     }
 
@@ -23,19 +23,20 @@ function render_block_with_styles($content, $block) {
     if (!$element) {
         return $content;
     }
-
-    if (has_class('.btn', $element)) {
-        return $content;
-    }
-
+  
     // Handle background color
     $bg = $attrs['backgroundColor'] ?? null;
     $style_bg = $attrs['style']['color']['background'] ?? null;
+
+    if (!$bg && !$style_bg) {
+        return $content;
+    }
+    
     $bg_color = $bg ?: $style_bg;
 
     if ($bg_color) {
       $theme_color_def = get_palette_color($bg_color);
-
+      
       if ($theme_color_def) {
         // Apply Bootstrap class for theme preset colors
         $theme_color = $theme_color_def['slug'];
@@ -43,6 +44,18 @@ function render_block_with_styles($content, $block) {
       } elseif (is_color($bg_color)) {
         // Apply inline style for custom colors
         add_style($element, 'background-color', $bg_color);
+      }
+
+      $bg_color_value = $theme_color_def ? $theme_color_def['color'] : $bg_color;
+      $bg_brightness = intval(brightness($bg_color_value));
+
+      $is_dark = $bg_brightness <= 80;
+
+      if (!$is_dark) {
+        // $element->setAttribute('data-bs-theme', 'light');
+        return $content;
+      } else {
+        $element->setAttribute('data-bs-theme', 'dark');
       }
     }
 

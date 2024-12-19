@@ -24,7 +24,7 @@ function render_block_query_pagination_previous($content, $block) {
   remove_class($container, 'has-small-font-size');
 
   $item = $doc->createElement('div');
-  $item->setAttribute('class', 'page-item');
+  add_class($item, 'page-item');
   $item->appendChild($container->cloneNode(true));
   remove_class($container, 'has-small-font-size');
 

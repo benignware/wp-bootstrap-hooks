@@ -2,6 +2,10 @@
 
 namespace benignware\wp\bootstrap_hooks;
 
+use DOMDocument;
+use DOMDocumentFragment;
+use DOMXPath;
+
 function parse_html($html) {
   $doc = new \DOMDocument();
   @$doc->loadHTML('<?xml encoding="utf-8" ?>' . $html);
@@ -245,6 +249,14 @@ function nested_root($element) {
 }
 
 function replace_tag($element, $name) {
+  if (strtolower($element->nodeName) === strtolower($name)) {
+    return $element;
+  }
+
+  if ($element->ownerDocument === null) {
+    return $element;
+  }
+
   $new_element = $element->ownerDocument->createElement($name);
 
   foreach ($element->childNodes as $child) {
@@ -287,7 +299,7 @@ function get_common_ancestor($node_a, $node_b) {
 }
 
 function inner_root($root) {
-  $doc = $root->ownerDocument;
+  $doc = $root->ownerDocument ?? $root;
   $xpath = new \DOMXpath($doc);
   $inner_roots = $xpath->query('//div[1][count(following-sibling::*[not(local-name() = "script")]) = 0 and count(preceding-sibling::*[not(local-name() = "script")]) = 0]', $root);
   $inner_root = $inner_roots->item($inner_roots->length - 1);
@@ -329,7 +341,7 @@ function wrap_element($element, $tag_name) {
   return $wrapper_element;
 }
 
-function get_inner_html($element) {
+function inner_html($element) {
   $innerHTML = '';
   foreach ($element->childNodes as $child) {
     $innerHTML .= $element->ownerDocument->saveHTML($child);
@@ -337,8 +349,16 @@ function get_inner_html($element) {
   return $innerHTML;
 }
 
-function get_outer_html($element) {
+function get_inner_html($element) {
+  return inner_html($element);
+}
+
+function outer_html($element) {
   return $element->ownerDocument->saveHTML($element);
+}
+
+function get_outer_html($element) {
+  return outer_html($element);
 }
 
 function remove_text_nodes($element) {
@@ -353,4 +373,40 @@ function remove_text_nodes($element) {
           $element->removeChild($node);  // Remove the text node
       }
   }
+}
+
+/**
+ * Safely create a DOMDocumentFragment from raw HTML.
+ *
+ * @param DOMDocument $doc The DOMDocument instance.
+ * @param string $html The raw HTML string to append.
+ * @return DOMDocumentFragment The created DOMDocumentFragment with the parsed nodes.
+ */
+function get_html_fragment(DOMDocument $doc, string $html): DOMDocumentFragment
+{
+    // Suppress warnings from invalid or non-well-formed HTML
+    libxml_use_internal_errors(true);
+
+    // Create a temporary DOMDocument for parsing the HTML
+    $tempDoc = new DOMDocument();
+
+    // Wrap the HTML in a container if it's not a full document
+    // This ensures single or multiple elements are handled correctly
+    $wrappedHtml = "<div>$html</div>";
+
+    // Load the wrapped HTML into the temporary DOMDocument
+    $tempDoc->loadHTML($wrappedHtml, LIBXML_HTML_NOIMPLIED | LIBXML_HTML_NODEFDTD);
+
+    // Reset libxml errors to avoid side effects
+    libxml_clear_errors();
+
+    // Create a new DocumentFragment
+    $fragment = $doc->createDocumentFragment();
+
+    // Import each child of the temporary document's body into the main document
+    foreach ($tempDoc->documentElement->childNodes as $node) {
+        $fragment->appendChild($doc->importNode($node, true));
+    }
+
+    return $fragment;
 }

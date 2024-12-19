@@ -11,7 +11,8 @@ function render_block_post_navigation_link($content, $block) {
     return $content;
   }
 
-  $options = wp_bootstrap_options();
+  extract(wp_bootstrap_options());
+
   $attrs = $block['attrs'];
   $doc = parse_html($content);
 
@@ -20,7 +21,7 @@ function render_block_post_navigation_link($content, $block) {
   $elem = find_by_class($doc, "post-navigation-link-$type");
 
   if ($elem) {
-    add_class($elem, 'pagination');
+    add_class($elem, $post_navigation_link_wrapper_class);
   
     $link = $elem->getElementsByTagName('a')->item(0);
 
@@ -38,7 +39,7 @@ function render_block_post_navigation_link($content, $block) {
       }
     }
 
-    add_class($link, 'page-link');
+    add_class($link, $post_navigation_link_class);
   }
 
   return serialize_html($doc);

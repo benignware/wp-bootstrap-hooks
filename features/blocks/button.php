@@ -15,7 +15,11 @@ function render_block_button($content, $block) {
   $attrs = $block['attrs'];
   $doc = parse_html($content);
   $doc_xpath = new \DOMXPath($doc);
-  $container = root_element($doc);
+  $block_element = find_by_class($doc, 'wp-block-button');
+
+  if (!$block_element) {
+    return $content;
+  }
 
   $button = $doc_xpath->query("//a|//button")->item(0);
 
@@ -65,7 +69,7 @@ function render_block_button($content, $block) {
 
   remove_class($button, 'has-link-color');
   remove_class($button, 'has-style-fill');
-  remove_class($button, '~^wp-~');
+  // remove_class($button, '~^wp-~');
   add_class($button, 'btn');
 
   if ($theme_color_def) {
@@ -151,7 +155,7 @@ function render_block_button($content, $block) {
   }
 
   remove_class($container, 'is-style-outline', true);
-  remove_class($container, '~^wp-block~', true);
+  // remove_class($container, '~^wp-block~', true);
 
   return serialize_html($doc);
 }

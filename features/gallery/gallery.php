@@ -28,13 +28,13 @@ function bootstrap_gallery($params, $content = null) {
   }
 
   $__bootstrap_gallery_instance++;
-
+  
   $defaults = [
 		'type' => '',
 		'format' => '',
     'id' => 'bootstrap-gallery-' . $__bootstrap_gallery_instance,
     'title' => '',
-    'class' => 'gallery my-4',
+    // 'class' => '',
     'columns' => 3,
 		// Query params
 		'ids' => null,
@@ -48,7 +48,7 @@ function bootstrap_gallery($params, $content = null) {
     // Gallery
     'post_type' => 'attachment',
     'post_status' => 'inherit',
-    'post_mime_type' => 'image',
+    // 'post_mime_type' => 'image',
     // 'ids' => is_array($params['ids']) ? implode(',', $params['ids']) : $params['ids'],
     'size' => 'medium',
     'fit' => 'cover',
@@ -58,10 +58,33 @@ function bootstrap_gallery($params, $content = null) {
     'align' => '',
     'attrs' => [],
     'lightbox' => true,
-    'thumbnails' => true
+    'thumbnails' => true,
+    'download' => false,
+    'style' => [],
   ];
+
+  if (is_string($params['style'])) {
+    $style = array_reduce(explode(';', trim($css_text)), function($result, $item) {
+      $parts = explode(':', $item);
+      $key = trim($parts[0]);
+      $value = trim($parts[1]);
+      $result[$key] = $value;
+      
+      return $result;
+    }, []);
+    $params['style'] = $style;
+  }
+
+
   $params = apply_filters('bootstrap_gallery_args', $params);
 	$params = array_merge($defaults, $params);
+  $classes = $params['class'] ? explode(' ', $params['class']) : [];
+  $classes = array_merge(
+    ['gallery', 'mb-4'],
+    $classes
+  );
+  $classes = array_diff($classes, ['is-layout-flex']);
+  $params['class'] = implode(' ', $classes);
 
   $params['title'] = $params['title'] ?: get_the_title();
   $params['lightbox'] = $params['lightbox'] === 'false' ? false : $params['lightbox'];
@@ -81,15 +104,21 @@ function bootstrap_gallery($params, $content = null) {
   ];
 
   $type = $params['type'];
-  $template_name = $type ? sprintf('gallery-%s.php', $type) : 'gallery.php';
-  $template_file = array_reduce($template_locations, function($result, $dir) use ($template_name) {
-    $file = $dir . '/' . $template_name;
+  $template_file = null;
 
-    return $result || file_exists($file) ? $file : null;
-  }, null);
+  if (file_exists($type)) {
+    $template_file = $type;
+  } else {
+    $template_name = $type ? sprintf('gallery-%s.php', $type) : 'gallery.php';
+    $template_file = array_reduce($template_locations, function($result, $dir) use ($template_name) {
+      $file = $dir . '/' . $template_name;
+  
+      return $result || file_exists($file) ? $file : null;
+    }, null);
+  }
 
-  if (!$template_file) {
-    return 'Gallery template not found: ' . $template_name;
+  if (!$template_file || !file_exists($template_file)) {
+    $template_file = __DIR__ . '/template/gallery.php';
   }
 
   $params['autoplay'] = $params['autoplay'] === 'false' ? false : $params['autoplay'];
@@ -137,6 +166,9 @@ function bootstrap_gallery($params, $content = null) {
 
   $query_params['orderby'] = $params['order'] === 'RAND' ? 'none' : $params['orderby'];
 
+  // Clear empty query params
+  $query_params = array_filter($query_params);
+
 	$wp_query = new \WP_QUERY($query_params);
 
   if (!count($wp_query->posts)) {
@@ -155,10 +187,21 @@ function bootstrap_gallery($params, $content = null) {
       $captions[$index] = wp_get_attachment_caption($post->ID);
     }
   }
+  
+  $css_text = array_reduce(array_keys($params['style']), function($result, $key) use ($params) {
+    $value = $params['style'][$key] ?? null;
+
+    if (!$key || $value === null) {
+      return $result;
+    }
+
+    return $result . sprintf('%s: %s;', $key, $value);
+  }, '');
 
   $attrs = array_merge([
     'id' => $params['id'],
     'class' => $params['class'],
+    'style' => $css_text,
   ], $params['attrs']);
 
   $data = array_merge([
@@ -174,7 +217,8 @@ function bootstrap_gallery($params, $content = null) {
     'align' => $params['align'],
     'attrs' => $attrs,
     'lightbox' => $params['lightbox'],
-    'thumbnails' => $params['thumbnails']
+    'thumbnails' => $params['thumbnails'],
+    'download' => $params['download'],
   ]);
 
 	$output = render_gallery_template($template_file, $data);

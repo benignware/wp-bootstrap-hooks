@@ -4,6 +4,7 @@ namespace benignware\wp\bootstrap_hooks;
 
 function get_theme_json() {
   $merged_data = \WP_Theme_JSON_Resolver::get_merged_data();
+  
   if (!method_exists($merged_data, 'get_data')) {
     return null; // Return null if data cannot be retrieved
   }
@@ -24,6 +25,17 @@ function get_theme_palette() {
 }
 
 function get_palette_color($color) {
+  $css_var = get_theme_css_var($color);
+  $color = parse_color_name($css_var);
+  $palette = get_theme_palette();
+  $matches = array_filter($palette, function($item) use ($color) {
+    return $item['slug'] === $color || $item['color'] === $color;
+  });
+
+  return array_shift($matches);
+}
+
+function get_color_value($color) {
   $css_var = get_theme_css_var($color);
   $color = parse_color_name($css_var);
   $palette = get_theme_palette();

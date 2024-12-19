@@ -8,7 +8,7 @@
   <div class="position-relative d-inline-flex">
     <?php if (count($wp_query->posts) > 0 && $post = $wp_query->posts[0]): ?>
       <?= wp_get_attachment_image($post->ID, $size, false, [
-        'class' => 'invisible img-fluid border border-danger bootstrap-gallery-sizer',
+        'class' => 'invisible img-fluid bootstrap-gallery-sizer',
       ]) ?>
     <?php endif ?>
     <div
@@ -89,8 +89,7 @@
       <?php endif ?>
       <?php if ($lightbox): ?>
         <button
-          class="btn carousel-control position-absolute end-0 bottom-0 p-1 z-2 m-2 lh-1"
-          style="width: 1.5rem"
+          class="carousel-control-action position-absolute end-0 bottom-0 z-2 m-3 lh-1"
           data-bs-toggle="modal"
           data-bs-target="#<?= $id ?>-modal"
         >
