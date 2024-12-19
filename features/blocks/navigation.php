@@ -19,33 +19,33 @@ function render_block_navigation($content, $block) {
 
   // Content class used to identify the navigation container
   $content_class = 'wp-block-navigation__responsive-container';
-  
-  $button = $doc_xpath->query("./button", $container)->item(0);
+  // Close button class used to identify the close button
+  $close_class = 'wp-block-navigation__responsive-container-close';
+  // Toggler button class used to identify the toggler button
+  $button_class = 'wp-block-navigation__responsive-container-open';
+
+  $button = find_by_class($container, $button_class);
   $nav_content = find_by_class($container, $content_class);
   $menu = $doc_xpath->query(".//ul", $container)->item(0);
 
   // Remove the close button
-  $close_class = 'wp-block-navigation__responsive-container-close';
+  
   $close = find_by_class($container, $close_class);
 
   if ($close) {
     $close->parentNode->removeChild($close);
   }
+  
+  // Navbar
+  add_class($container, 'navbar');
+  // remove_class($container, 'is-layout-flex');
+  add_style($container, 'gap', '0.5rem');
 
   // Process the menu
   if ($menu) {
     add_class($menu, 'nav navbar-nav');
     $walker = get_block_nav_walker($doc);
     $walker($menu);
-  }
-
-  $navs = find_all_by_class($container, 'nav');
-  
-  // Navbar
-  add_class($container, 'navbar');
-
-  foreach ($navs as $nav) {
-    add_class($nav, 'navbar-nav');
   }
 
   if ($nav_content) {
@@ -58,10 +58,27 @@ function render_block_navigation($content, $block) {
     $nav_content_class = apply_filters('bootstrap_navbar_modal_class', $nav_content_class, $attrs);
 
     // add_class($nav_content, $nav_content_class);
+    $children = iterator_to_array($nav_content->childNodes);
 
-    foreach ($nav_content->childNodes as $child) {
-      if ($child->nodeType === 1) {
-        $child->setAttribute('data-nav-content', '');
+    foreach ($children as $child) {
+      if ($child->nodeType !== 1) {
+        continue;
+      }
+      
+      $child->setAttribute('data-nav-content', '');
+      add_style($child, 'display', 'contents');
+      
+      $modal_content = $doc_xpath->query(sprintf('//*[@id="%s"]', "$collapse_id-content"), $child)->item(0);
+
+      if ($modal_content) {
+        $content_fragment = $doc->createDocumentFragment();
+        
+        foreach ($modal_content->childNodes as $modal_child) {
+          $content_fragment->appendChild($modal_child->cloneNode(true));
+        }
+
+        remove_all_children($child);
+        $child->appendChild($content_fragment);
       }
     }
 
@@ -147,8 +164,15 @@ function render_block_navigation($content, $block) {
     $button->parentNode->removeChild($button);
   }
 
+  $navs = find_all_by_class($container, 'nav');
+  
+  foreach ($navs as $nav) {
+    add_class($nav, 'navbar-nav');
+  }
+
   // Remove wp-block-navigation class
   remove_class($container, '~^wp-block-navigation~', true);
+  remove_class($container, 'is-responsive', true);
 
   return serialize_html($doc);
 }
