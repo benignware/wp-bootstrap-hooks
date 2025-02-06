@@ -112,12 +112,15 @@ function render_list_group($doc, $hierarchy, $show_posts_count, $hierarchical) {
 function render_list_group_item($doc, $parent_item, $show_posts_count, $level = 0, $hierarchical) {
     $fragment = $doc->createDocumentFragment();
 
+    $url = $parent_item->url ?? '#';
+
     // Render the current item (category)
     $link = $doc->createElement('a');
     $link_text = $doc->createTextNode($parent_item->label);
     $link->appendChild($link_text);
     add_class($link, 'list-group-item list-group-item-action d-flex justify-content-between align-items-center');
-    $link->setAttribute('href', $parent_item->url);
+    
+    $link->setAttribute('href', $url);
 
     // Indentation for nested categories
     if ($level > 0) {
