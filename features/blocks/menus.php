@@ -109,7 +109,7 @@ function render_list_group($doc, $hierarchy, $show_posts_count, $hierarchical) {
     return $list_group_wrapper;
 }
 
-function render_list_group_item($doc, $parent_item, $show_posts_count, $level = 0, $hierarchical) {
+function render_list_group_item($doc, $parent_item, $show_posts_count, $level = 0, $hierarchical = false) {
     $fragment = $doc->createDocumentFragment();
 
     $url = $parent_item->url ?? '#';
