@@ -10,6 +10,14 @@ function get_options($context = null) {
   return $content;
 }
 
+function get_block_options($block) {
+  return apply_filters(
+    'bootstrap_block_options',
+    wp_bootstrap_options(),
+    $block
+  );
+}
+
 function get_markup($content) {
   $content = the_content_alerts($content);
   $content = the_content_images($content);

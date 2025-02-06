@@ -18,19 +18,21 @@ function render_block_post_template($content, $block) {
 
   $doc = parse_html($content);
   $doc_xpath = new \DOMXPath($doc);
-  $container = root_element($doc);
+  $container = find_by_class($doc, '~^wp-block-post-template~');
 
-  $list = $container;
+  if (!$container) {
+    return $content;
+  }
 
-  remove_class($list, "~^wp-container-core-post-template~");
-  remove_class($list, "~^wp-block-post-template-is-layout~");
+  remove_class($container, "~^wp-container-core-post-template~");
+  remove_class($container, "~^wp-block-post-template-is-layout~");
 
-  remove_class($list, '~^columns-~');
-  add_class($list, 'row');
+  remove_class($container, '~^columns-~');
+  add_class($container, 'row');
 
-  remove_class($list, 'wp-block-post-template');
-  remove_class($list, '~^is-layout-~');
-  add_class($list, 'gap-0');
+  remove_class($container, 'wp-block-post-template');
+  remove_class($container, '~^is-layout-~');
+  add_class($container, 'gap-0');
 
   $style = isset($attrs['style']) ? $attrs['style'] : [];
   $spacing = isset($style['spacing']) ? $style['spacing'] : [];
@@ -39,12 +41,14 @@ function render_block_post_template($content, $block) {
   if ($blockGap !== null) {
     $blockGapValue = get_theme_css_var($blockGap);
     
-    add_style($list, '--bs-gutter-y', $blockGapValue);
-    add_style($list, '--bs-gutter-x', $blockGapValue);
+    add_style($container, '--bs-gutter-y', $blockGapValue);
+    add_style($container, '--bs-gutter-x', $blockGapValue);
     
   } else {
     add_class($list, 'g-4');
   }
+
+  $list = $this->query('./ul', $container)->item(0) ?: $container;
 
   if ($list) {
     $list_items = iterator_to_array($doc_xpath->query('./li', $list));

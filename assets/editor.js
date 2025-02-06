@@ -103,7 +103,7 @@
     const themeData = getThemeData(); 
     const backgroundColor = themeData.styles.color.background;
 
-    if (backgroundColor) {
+    if (editorWrapper && backgroundColor) {
       const computedBackgroundColor = computedColor(backgroundColor);
 
       if (computedBackgroundColor) {

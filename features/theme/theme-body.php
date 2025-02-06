@@ -10,6 +10,7 @@ function theme_body($buffer) {
       ? '#' . get_background_color()
       : ''
   );
+  $bg_color_value = $resolve_preset($background_color);
 
   $bs_theme = '';
 

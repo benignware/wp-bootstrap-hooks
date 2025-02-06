@@ -1,8 +1,11 @@
 <?php $lightbox_in = true ?>
 <div
-  <?php foreach (array_merge($lightbox['attrs'] ?? [], [
+  <?php
+    $attrs = $lightbox['attrs'] ?? [];
+    $class = $attrs['class'] ?? '';
+    foreach (array_merge($attrs, [
     'id' => "$id-modal",
-    'class' => 'modal fade ' . $lightbox['attrs']['class'] ?? '',
+    'class' => 'modal fade ' .$class,
     'tabindex' => '-1',
     'role' => 'dialog',
     'aria-hidden' => 'true',

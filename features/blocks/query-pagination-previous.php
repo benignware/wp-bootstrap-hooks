@@ -11,21 +11,21 @@ function render_block_query_pagination_previous($content, $block) {
     return $content;
   }
 
-  $options = wp_bootstrap_options();
+  extract(get_block_options($block));
   $attrs = $block['attrs'];
   $doc = parse_html($content);
-  $container = root_element($doc);
+  $container = find_by_class($doc, 'wp-block-query-pagination-previous');
 
   if (!$container) {
     return $content;
   }
 
-  add_class($container, 'page-link');
-  remove_class($container, 'has-small-font-size');
+  add_class($container, $page_link_class);
 
   $item = $doc->createElement('div');
-  add_class($item, 'page-item');
+  add_class($item, $page_item_class);
   $item->appendChild($container->cloneNode(true));
+  
   remove_class($container, 'has-small-font-size');
 
   $container->parentNode->appendChild($item);

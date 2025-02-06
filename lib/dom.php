@@ -63,6 +63,9 @@ function _stringify_style($styles) {
 }
 
 function add_style($element, $name, $value) {
+  if (!$element) {
+    return;
+  }
   $styles = _parse_style($element->getAttribute('style'));
   $styles[$name] = $value;
   $element->setAttribute('style', _stringify_style($styles));
@@ -102,7 +105,7 @@ function _stringify_class($classes) {
 }
 
 function has_class($element, ...$patterns) {
-  if (!$element || $element->nodeType !== 1) {
+  if (!$element || !is_object($element) || $element->nodeType !== 1) {
     return;
   }
 
@@ -130,6 +133,20 @@ function add_class($element, $class) {
   }
   
   $element->setAttribute('class', _stringify_class($classes));
+}
+
+function get_class($element) {
+  return _parse_class($element->getAttribute('class'));
+}
+
+function find_class($element, $pattern) {
+  $classes = _parse_class($element->getAttribute('class'));
+  
+  $result = array_values(array_filter($classes, function($class) use ($pattern) {
+    return $class === $pattern || preg_match($pattern, $class);
+  }));
+
+  return $result[0] ?? null;
 }
 
 function remove_class($element, $pattern, $recursive = false) {

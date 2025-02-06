@@ -17,6 +17,10 @@ function render_block_navigation($content, $block) {
   $doc_xpath = new \DOMXPath($doc);
   $container = find_by_class($doc, 'wp-block-navigation');
 
+  if (!$container) {
+    return $content;
+  }
+
   $content_class = 'wp-block-navigation__responsive-container';
   $close_class = 'wp-block-navigation__responsive-container-close';
   $button_class = 'wp-block-navigation__responsive-container-open';
@@ -155,6 +159,7 @@ function render_block_navigation($content, $block) {
 
   foreach ($flex as $item) {
     add_class($item, $nav_class);
+    remove_class($item, 'is-layout-flex');
   }
 
   remove_class($container, '~^wp-block-navigation~', true);
@@ -165,4 +170,4 @@ function render_block_navigation($content, $block) {
   return $output;
 }
 
-add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_navigation', 10, 2);
+add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_navigation', 100, 2);

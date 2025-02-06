@@ -65,9 +65,16 @@ function get_theme_css() {
     get_theme_palette_style(),
     get_theme_shadow_vars()
   );
+
   
   $rules = [
     $body_selector => $root_style,
+		":root .btn:where(.wp-element-button, .wp-block-button__link)" => [
+			'background-color' => 'var(--bs-btn-bg)',
+		],
+		":root .btn:where(.wp-block-button__link)" => [
+			'color' => 'var(--bs-btn-color)',
+		],
     '.btn, .wp-element-button' => get_theme_style([
       '--bs-btn-border-radius' => 'styles.elements-button.border.radius',
       '--bs-btn-padding-x' => 'styles.elements.button.spacing.padding.left',
@@ -85,6 +92,8 @@ function get_theme_css() {
       '--bs-btn-font-weight' => 'styles.blocks.core/button.typography.fontWeight',
       'text-transform' => 'styles.blocks.core/button.typography.textTransform',
       'letter-spacing' => 'styles.blocks.core/button.typography.letterSpacing',
+			'--bs-btn-color' => 'styles.blocks.core/button.color.text',
+			'--bs-btn-hover-color' => 'styles.blocks.core/button.color.text',
     ]),
     ".container" => [
 			'max-width' => 'var(--wp--style--global--wide-size, 1200px)',

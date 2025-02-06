@@ -2,6 +2,29 @@
 
 namespace benignware\wp\bootstrap_hooks;
 
+function calculate_column_classes($column_count, $prefix = 'col', $base = 12) {
+  $breakpoints = [
+      'xs' => min($column_count, 2),
+      'sm' => min($column_count, 2),
+      'md' => min($column_count, 2),
+      'lg' => min($column_count, 4),
+      'xl' => $column_count
+  ];
+
+  $breakpoint_values = array_map(function ($value) use ($base) {
+      return $base < 0 ? $value : round($base / $value);
+  }, $breakpoints);
+
+  $breakpoint_classes = array_map(function ($value, $key) use ($prefix) {
+      return "$prefix-$key-$value";
+  }, $breakpoint_values, array_keys($breakpoint_values));
+  
+  $class = implode(' ', $breakpoint_classes);
+  
+  return $class;
+}
+
+
 function render_block_columns($content, $block) {
   if (!current_theme_supports('bootstrap')) {
     return $content;
@@ -88,8 +111,31 @@ function render_block_columns($content, $block) {
       }
 
       if (!preg_match('/col-md/', $class)) {
-        add_class($child, 'col-md');
+        $column_classes = calculate_column_classes($column_count);
+        add_class($child, $column_classes);
       }
+
+      if (has_class($child, '~^is-vertically-aligned-~')) {
+        $vertical_alignment_class = find_class($child, '~^is-vertically-aligned-~');
+        
+        $vertical_alignment = preg_replace('/^is-vertically-aligned-/', '', $vertical_alignment_class);
+
+        if (has_class($child, 'is-layout-flow') || has_class($child, 'is-layout-constrained')) {
+          if ($vertical_alignment === 'stretch') {
+            $vertical_alignment = 'between';
+          }
+
+          add_class($child, sprintf('justify-content-%s', $vertical_alignment));
+          add_class($child, 'd-flex flex-column');
+        } else {
+          add_class($child, 'd-flex');
+          add_class($child, sprintf('align-items-%s', $vertical_alignment));
+        }
+
+        remove_class($child, '~^is-vertically-aligned-~');
+      }
+
+      remove_class($child, 'has-global-padding');
       
       $i++;
     }
@@ -99,12 +145,15 @@ function render_block_columns($content, $block) {
     $classes[] = sprintf('align-items-%s', $block['attrs']['verticalAlignment']);
   }
 
-
   while ($container->hasChildNodes()) {
     $row->appendChild($container->firstChild);
   }
 
   $container->appendChild($row);
 
+  remove_class($container, 'is-layout-flex');
+
   return serialize_html($doc);
 }
+
+add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_columns', 100000, 2);

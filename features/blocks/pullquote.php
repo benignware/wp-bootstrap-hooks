@@ -21,7 +21,7 @@ function render_block_pullquote($content, $block) {
 
   if ($blockquote) {
     // remove_class($container, '~^wp-block~');
-    add_class($container, $options['blockquote_class']);
+    add_class($blockquote, $options['blockquote_class']);
     $cite = $doc_xpath->query("//cite", $blockquote)->item(0);
 
     if ($cite) {

@@ -38,23 +38,54 @@ function render_block_with_styles($content, $block) {
       $theme_color_def = get_palette_color($bg_color);
       
       if ($theme_color_def) {
+        
         // Apply Bootstrap class for theme preset colors
         $theme_color = $theme_color_def['slug'];
-        add_class($element, 'text-bg-' . $theme_color);
+
+        if (!$theme_color) {
+          return $content;
+        }
+
+        $is_bs_theme_color = in_array([
+          'primary',
+          'secondary',
+          'success',
+          'danger',
+          'warning',
+          'info',
+          'light',
+          'dark',
+          'body-secondary',
+          'body-tertiary'
+        ], $theme_color);
+
+        if ($is_bs_theme_color) {
+          add_class($element, 'text-bg-' . $theme_color);
+        } else {
+          $color_value = $theme_color_def['color'];
+          $rgba = 'rgba(from var(--bs-' . $theme_color . ', ' . $color_value . ') r g b / var(--bs-bg-opacity, 1))';
+
+          remove_class($element, '~-background-color$~');
+          remove_class($element, 'has-background');
+          
+          add_style(
+            $element,
+            'background-color',
+            $rgba
+          );
+        }
+        
       } elseif (is_color($bg_color)) {
         // Apply inline style for custom colors
         add_style($element, 'background-color', $bg_color);
       }
 
       $bg_color_value = $theme_color_def ? $theme_color_def['color'] : $bg_color;
-      $bg_brightness = intval(brightness($bg_color_value));
+      $bg_brightness = brightness($bg_color_value);
 
-      $is_dark = $bg_brightness <= 80;
+      $is_dark = $bg_brightness >= 0 && $bg_brightness <= 80;
 
-      if (!$is_dark) {
-        // $element->setAttribute('data-bs-theme', 'light');
-        return $content;
-      } else {
+      if ($is_dark) {
         $element->setAttribute('data-bs-theme', 'dark');
       }
     }
@@ -63,4 +94,4 @@ function render_block_with_styles($content, $block) {
 }
 
 // Register the filter
-add_filter('render_block', __NAMESPACE__ . '\\render_block_with_styles', 10, 2);
+add_filter('render_block', __NAMESPACE__ . '\\render_block_with_styles', 9, 2);

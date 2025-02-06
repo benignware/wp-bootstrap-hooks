@@ -15,19 +15,23 @@ function render_block_query_pagination_numbers($content, $block) {
     return $content;
   }
 
-  $options = wp_bootstrap_options();
+  extract(get_block_options($block));
   $attrs = $block['attrs'];
   $doc = parse_html($content);
-  $container = root_element($doc);
+  $container = find_by_class($doc, 'wp-block-query-pagination-numbers');
+
+  if (!$container) {
+    return $content;
+  }
 
   $links = find_all_by_class($container, 'page-numbers');
 
   foreach ($links as $link) {
     if ($link->nodeType === 1) {
-      add_class($link, 'page-link');
+      add_class($link, $page_link_class);
       
       $item = $doc->createElement('div');
-      $item->setAttribute('class', 'page-item');
+      $item->setAttribute('class', $page_item_class);
       
       $link->parentNode->insertBefore($item);
       $item->appendChild($link);

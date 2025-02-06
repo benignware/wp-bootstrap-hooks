@@ -126,6 +126,9 @@ function render_block_group_navbar($content, $block) {
     $nested_navbar->parentNode->removeChild($nested_navbar);
   }
 
+  remove_class($container, 'is-layout-flex');
+  remove_class($container, 'has-global-padding');
+
   return serialize_html($doc);
 
   add_class($collapse, 'collapse navbar-collapse');
@@ -178,6 +181,7 @@ function render_block_group_navbar($content, $block) {
   } catch (\Exception $e) {
     // ignore
   }
+  
   
 
   return serialize_html($doc);

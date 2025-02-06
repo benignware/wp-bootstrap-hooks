@@ -24,17 +24,8 @@ function render_block_group_card($content, $block) {
   }
 
   $card = $container;
-
-  // remove_class($card, 'is-layout-flex');
-  // remove_class($card, "~^wp-container-core-group-is-layout~");
   
   $card_bodies = find_all_by_class($container, 'card-body');
-
-  foreach ($card_bodies as $card_body) {
-    // remove_class($card_body, 'is-layout-flex');
-    // remove_class($card_body, "~^wp-container-core-group-is-layout~");
-  }
-
   $stretched_link = find_by_class($container, 'stretched-link');
 
   if (!$stretched_link) {

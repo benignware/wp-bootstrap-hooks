@@ -49,8 +49,6 @@ function render_block_group_navbar($content, $block) {
   
   $nav = $nested_navbars[0];
 
-  
-
   add_class($collapse, 'collapse navbar-collapse');
   remove_class($collapse, 'is-layout-flex');
 
