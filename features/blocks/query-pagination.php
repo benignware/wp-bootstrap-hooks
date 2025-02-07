@@ -15,7 +15,7 @@ function render_block_query_pagination($content, $block) {
 
   $attrs = $block['attrs'];
   $doc = parse_html($content);
-  $container = array_pop(find_all_by_class($doc, 'wp-block-query-pagination'));
+  $container = find_by_class($doc, 'wp-block-query-pagination');
 
   if (!$container) {
     return $content;

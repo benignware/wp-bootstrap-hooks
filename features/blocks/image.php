@@ -15,7 +15,11 @@ function render_block_image($content, $block) {
   $attrs = $block['attrs'];
   $doc = parse_html($content);
   $doc_xpath = new \DOMXPath($doc);
-  $container = root_element($doc);
+  $container = find_by_class($doc, 'wp-block-image');
+
+  if (!$container) {
+    return $content;
+  }
 
   add_class($container, 'clearfix');
 

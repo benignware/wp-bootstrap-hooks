@@ -28,7 +28,7 @@ function render_block_button($content, $block) {
   }
 
   if (isset($attrs['width'])) {
-    add_class($container, sprintf('w-%s', $attrs['width']));
+    add_class($block_element, sprintf('w-%s', $attrs['width']));
     add_class($button, 'd-block');
   }
 
@@ -154,7 +154,7 @@ function render_block_button($content, $block) {
     $button->setAttribute('href', $button->getAttribute('href') ?? '#');
   }
 
-  remove_class($container, 'is-style-outline', true);
+  remove_class($block_element, 'is-style-outline', true);
   // remove_class($container, '~^wp-block~', true);
 
   return serialize_html($doc);

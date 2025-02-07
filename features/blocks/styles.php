@@ -40,13 +40,13 @@ function render_block_with_styles($content, $block) {
       if ($theme_color_def) {
         
         // Apply Bootstrap class for theme preset colors
-        $theme_color = $theme_color_def['slug'];
+        $theme_color = $theme_color_def['slug'] ?? null;
 
         if (!$theme_color) {
           return $content;
         }
 
-        $is_bs_theme_color = in_array([
+        $is_bs_theme_color = in_array($theme_color, [
           'primary',
           'secondary',
           'success',
@@ -57,7 +57,7 @@ function render_block_with_styles($content, $block) {
           'dark',
           'body-secondary',
           'body-tertiary'
-        ], $theme_color);
+        ]);
 
         if ($is_bs_theme_color) {
           add_class($element, 'text-bg-' . $theme_color);

@@ -93,9 +93,10 @@ function render_block_columns($content, $block) {
       if ($width) {
         [$value, $unit] = preg_split('/(?<=[0-9])(?=[a-z%])/', $width);
 
-        if ($unit === '%') {
-          $size = $width / 100 * 12;
-          $grid_size = round($width / 100 * 12);
+        if ($value && $unit === '%') {
+          $value = floatval($value);
+          $size = $value / 100 * 12;
+          $grid_size = round($value / 100 * 12);
 
           if (abs($grid_size - $size)) {
             $class = sprintf($options['column_class'], $grid_size, $breakpoint);
