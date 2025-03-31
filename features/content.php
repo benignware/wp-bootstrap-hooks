@@ -7,4 +7,5 @@ require 'content/embeds.php';
 require 'content/forms.php';
 require 'content/buttons.php';
 require 'content/alerts.php';
+require 'content/shortcode.php';
 // require 'content/functions.php';

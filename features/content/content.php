@@ -3,6 +3,10 @@
 namespace benignware\wp\bootstrap_hooks;
 
 function the_content_content($content) {
+  // echo 'content';
+  // echo '<textarea>';
+  // echo $content;
+  // echo '</textarea>';
   if (!current_theme_supports('bootstrap')) {
     return $content;
   }

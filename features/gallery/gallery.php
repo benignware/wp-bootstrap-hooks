@@ -1,7 +1,7 @@
 <?php
 namespace benignware\wp\bootstrap_hooks;
 
-require "gallery-block.php";
+require_once "gallery-block.php";
 
 function render_gallery_template($template, $data = array()) {
   if (!file_exists($template)) {
@@ -64,14 +64,17 @@ function bootstrap_gallery($params, $content = null) {
   ];
 
   if (is_string($params['style'])) {
+    $css_text = $params['style'];
     $style = array_reduce(explode(';', trim($css_text)), function($result, $item) {
       $parts = explode(':', $item);
       $key = trim($parts[0]);
-      $value = trim($parts[1]);
-      $result[$key] = $value;
-      
+      $value = isset($parts[1]) ? trim($parts[1]) : null;
+      if ($key && $value) {
+        $result[$key] = $value;
+      }
       return $result;
     }, []);
+    
     $params['style'] = $style;
   }
 

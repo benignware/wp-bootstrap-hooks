@@ -21,7 +21,7 @@ function render_block_with_styles($content, $block) {
     $element = find_by_class($doc, $block_class_name) ?? root_element($doc);
 
     if (!$element) {
-        return $content;
+      return $content;
     }
   
     // Handle background color
@@ -29,7 +29,7 @@ function render_block_with_styles($content, $block) {
     $style_bg = $attrs['style']['color']['background'] ?? null;
 
     if (!$bg && !$style_bg) {
-        return $content;
+      return $content;
     }
     
     $bg_color = $bg ?: $style_bg;
@@ -55,8 +55,9 @@ function render_block_with_styles($content, $block) {
           'info',
           'light',
           'dark',
-          'body-secondary',
-          'body-tertiary'
+          'body-bg',
+          'body-secondary-bg',
+          'body-tertiary-bg',
         ]);
 
         if ($is_bs_theme_color) {

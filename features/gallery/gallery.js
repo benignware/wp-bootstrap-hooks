@@ -1,10 +1,16 @@
 document.addEventListener('DOMContentLoaded', () => {
-  if (!window.bootstrap || !window.bootstrap.Carousel) {
-    console.error("Bootstrap Carousel is not available.");
+  const carouselEls = document.querySelectorAll('.carousel');
+
+  if (!carouselEls.length) {
     return;
   }
 
-  document.querySelectorAll('.carousel').forEach(carouselEl => {
+  if (!window.bootstrap || !window.bootstrap.Carousel) {
+    console.warn("Bootstrap Carousel is not available.");
+    return;
+  }
+
+  carouselEls.forEach(carouselEl => {
     CarouselController.getOrCreateInstance(carouselEl);
   });
 });

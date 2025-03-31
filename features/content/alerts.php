@@ -20,17 +20,11 @@ function the_content_alerts($content) {
     return $content;
   }
 
-
-  // echo 'alerts<br/>';
-  // echo '<textarea>';
-  // echo $content;
-  // echo '</textarea>';
-
-
   foreach($alerts as $alert) {
     if (!has_class($alert, 'alert')) {
       add_class($alert, 'alert-secondary');
     }
+  
     preg_match('~\balert-(\w+)\b~', $alert->getAttribute('class'), $matches);
     $context = count($matches) ? $matches[1] : '';
 
@@ -38,19 +32,18 @@ function the_content_alerts($content) {
 
     foreach($alert_links as $alert_link) {
       if (!has_class($alert_link, '~btn|button~')) {
-        echo 'ALERT LINK: ' . $alert_link->getAttribute('class') . '<br/>';
         add_class($alert_link, 'alert-link');
       }
     }
 
-    // if ($context) {
-    //   $alert_buttons = find_all_by_class($alert, 'btn');
+    if ($context) {
+      $alert_buttons = find_all_by_class($alert, 'btn');
 
-    //   foreach($alert_buttons as $alert_button) {
-    //     remove_class($alert_button, '~^btn-~');
-    //     add_class($alert_button, "btn-$context");
-    //   }
-    // }
+      foreach($alert_buttons as $alert_button) {
+        remove_class($alert_button, '~^btn-~');
+        add_class($alert_button, "btn-$context");
+      }
+    }
   }
 
   return serialize_html($doc);

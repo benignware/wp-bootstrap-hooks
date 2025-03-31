@@ -15,10 +15,17 @@ function the_content_forms($content) {
   $xpath = new \DOMXPath($doc);
   
   // Form inputs
-  $input_elements = $xpath->query("//select|//textarea|//input[not(@type='checkbox') and not(@type='radio') and not(@type='submit')]");
+  $input_elements = $xpath->query("//textarea|//input[not(@type='checkbox') and not(@type='radio') and not(@type='submit')]");
   
   foreach ($input_elements as $input_element) {
     add_class($input_element, $options['text_input_class']);
+  }
+
+  // Form selects
+  $select_elements = $xpath->query("//select");
+  
+  foreach ($select_elements as $select_element) {
+    add_class($select_element, $options['form_select_class']);
   }
 
   // Labels

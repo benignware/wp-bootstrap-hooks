@@ -259,8 +259,6 @@ function _bootstrap_presets_css_action() {
 		return $acc;
 	}, []);
 
-	
-
 	$css = array_merge([
 		$body_selector => array_merge([
 			'--bs-body-bg' => $background_color,
@@ -320,6 +318,9 @@ function _bootstrap_presets_css_action() {
 			'color' => 'inherit'
 		],
 		".btn.wp-block-button" => $button_styles,
+		'.btn.btn-primary' => [
+			'color' => query_object($theme_json, 'styles.elements.button.color.text'),
+		]
 	], $block_css);
 
 	// echo $button_border_radius;

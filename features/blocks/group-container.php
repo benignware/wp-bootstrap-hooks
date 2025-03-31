@@ -21,14 +21,13 @@ function render_block_group_container($content, $block) {
 
   remove_class($container, 'container', true);
   remove_class($container, 'container-fluid', true);
+  remove_class($container, 'has-global-padding', true);
 
   if ($is_alignfull) {
     add_class($container, 'container-fluid');
   } else if ($is_alignwide) {
     add_class($container, 'container');
   }
-
-  remove_class($container, 'has-global-padding');
 
   return serialize_html($doc);
 }

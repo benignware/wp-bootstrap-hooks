@@ -75,7 +75,7 @@ function get_theme_css() {
 		":root .btn:where(.wp-block-button__link)" => [
 			'color' => 'var(--bs-btn-color)',
 		],
-    '.btn, .wp-element-button' => get_theme_style([
+    '.btn:not(.wp-element-button), .wp-element-button' => get_theme_style([
       '--bs-btn-border-radius' => 'styles.elements-button.border.radius',
       '--bs-btn-padding-x' => 'styles.elements.button.spacing.padding.left',
       '--bs-btn-padding-y' => 'styles.elements.button.spacing.padding.top',
@@ -95,6 +95,16 @@ function get_theme_css() {
 			'--bs-btn-color' => 'styles.blocks.core/button.color.text',
 			'--bs-btn-hover-color' => 'styles.blocks.core/button.color.text',
     ]),
+		'.btn.btn-primary:not(.wp-block-button)' => get_theme_style([
+			'--bs-btn-color' => 'styles.elements.button.color.text',
+			'--bs-btn-hover-color' => 'styles.elements.button.color.text',
+			'--bs-btn-active-color' => 'styles.elements.button.color.text',
+		]),
+		'.btn.btn-outline-primary:not(.wp-block-button)' => get_theme_style([
+			'--bs-btn-color' => 'styles.elements.button.color.background',
+			'--bs-btn-hover-color' => 'styles.elements.button.color.text',
+			'--bs-btn-active-color' => 'styles.elements.button.color.text',
+		]),
     ".container" => [
 			'max-width' => 'var(--wp--style--global--wide-size, 1200px)',
 		],
@@ -137,6 +147,9 @@ function get_theme_css() {
 			'color' => 'inherit'
 		],
   ];
+
+	$rules = apply_filters('bootstrap_theme_css_rules', $rules);
+
   $css = get_theme_css_from_rules($rules);
   
   return $css;
