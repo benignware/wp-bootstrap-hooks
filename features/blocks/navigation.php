@@ -21,6 +21,13 @@ function render_block_navigation($content, $block) {
     return $content;
   }
 
+  // print_r($block);
+  // echo '<br/>';
+  // echo '<br/>';
+
+  $menu_id = $attrs['ref'] ?? null;
+  $block_menu = get_block_menu_by_id($menu_id);
+
   $content_class = 'wp-block-navigation__responsive-container';
   $close_class = 'wp-block-navigation__responsive-container-close';
   $button_class = 'wp-block-navigation__responsive-container-open';
@@ -37,20 +44,34 @@ function render_block_navigation($content, $block) {
   add_class($container, 'navbar');
   add_style($container, 'gap', '0.5rem');
   
-  $menus = $doc_xpath->query(".//ul", $container);
+  $menus = $doc_xpath->query(".//ul[not(ancestor::ul)]", $container);
 
   foreach($menus as $menu) {
-    add_class($menu, 'nav navbar-nav');
-    $walker = get_block_nav_walker($doc);
+    $walker = get_block_nav_walker($doc, $block_menu);
     $walker($menu);
+
+    if (!has_class($menu, 'dropdown-menu')) {
+      add_class($menu, 'nav navbar-nav');
+    }
+  }
+
+  $openSubmenusOnClick = isset($attrs['openSubmenusOnClick']) ? $attrs['openSubmenusOnClick'] : false;
+
+  if (!$openSubmenusOnClick) {
+    $submenus = find_all_by_class($container, 'dropdown');
+
+    foreach ($submenus as $submenu) {
+      add_class($submenu, 'dropdown-hover');
+    }
   }
 
   $is_vertical = has_class($container, 'is-vertical');
 
   $overlayMenu = isset($attrs['overlayMenu']) ? $attrs['overlayMenu'] : 'mobile';
-  $breakpoint = $is_vertical ? 'md' : 'md';
+  $breakpoint = null;
 
   if ($overlayMenu !== 'always') {
+    $breakpoint = $is_vertical ? 'md' : 'md';
     add_class($container,
       $overlayMenu === 'never'
         ? 'navbar-expand'
@@ -60,14 +81,22 @@ function render_block_navigation($content, $block) {
 
   $is_expand = preg_match('/\bnavbar-expand-(\w+)\b/', $container->getAttribute('class'));
 
-  $nav_class = "d-flex gap-2";
+  $attrs = array_merge($attrs, [
+    'isVertical' => $is_vertical,
+    'isExpand' => $is_expand,
+    'breakpoint' => $breakpoint,
+    'overlayMenu' => $overlayMenu,
+  ]);
 
-  if ($is_vertical || $is_expand) {
-    $nav_class.= ' flex-column';
-  }
+  // $nav_class = "d-flex gap-2";
+  $nav_class = "";
+
+  // if ($is_vertical || $is_expand) {
+  //   $nav_class.= ' flex-column align-items-start';
+  // }
   
   if ($is_expand && !$is_vertical) {
-    $nav_class.= " flex-$breakpoint-row";
+    $nav_class.= " flex-row align-items-$breakpoint-center"; // flex-$breakpoint-row 
   }
 
   if ($nav_content) {
@@ -107,19 +136,37 @@ function render_block_navigation($content, $block) {
         $child->appendChild($content_fragment);
       }
     }
-    
+
+    $menu_title = $block_menu ? $block_menu['post_title'] : __('Navigation', 'bootstrap-hooks');
+
+    $nav_content_attrs = array_merge($attrs, [
+      'id' => $collapse_id,
+      'class' => $nav_modal_class,
+      'content_class' => $nav_content_class,
+      'menu_title' => $menu_title
+    ]);
     $nav_content_html = get_inner_html($nav_content);
     $navbar_content_template = '<div id="%1$s" class="%2$s %4$s">%3$s</div>';
-    $navbar_content_template = apply_filters('bootstrap_navbar_modal_template', $navbar_content_template, $attrs);
+    $navbar_content_template = apply_filters(
+      'bootstrap_navbar_modal_template',
+      $navbar_content_template,
+      $nav_content_attrs
+    );
+    
     $navbar_content_html = sprintf(
       $navbar_content_template,
       esc_attr($collapse_id),
       esc_attr($nav_modal_class),
       $nav_content_html,
       esc_attr($nav_content_class),
+      $menu_title
     );
 
-    $navbar_content_html = apply_filters('bootstrap_navbar_modal_html', $navbar_content_html, $attrs);
+    $navbar_content_html = apply_filters(
+      'bootstrap_navbar_modal_html',
+      $navbar_content_html,
+      $nav_content_attrs
+    );
     $fragment = get_html_fragment($doc, $navbar_content_html);
     $nav_content->parentNode->replaceChild($fragment, $nav_content);
   }
@@ -171,3 +218,26 @@ function render_block_navigation($content, $block) {
 }
 
 add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_navigation', 100, 2);
+
+
+function navbar_modal_template_offcanvas($template, $attrs = []) {
+  $options = wp_bootstrap_options();
+  $modal_type = $options['navbar_modal_type'] ?? 'collapse';
+
+  if ($modal_type !== 'offcanvas') {
+    return $template;
+  }
+
+  $template = $options['navbar_modal_template_offcanvas'] ??
+    '<div id="%1$s" class="%2$s" tabindex="-1" aria-labelledby="offcanvasNavbarLabel">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navigation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body %4$s">%3$s</div>
+    </div>';
+
+  return $template;
+}
+
+add_filter('bootstrap_navbar_modal_template', 'benignware\wp\bootstrap_hooks\navbar_modal_template_offcanvas', 10, 2);

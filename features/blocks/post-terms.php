@@ -26,11 +26,13 @@ function render_block_post_terms($content, $block) {
     add_class($tag, $options['post_tag_link_class']);
   }
 
-  $separators = iterator_to_array($xpath->query('//span[@class="wp-block-post-terms__separator"]'));
+  // $separator = $options['post_tag_separator'];
 
-  foreach ($separators as $separator) {
-    $separator->parentNode->removeChild($separator);
-  }
+  // $separators = iterator_to_array($xpath->query('//span[@class="wp-block-post-terms__separator"]'));
+
+  // foreach ($separators as $separator) {
+  //   $separator->parentNode->removeChild($separator);
+  // }
 
   return serialize_html($doc);
 }

@@ -63,6 +63,8 @@ function bootstrap_gallery($params, $content = null) {
     'style' => [],
   ];
 
+  // $params['type'] = 'snapper'; 
+
   if (is_string($params['style'])) {
     $css_text = $params['style'];
     $style = array_reduce(explode(';', trim($css_text)), function($result, $item) {
@@ -246,9 +248,22 @@ function enqueue_gallery_scripts() {
     null,
     true
   );
+  wp_enqueue_script(
+    'bootstrap-gallery-snapper',
+    plugins_url('gallery-snapper.js', __FILE__),
+    [],
+    null,
+    false
+  );
+
   wp_enqueue_style(
     'bootstrap-gallery',
     plugins_url('gallery.css', __FILE__)
+  );
+
+  wp_enqueue_style(
+    'bootstrap-gallery-snapper',
+    plugins_url('gallery-snapper.css', __FILE__)
   );
 
   // Zoom, not yet fully implemented:

@@ -1,4 +1,9 @@
-<?php $lightbox_in = true ?>
+<?php
+namespace benignware\wp\bootstrap_hooks;
+
+$lightbox_in = true
+
+?>
 <div
   <?php
     $attrs = $lightbox['attrs'] ?? [];
@@ -18,13 +23,19 @@
       <?php if ($lightbox['header']): ?>
         <div class="modal-header">
           <h5 class="modal-title"><?= $title ?></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button> -->
+           <?php echo get_icon('', [
+            'tag' => 'button',
+            'class' => 'btn-close',
+            'data-bs-dismiss' => 'modal',
+            'aria-label' => 'Close',
+          ]) ?>
         </div>
       <?php endif; ?>
-      <div class="modal-body p-0">
+      <div class="modal-body p-0 h-100">
         <div
           id="<?= $id ?>-lightbox-carousel"
-          class="carousel slide h-100"
+          class="carousel slide h-100 d-flex flex-column"
           data-bs-ride="<?= $autoplay ? 'carousel' : 'false'; ?>"
           data-bs-interval="<?= !$autoplay ? 'false' : $interval; ?>"
         >
@@ -53,19 +64,9 @@
                 </span>
               </button>
             <?php endif ?>
-            <?php if ($wp_query->post_count > 1): ?>
-              <div class="carousel-indicators">
-                <?php while( have_posts()) : the_post() ?>
-                  <button
-                    data-bs-target="#<?= $id ?>-lightbox-carousel"
-                    data-bs-slide-to="<?= $wp_query->current_post; ?>"
-                    class="<?= $wp_query->current_post === 0 ? 'active' : '' ?>"
-                  ></button>
-                <?php endwhile; ?>
-              </div>
-            <?php endif ?>
+            
           <?php endif; ?>
-          <div class="carousel-inner h-100">
+          <div class="carousel-inner flex-grow-1">
             <?php while( have_posts()) : the_post() ?>
               <div class="carousel-item h-100<?= $wp_query->current_post === 0 ? ' active' : '' ?>">
                 <div
@@ -98,14 +99,33 @@
           </div>
           <?php if ($wp_query->post_count > 1): ?>
             <button class="carousel-control-prev" type="button" data-bs-target="#<?= $id ?>-lightbox-carousel" data-bs-slide="prev" data-control>
-              <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+              <!-- <span class="carousel-control-prev-icon" aria-hidden="true"></span> -->
+                <?php echo get_icon('chevron-left', [
+                  'tag' => 'span',
+                  'class' => 'carousel-control-prev-icon',
+                ]) ?>
               <span class="visually-hidden">Previous</span>
             </button>
-            <button class="carousel-control-next" type="button" data-bs-target="#<?= $id ?>-lightbox-carousel" data-bs-slide="next" data-control>
-              <span class="carousel-control-next-icon" aria-hidden="true"></span>
-              <span class="visually-hidden">Next</span>
-            </button>
-          <?php endif ?>
+            <?php if (!$lightbox['footer']): ?>
+              <div class="carousel-indicators">
+                <?php while( have_posts()) : the_post() ?>
+                  <button
+                    data-bs-target="#<?= $id ?>-lightbox-carousel"
+                    data-bs-slide-to="<?= $wp_query->current_post; ?>"
+                    class="<?= $wp_query->current_post === 0 ? 'active' : '' ?>"
+                  ></button>
+                <?php endwhile; ?>
+              </div>
+            <?php endif ?>
+              <button class="carousel-control-next" type="button" data-bs-target="#<?= $id ?>-lightbox-carousel" data-bs-slide="next" data-control>
+                <!-- <span class="carousel-control-next-icon" aria-hidden="true"></span> -->
+                 <?php echo get_icon('chevron-right', [
+                  'tag' => 'span',
+                  'class' => 'carousel-control-next-icon',
+                ]) ?>
+                <span class="visually-hidden">Next</span>
+              </button>
+            <?php endif ?>
         </div>
       </div>
       <?php if ($lightbox['footer']): ?>
@@ -170,7 +190,8 @@
               data-toggle="zoom"
               data-target="#<?= $id ?>-lightbox-carousel"
             >
-              <?= apply_filters('bootstrap_icon', '<i>⌕</i>', 'search') ?>
+              <?php  /* apply_filters('bootstrap_icon', '<i>⌕</i>', 'search') */ ?>
+              <?php echo get_icon('search', 'carousel') ?>
             </button> -->
           </div>
         </div>

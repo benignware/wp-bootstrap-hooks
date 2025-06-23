@@ -46,7 +46,11 @@ function get_color_value($color) {
   return array_shift($matches);
 }
 
-function get_theme_css_var($input) {
+function get_theme_css_var($input = null) {
+  if (!is_string($input) || empty($input)) {
+    return '';
+  }
+
   if (strpos($input, 'var:preset|') === 0) {
     // Remove the 'var:preset|' prefix
     $output = str_replace('var:preset|', '--wp--preset--', $input);

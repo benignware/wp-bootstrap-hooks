@@ -28,3 +28,13 @@
 .input-group.is-expandable input[type="search"] + button {
   border-left: none; /* Remove overlapping border */
 }
+
+/* Collapse */
+[data-bs-toggle="collapse"] .details-toggle-icon {
+  transition: all 0.14s ease; /* Smooth transition for the collapse */
+}
+
+[data-bs-toggle="collapse"][aria-expanded="true"] .details-toggle-icon {
+  transform: rotate(90deg); /* Rotate the icon when expanded */
+  transform-origin: center; /* Ensure rotation is centered */
+}

@@ -31,6 +31,7 @@ function calculate_column_classes(
 
 
 function render_block_columns($content, $block) {
+  return $content;
   if (!current_theme_supports('bootstrap')) {
     return $content;
   }
@@ -80,6 +81,8 @@ function render_block_columns($content, $block) {
     add_class($row, 'g-4');
   }
 
+  // add_style($row, 'margin-top', 'calc(-2 * var(--bs-gutter-y))');
+  
   add_class($row, 'row');
   remove_class($row, '~^is-layout-');
 
@@ -98,8 +101,14 @@ function render_block_columns($content, $block) {
   }
 
   foreach ($column_elems as $i => $child) {
-    
     $column = isset($columns[$i]) ? $columns[$i] : null;
+
+    $has_content = is_empty($child) === false;
+
+    if (!$has_content) {
+      remove_all_children($child);
+    }
+    
     $column_attrs = $column ? $column['attrs'] : [];
 
     $class = $child->getAttribute('class');
@@ -177,21 +186,21 @@ function render_block_columns($content, $block) {
         add_class($child, 'd-flex flex-column');
       }
 
-      // if (has_class($child, 'is-layout-flow') || has_class($child, 'is-layout-constrained')) {
-      //   if ($vertical_alignment === 'stretch') {
-      //     $vertical_alignment = 'between';
-      //   }
+      if (has_class($child, 'is-layout-flow') || has_class($child, 'is-layout-constrained')) {
+        if ($vertical_alignment === 'stretch') {
+          $vertical_alignment = 'between';
+        }
 
-      //   add_class($child, sprintf('justify-content-%s', $vertical_alignment));
-      //   add_class($child, 'd-flex flex-column');
-      // } else {
-      //   add_class($child, 'd-flex');
-      //   add_class($child, sprintf('align-items-%s', $vertical_alignment));
-      // }
+        add_class($child, sprintf('justify-content-%s', $vertical_alignment));
+        add_class($child, 'd-flex flex-column');
+      } else {
+        add_class($child, 'd-flex');
+        add_class($child, sprintf('align-items-%s', $vertical_alignment));
+      }
 
 
       remove_class($child, '~^is-vertically-aligned-~');
-      add_class($child, 'vert-test');
+      // add_class($child, 'vert-test');
     }
 
     remove_class($child, 'has-global-padding');

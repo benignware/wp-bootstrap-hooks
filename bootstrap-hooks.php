@@ -17,9 +17,12 @@ require_once 'lib/object.php';
 require_once 'lib/math.php';
 require_once 'lib/theme.php';
 require_once 'lib/helpers.php';
+require_once 'lib/html.php';
 
 require_once 'features/functions.php';
 require_once 'features/addons/addons.php';
+require_once 'features/adminbar/adminbar.php';
+require_once 'features/icons/icons.php';
 
 function wp_bootstrap_hooks() {
   $args = func_get_args();
@@ -104,6 +107,7 @@ function wp_bootstrap_options() {
     'post_tag_class' => 'btn btn-sm btn-outline-primary text-wrap mb-1', // Tag cloud
     'post_tag_count_class' => 'badge bg-primary',
     'post_tag_link_class' => 'badge text-bg-primary',
+    // 'post_tag_separator' => ', ',
     // Gallery
     // 'gallery_thumbnail_size' => 'thumbnail',
     // 'gallery_thumbnail_class' => '',
@@ -206,4 +210,7 @@ add_filter('bootstrap_options', function($options, $args) {
 add_action('wp_enqueue_scripts', function() {
   wp_enqueue_style('bootstrap-hooks', plugin_dir_url(__FILE__) . 'assets/style.css');
   wp_enqueue_script('bootstrap-hooks', plugin_dir_url(__FILE__) . 'assets/script.js', [], null, false);
+  wp_localize_script('bootstrap-hooks ', 'bootstrapHooks', [
+    'options' => wp_bootstrap_options(),
+  ]);
 });

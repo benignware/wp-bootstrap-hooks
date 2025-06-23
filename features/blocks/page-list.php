@@ -17,7 +17,7 @@ function render_block_page_list($content, $block) {
   $container = root_element($doc);
 
   add_class($container, 'nav');
-  $walker = get_block_nav_walker($doc);
+  $walker = get_block_nav_walker($doc, $attrs);
   $walker($container);
 
   return serialize_html($doc);

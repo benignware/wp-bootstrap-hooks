@@ -10,26 +10,49 @@ function render_block_group_container($content, $block) {
   $options = wp_bootstrap_options();
   $attrs = $block['attrs'];
   $doc = parse_html($content);
-  $container = root_element($doc);
 
-  $is_alignfull = has_class($container, 'alignfull');
-  $is_alignwide = has_class($container, 'alignwide');
-
-  if (!$is_alignfull && !$is_alignwide) {
+  $body = $doc->getElementsByTagName('body')->item(0);
+  
+  if (!$body) {
     return $content;
   }
 
-  remove_class($container, 'container', true);
-  remove_class($container, 'container-fluid', true);
+  foreach ($body->childNodes as $node) {
+    if ($node->nodeType !== XML_ELEMENT_NODE || $node->nodeName !== 'div') {
+      continue;
+    }
+
+    $is_alignfull = has_class($node, 'alignfull');
+    $is_alignwide = has_class($node, 'alignwide');
+
+    if (!$is_alignfull && !$is_alignwide) {
+      continue;
+    }
+
+    // echo 'Processing group container alignment: ' . ($is_alignfull ? 'alignfull' : 'alignwide') . "<br>";
+    
+    $container = $node;
+  }
+
+  if (!$container) {
+    return $content;
+  }
+  // remove_class($container, 'container', true);
+  // remove_class($container, 'container-fluid', true);
   remove_class($container, 'has-global-padding', true);
 
   if ($is_alignfull) {
-    add_class($container, 'container-fluid');
+    // remove_class($container, 'container-fluid', true);
+    // add_class($container, 'container-fluid');
   } else if ($is_alignwide) {
-    add_class($container, 'container');
+    remove_class($container, 'container-fluid', true);
+    add_class($container, 'container-fluid');
+    // remove_class($container, 'container', true);
+    // add_class($container, 'container');
   }
+
 
   return serialize_html($doc);
 }
 
-add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_group_container', 10, 2);
+add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_group_container', 1000, 2);

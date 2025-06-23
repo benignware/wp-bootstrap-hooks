@@ -33,3 +33,66 @@
 .dropend .dropdown-toggle::after {
   margin-left: 0.5rem;
 }
+
+.dropdown-hover:hover .dropdown-menu:not(.offcanvas:where(.show, .showing, .hiding) *) {
+  display: block;
+}
+
+.dropdown-menu {
+  top: 100%;
+  left: 0;
+  margin-top: var(--bs-dropdown-spacer);
+}
+
+.dropdown-menu.dropdown-spacer {
+  height: var(--bs-dropdown-spacer);
+  border: 0;
+  border-radius: 0;
+  /* visibility: hidden; */
+  background: transparent;
+  margin-top: 0;
+}
+
+/* .dropdown-menu:before {
+  content: "";
+  position: absolute;
+  top: calc(var(--bs-dropdown-spacer) * -1);
+  top: 0;
+  left: 0;
+  right: 0;
+  background-color: red;
+  height: var(--bs-dropdown-spacer);
+} */
+
+
+.offcanvas:where(.show, .showing, .hiding) .dropdown-menu,
+.navbar-collapse:where(.show) .dropdown-menu {
+  position: static !important;
+  transform: none !important;
+}
+
+.offcanvas:where(.show, .showing, .hiding) .navbar-nav > .nav-item,
+.navbar-collapse:where(.show)  .navbar-nav >  .nav-item {
+  flex-wrap: wrap;
+}
+
+.offcanvas:where(.show, .showing, .hiding) .navbar-nav >  .nav-item,
+.offcanvas:where(.show, .showing, .hiding) .navbar-nav > .nav-item > .nav-link,
+.offcanvas:where(.show, .showing, .hiding) .dropdown-menu,
+.navbar-collapse:where(.show) .navbar-nav >  .nav-item,
+.navbar-collapse:where(.show) .navbar-nav >  .nav-item > .nav-link,
+.navbar-collapse:where(.show) .dropdown-menu {
+  width: 100%;
+}
+
+.offcanvas:where(.show, .showing, .hiding) .dropdown-toggle,
+.navbar-collapse:where(.show) .dropdown-toggle {
+  display: flex;
+  align-items: center;
+}
+
+.offcanvas:where(.show, .showing, .hiding) .dropdown-toggle::after,
+.navbar-collapse:where(.show) .dropdown-toggle::after {
+  margin-left: auto;
+  border-left: 0.255em solid transparent
+}

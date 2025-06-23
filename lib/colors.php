@@ -25,7 +25,7 @@ function color_tint($color, $weight = 0.5) {
     $t = hex2rgb($color);
   }
 
-  $u = mix($t, array(255, 255, 255), $weight);
+  $u = color_mix($t, array(255, 255, 255), $weight);
 
   if (is_string($color)) {
     return rgb2hex($u);
@@ -41,7 +41,7 @@ function color_tone($color, $weight = 0.5) {
     $t = hex2rgb($color);
   }
 
-  $u = mix($t, array(128, 128, 128), $weight);
+  $u = color_mix($t, array(128, 128, 128), $weight);
 
   if (is_string($color)) {
     return rgb2hex($u);
@@ -57,11 +57,25 @@ function color_shade($color, $weight = 0.5) {
     $t = hex2rgb($color);
   }
 
-  $u = mix($t, array(0, 0, 0), $weight);
+  $u = color_mix($t, array(0, 0, 0), $weight);
 
   if (is_string($color)) {
     return rgb2hex($u);
   }
+
+  return $u;
+}
+
+function color_shift($color, $weight = 0.5) {
+  $t = $color;
+
+  if (is_string($color)) {
+    $t = hex2rgb($color);
+  }
+
+  $brightness = brightness($t);
+
+  $u = color_mix($t, $brightness > 128 ? array(0, 0, 0) : array(255, 255, 255), $weight);
 
   return $u;
 }
@@ -145,7 +159,7 @@ function is_color($color) {
   return strpos($color, '#') === 0 || preg_match('/\s*rgba?\s*\((\d+)\s*,\s*(\d+),\s*(\d+)(?:,\s*([\d.]+))?/', $color);
 }
 
-function contrast_color($color) {
+function contrast_color($color, $light = '#ffffff', $dark = '#000000') {
   $rgb = rgb($color);
 
   if ($rgb) {
@@ -153,7 +167,7 @@ function contrast_color($color) {
 
     $yiq = (($r * 299) + ($g * 587) + ($b * 114)) / 1000;
 
-    return $yiq >= 128 ? '#000000' : '#ffffff';
+    return $yiq >= 128 ? $dark : $light;
   }
 
   return null;

@@ -60,8 +60,9 @@ add_action( 'wp_enqueue_scripts', function() {
     return;
   }
 
-  $options = wp_bootstrap_options();
+  return;
 
+  $options = wp_bootstrap_options();
   $caret_class = isset($options['caret_class']) ? $options['caret_class'] : '';
 
   wp_register_script( 'bootstrap-hooks-dropdown-links', '', [], '', true );
@@ -71,12 +72,23 @@ add_action( 'wp_enqueue_scripts', function() {
     const caretSelector = '$caret_class';
     const handler = (e) => {
       const target = event.target.closest('a[href].dropdown-toggle');
-  
+      
       if (!target) {
         return;
       }
   
       if (target.href.startsWith('#') || target.href.startsWith('javascript:')) {
+        return;
+      }
+
+      console.log('Dropdown link clicked:', target.href);
+
+      const isHover = !!target.closest('.dropdown-hover');
+
+      console.log('isHover:', isHover);
+  
+      if (isHover) {
+        window.location.href = target.href;
         return;
       }
   
@@ -110,8 +122,9 @@ add_action( 'wp_enqueue_scripts', function() {
       }
   
       const hasText = [...target.childNodes].some(node => node.nodeType === 3);
+      const isTextHit = !hasText && event.target !== target || hasText && event.target === target;
   
-      if (!hasText && event.target !== target || hasText && event.target === target) {
+      if (isTextHit) {
         window.location.href = target.href;
       }
     }

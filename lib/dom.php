@@ -427,3 +427,17 @@ function get_html_fragment(DOMDocument $doc, string $html): DOMDocumentFragment
 
     return $fragment;
 }
+
+function is_empty($element) {
+  if ($element->nodeType !== XML_ELEMENT_NODE) {
+    return false;
+  }
+
+  foreach ($element->childNodes as $child) {
+    if ($child->nodeType !== XML_TEXT_NODE || trim($child->nodeValue) !== '') {
+      return false; // Found a non-text node or non-whitespace text
+    }
+  }
+
+  return true; // Only whitespace text nodes or no children at all
+}

@@ -1,7 +1,7 @@
 <?php $column_width = 72 ?>
 <div
-  class="position-relative d-block"
-  style="height: 100px; "
+  class="position-relative d-block w-100"
+  style="min-height: 90px; "
 >
   <div
     <?php foreach (array_merge($thumbnails['attrs'] ?? [], [

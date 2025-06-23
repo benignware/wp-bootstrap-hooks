@@ -19,7 +19,7 @@ function adminbar_sticky_adjust() {
 	}
 
 	.modal {
-		z-index: 100000;
+		z-index: 10000;
 	}
 	EOT;
 

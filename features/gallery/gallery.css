@@ -1,3 +1,7 @@
+.carousel {
+  justify-content: space-between;
+}
+
 .carousel-slide-backdrop {
   object-fit: cover;
   object-position: center;
@@ -35,13 +39,13 @@
   margin-bottom: 0;
 }
 
-.modal-footer .carousel-indicators button[data-bs-target]{
+/* .modal-footer .carousel-indicators button[data-bs-target]{
   background-color: currentColor;
 }
 
 [data-bs-theme=dark] .modal-footer .carousel-indicators button[data-bs-target]{
   background-color: currentColor;
-}
+} */
 
 .carousel-control-play {
   appearance: none;
@@ -65,4 +69,16 @@
 
 .no-transition .carousel-item {
   transition: none !important;
+}
+
+.snapper-outer,
+.gallery-inner {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  position: relative;
+  /* column-gap: var(--bs-gutter-.x); */
+  /* row-gap: var(--bs-gutter-y); */
 }

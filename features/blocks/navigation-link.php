@@ -21,14 +21,19 @@ function render_block_navigation_link($content, $block) {
     return $content;
   }
 
+  // print_r($block_element);
+  // echo '<br/>';
+  // echo '<br/>';
+  // echo '<br/>';
+
   if ($block_element->tagName === 'li') {
-    add_class($block_element, 'nav-item');
+    // add_class($block_element, 'nav-item');
   }
 
   $link = $block_element->getElementsByTagName('a')->item(0);
 
   if ($link) {
-    add_class($link, 'nav-link');
+    // add_class($link, 'nav-link');
   }
 
   return serialize_html($doc);

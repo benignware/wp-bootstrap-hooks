@@ -54,6 +54,51 @@ function render_block_group_navbar($content, $block) {
     return $content;
   }
 
+  $modal_before_comment = null;
+  
+  // Add any full-line comments that are siblings before the modal
+  $sibling = $modal->previousSibling;
+  while ($sibling) {
+    if ($sibling->nodeType === XML_COMMENT_NODE) {
+      $modal_before_comment = $sibling->cloneNode(true);
+    } elseif ($sibling->nodeType === XML_TEXT_NODE && trim($sibling->textContent) === '') {
+      // Ignore empty text nodes
+    } else {
+      break; // Stop if we hit a non-comment node
+    }
+    $sibling = $sibling->previousSibling;
+  }
+
+  $modal_after_comment = null;
+  // Add any full-line comments that are siblings on the same line as the modal's closing tag
+  $sibling = $modal->nextSibling;
+  while ($sibling) {
+    if ($sibling->nodeType === XML_COMMENT_NODE) {
+      $modal_after_comment = $sibling->cloneNode(true);
+    } elseif ($sibling->nodeType === XML_TEXT_NODE && trim($sibling->textContent) === '') {
+      // Ignore empty text nodes
+    } else {
+      break; // Stop if we hit a non-comment node
+    }
+    $sibling = $sibling->nextSibling;
+  }
+
+  $sibling = $modal->nextSibling;
+
+  while ($sibling) {
+    if ($sibling->nodeType === XML_COMMENT_NODE) {
+      if ($modal_fragment) {
+        $modal_fragment->appendChild($sibling->cloneNode(true));
+      }
+      
+    } elseif ($sibling->nodeType === XML_TEXT_NODE && trim($sibling->textContent) === '') {
+      // Ignore empty text nodes
+    } else {
+      break; // Stop if we hit a non-comment node
+    }
+    $sibling = $sibling->nextSibling;
+  }
+
   // Get the inner element
   $inner_elem = $xpath->query("//*[@data-nav-content]")->item(0);
 
@@ -121,6 +166,15 @@ function render_block_group_navbar($content, $block) {
   // Insert the toggler before the modal
   $modal->parentNode->insertBefore($toggler, $modal);
 
+  // If we have a comment before the modal, insert it before the modal
+  if ($modal_before_comment) {
+    $modal->parentNode->insertBefore($modal_before_comment, $modal);
+  }
+  // If we have a comment after the modal, insert it after the modal
+  if ($modal_after_comment) {
+    $modal->parentNode->insertBefore($modal_after_comment, $modal->nextSibling);
+  }
+
   // Remove the original navbars
   foreach ($nested_navbars as $nested_navbar) {
     $nested_navbar->parentNode->removeChild($nested_navbar);
@@ -131,60 +185,62 @@ function render_block_group_navbar($content, $block) {
 
   return serialize_html($doc);
 
-  add_class($collapse, 'collapse navbar-collapse');
-  remove_class($collapse, 'is-layout-flex');
+  // add_class($collapse, 'collapse navbar-collapse');
+  // remove_class($collapse, 'is-layout-flex');
 
-  foreach ($nested_navbars as $index => $nested_navbar) {
-    $nested_navbar_classes = array_values(array_filter(array_map('trim', explode(' ', $nested_navbar->getAttribute('class'))), function($class) {
-      return strpos($class, 'navbar') === 0;
-    }));
+  // foreach ($nested_navbars as $index => $nested_navbar) {
+  //   $nested_navbar_classes = array_values(array_filter(array_map('trim', explode(' ', $nested_navbar->getAttribute('class'))), function($class) {
+  //     return strpos($class, 'navbar') === 0;
+  //   }));
 
-    add_class($container, $nested_navbar_classes);
+  //   add_class($container, $nested_navbar_classes);
 
-    foreach ($nested_navbar_classes as $class) {
-      remove_class($nested_navbar, $class, true);
-    }
+  //   foreach ($nested_navbar_classes as $class) {
+  //     remove_class($nested_navbar, $class, true);
+  //   }
 
-    $nested_toggler = find_by_class($nested_navbar, 'navbar-toggler');
+  //   // remove_class($nested_navbar, 'd-flex');
 
-    if ($nested_toggler) {
-      if (!$toggler) {
-        $toggler = $nested_toggler;
-        $target = $toggler->getAttribute('data-bs-target');
-        $collapse->setAttribute('id', preg_replace('/^#/', '', $target));
+  //   $nested_toggler = find_by_class($nested_navbar, 'navbar-toggler');
 
-        $collapse->parentNode->insertBefore($toggler, $collapse);
-      } else {
-        $nested_toggler->parentNode->removeChild($nested_toggler);
-      }
-    }
+  //   if ($nested_toggler) {
+  //     if (!$toggler) {
+  //       $toggler = $nested_toggler;
+  //       $target = $toggler->getAttribute('data-bs-target');
+  //       $collapse->setAttribute('id', preg_replace('/^#/', '', $target));
 
-    $nested_collapse = find_by_class($nested_navbar, 'navbar-collapse');
+  //       $collapse->parentNode->insertBefore($toggler, $collapse);
+  //     } else {
+  //       $nested_toggler->parentNode->removeChild($nested_toggler);
+  //     }
+  //   }
 
-    if ($nested_collapse) {
-      remove_class($nested_collapse, 'navbar-collapse', true);
-      remove_class($nested_collapse, 'collapse', true);
-      $nested_collapse->removeAttribute('id');
+  //   $nested_collapse = find_by_class($nested_navbar, 'navbar-collapse');
 
-      if (!$collapse->parentNode) {
-        $nested_navbar->parentNode->insertBefore($collapse, $nested_navbar);
-      }
-    }
+  //   if ($nested_collapse) {
+  //     remove_class($nested_collapse, 'navbar-collapse', true);
+  //     remove_class($nested_collapse, 'collapse', true);
+  //     $nested_collapse->removeAttribute('id');
 
-    remove_class($nested_navbar, 'is-layout-flex');
+  //     if (!$collapse->parentNode) {
+  //       $nested_navbar->parentNode->insertBefore($collapse, $nested_navbar);
+  //     }
+  //   }
+
+  //   remove_class($nested_navbar, 'is-layout-flex');
     
-    $collapse->appendchild($nested_navbar);
-  }
+  //   $collapse->appendchild($nested_navbar);
+  // }
 
-  try {
-    $collapse->parentNode->insertBefore($toggler, $collapse);
-  } catch (\Exception $e) {
-    // ignore
-  }
+  // try {
+  //   $collapse->parentNode->insertBefore($toggler, $collapse);
+  // } catch (\Exception $e) {
+  //   // ignore
+  // }
   
   
 
-  return serialize_html($doc);
+  // return serialize_html($doc);
 }
 
 add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_group_navbar', 10, 2);

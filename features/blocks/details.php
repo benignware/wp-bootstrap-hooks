@@ -36,37 +36,92 @@ function render_block_details($content, $block) {
 
     // Extract the <summary> element (to use as the collapse toggle)
     $summary = $block_element->getElementsByTagName('summary')->item(0);
+    
     if (!$summary) {
         return $content; // No <summary> element found
     }
 
     remove_class($block_element, 'is-layout-flow');
 
+    $details_attrs = $block['attrs'] ?? [];
+
     // Generate unique IDs for the switch and collapsible content
-    $switch_id = uniqid('switch-');
+    $toggle_id = uniqid('switch-');
     $collapse_id = uniqid('collapse-');
 
+    $toggle_class = 'details-toggle';
+    $toggle_label = $summary->textContent;
+
+    // $toggle_icon = '<i class="details-toggle-icon">&#8250;</i>"'; // Default icon (right arrow)
+    $toggle_icon = get_icon('arrow-right', [
+        'class' => 'details-toggle-icon',
+    ]) ?: '<i class="details-toggle-icon">&#8250;</i>'; // Default icon (right arrow)
+
+    $toggle_template = '
+        <div class="form-check form-switch mb-0 d-flex gap-2 align-items-baseline">
+            <input
+                type="checkbox"
+                id="%1$s"
+                class="form-check-input %2$s"
+                aria-controls="%3$s"
+                data-bs-toggle="collapse"
+                data-bs-target="#%3$s"
+                data-bs-aria-expanded="false"
+                name="ext_query"
+                value="1"
+            >
+            <label
+                class=" form-check-label form-label"
+                for="%1$s"
+            >
+                %4$s
+            </label>
+        </div>
+    ';
+    $toggle_template = apply_filters(
+      'bootstrap_details_toggle_template',
+      $toggle_template,
+      $details_attrs
+    );
+    
+    $toggle_html = sprintf(
+        $toggle_template,
+        esc_attr($toggle_id),
+        esc_attr($toggle_class),
+        esc_attr($collapse_id),
+        wp_kses_post($toggle_label),
+        wp_kses_post($toggle_icon)
+    );
+
+    $toggle_html = apply_filters(
+      'bootstrap_details_toggle_html',
+      $toggle_html,
+      $details_attrs
+    );
+    $toggle = get_html_fragment($doc, $toggle_html);
+    // $nav_content->parentNode->replaceChild($fragment, $nav_content);
+
     // Create the switch container
-    $switch = $doc->createElement('div');
-    add_class($switch, 'form-check form-switch mb-0 d-flex gap-2 align-items-baseline');
+    // $switch = $doc->createElement('div');
+    // add_class($switch, 'form-check form-switch mb-0 d-flex gap-2 align-items-baseline');
 
-    // Create the input element (checkbox)
-    $input = $doc->createElement('input');
-    $input->setAttribute('type', 'checkbox');
-    add_class($input, 'form-check-input');
-    $input->setAttribute('id', $switch_id);
-    $input->setAttribute('aria-controls', $collapse_id);
-    $input->setAttribute('data-bs-toggle', 'collapse');
-    $input->setAttribute('data-bs-target', '#' . $collapse_id);
+    // // Create the input element (checkbox)
+    // $input = $doc->createElement('input');
+    // $input->setAttribute('type', 'checkbox');
+    // add_class($input, 'form-check-input');
+    // $input->setAttribute('id', $toggle_id);
+    // $input->setAttribute('aria-controls', $collapse_id);
+    // $input->setAttribute('data-bs-toggle', 'collapse');
+    // $input->setAttribute('data-bs-target', '#' . $collapse_id);
 
-    // Create the label for the switch
-    $label = $doc->createElement('label', $summary->textContent); // Use summary text as the label
-    add_class($label, 'form-check-label');
-    $label->setAttribute('for', $switch_id);
+    // // Create the label for the switch
+    // $label = $doc->createElement('label', $summary->textContent); // Use summary text as the label
+    // add_class($label, 'form-check-label');
+    // $label->setAttribute('for', $toggle_id);
 
-    // Append the input and label to the switch container
-    $switch->appendChild($input);
-    $switch->appendChild($label);
+    // // Append the input and label to the switch container
+    // $switch->appendChild($input);
+    // $switch->appendChild($label);
 
     // Replace the <details> tag with a <div> while keeping classes
     $block_element = replace_tag($block_element, 'div');
@@ -90,7 +145,7 @@ function render_block_details($content, $block) {
     }
 
     // Add the switch and collapse content as children of the block wrapper
-    $block_element->appendChild($switch);
+    $block_element->appendChild($toggle);
     $block_element->appendChild($collapse);
 
 

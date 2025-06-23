@@ -81,14 +81,18 @@ function render_block_with_styles($content, $block) {
         add_style($element, 'background-color', $bg_color);
       }
 
-      $bg_color_value = $theme_color_def ? $theme_color_def['color'] : $bg_color;
-      $bg_brightness = brightness($bg_color_value);
 
-      $is_dark = $bg_brightness >= 0 && $bg_brightness <= 80;
+      // Automatic theme detection based on brightness
+      // $brightness_threshold = 50; // Define a threshold for brightness
 
-      if ($is_dark) {
-        $element->setAttribute('data-bs-theme', 'dark');
-      }
+      // $bg_color_value = $theme_color_def ? $theme_color_def['color'] : $bg_color;
+      // $bg_brightness = brightness($bg_color_value);
+
+      // $is_dark = $bg_brightness >= 0 && $bg_brightness <= $brightness_threshold;
+
+      // if ($is_dark) {
+      //   $element->setAttribute('data-bs-theme', 'dark');
+      // }
     }
 
     return serialize_html($doc);
