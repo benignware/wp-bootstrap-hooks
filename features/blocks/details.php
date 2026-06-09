@@ -41,21 +41,37 @@ function render_block_details($content, $block) {
         return $content; // No <summary> element found
     }
 
-    remove_class($block_element, 'is-layout-flow');
+    // 
 
     $details_attrs = $block['attrs'] ?? [];
 
+    $show_content = $details_attrs['showContent'] ?? false;
+
     // Generate unique IDs for the switch and collapsible content
-    $toggle_id = uniqid('switch-');
+    $toggle_id = uniqid('toggle-');
     $collapse_id = uniqid('collapse-');
 
     $toggle_class = 'details-toggle';
     $toggle_label = $summary->textContent;
 
+    $context = [
+        'block' => $block,
+    ];
+
+    $toggle_icon = 'chevron-right';
+    $toggle_icon = apply_filters(
+        'bootstrap_icon_name',
+        $toggle_icon,
+        $details_attrs,
+        $context
+    );
+
+    // echo 'TOGGLE ICON: ' . $toggle_icon;
+    // print_r($context);
     // $toggle_icon = '<i class="details-toggle-icon">&#8250;</i>"'; // Default icon (right arrow)
-    $toggle_icon = get_icon('arrow-right', [
+    $toggle_icon_html = get_icon($toggle_icon, [
         'class' => 'details-toggle-icon',
-    ]) ?: '<i class="details-toggle-icon">&#8250;</i>'; // Default icon (right arrow)
+    ], $context) ?: '<i class="details-toggle-icon">&#8250;</i>'; // Default icon (right arrow)
 
     $toggle_template = '
         <div class="form-check form-switch mb-0 d-flex gap-2 align-items-baseline">
@@ -90,7 +106,7 @@ function render_block_details($content, $block) {
         esc_attr($toggle_class),
         esc_attr($collapse_id),
         wp_kses_post($toggle_label),
-        wp_kses_post($toggle_icon)
+        wp_kses_post($toggle_icon_html)
     );
 
     $toggle_html = apply_filters(
@@ -99,6 +115,7 @@ function render_block_details($content, $block) {
       $details_attrs
     );
     $toggle = get_html_fragment($doc, $toggle_html);
+   
     // $nav_content->parentNode->replaceChild($fragment, $nav_content);
 
     // Create the switch container
@@ -126,11 +143,23 @@ function render_block_details($content, $block) {
     // Replace the <details> tag with a <div> while keeping classes
     $block_element = replace_tag($block_element, 'div');
     add_class($block_element, 'details-wrapper');
+    remove_class($block_element, 'is-layout-flow');
+    
+    $collapse_class = 'collapse';
+
+    if ($show_content) {
+        $collapse_class .= ' show';
+    }
 
     // Create a new div for the collapsible content
     $collapse = $doc->createElement('div');
     $collapse->setAttribute('id', $collapse_id);
-    add_class($collapse, 'collapse is-layout-flow my-0');
+    add_class($collapse, $collapse_class);
+
+    // Create a spacer div to preserve the layout
+    // $spacer = $doc->createElement('div');
+    // add_class($spacer, 'details-spacer');
+    // $collapse->appendChild($spacer);
 
     // Move all non-summary children of <details> into the collapsible content
     foreach ($block_element->childNodes as $child) {
@@ -146,6 +175,23 @@ function render_block_details($content, $block) {
 
     // Add the switch and collapse content as children of the block wrapper
     $block_element->appendChild($toggle);
+
+    $toggle = $doc->getElementById($toggle_id);
+
+    if ($toggle) {
+        $input = $toggle->tagName === "input"
+            ? $toggle
+            : $toggle->getElementsByTagName('input')->item(0);
+
+        if ($input) {
+            if ($show_content) {
+                $input->setAttribute('checked', "checked");
+                $input->setAttribute('data-bs-aria-expanded', "true");
+            }
+        }
+    }
+
+    // Create a wrapper for the collapsible content
     $block_element->appendChild($collapse);
 
 

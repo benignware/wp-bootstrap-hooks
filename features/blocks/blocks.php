@@ -1,5 +1,6 @@
 <?php
 
+
 // Shared
 require "functions.php";
 require "menus.php";
@@ -17,7 +18,9 @@ require "group-navbar.php";
 require "group-container.php";
 require "group-navbar-brand.php";
 require "image.php";
+
 require "navigation.php";
+
 require "navigation-link.php";
 require "page-list.php";
 require "post-author.php";
@@ -40,4 +43,6 @@ require "table.php";
 // Common
 // require "common.php";
 // require "custom.php";
-require "styles.php";
+// require "styles.php";
+require "styles/color.php";
+require "styles/gap.php";

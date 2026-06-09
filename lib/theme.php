@@ -35,6 +35,15 @@ function get_palette_color($color) {
   return array_shift($matches);
 }
 
+function get_palette_color_slug($color) {
+  $palette_color = get_palette_color($color);
+  if (!$palette_color) {
+    return null; // Return null if no matching color is found
+  }
+
+  return $palette_color['slug'] ?? null;
+}
+
 function get_color_value($color) {
   $css_var = get_theme_css_var($color);
   $color = parse_color_name($css_var);
@@ -47,7 +56,7 @@ function get_color_value($color) {
 }
 
 function get_theme_css_var($input = null) {
-  if (!is_string($input) || empty($input)) {
+  if (!is_string($input)) {
     return '';
   }
 
@@ -104,4 +113,32 @@ function parse_preset_name($input, $group = null) {
   }
   
   return $output;
+}
+
+function get_block_styles($block_name, $attrs = []) {
+  $theme_json = get_theme_json();
+  $styles = query_object($theme_json, 'styles.blocks.' . $block_name);
+
+  $background_color = $attrs['backgroundColor'] ?? null;
+  $text_color = $attrs['textColor'] ?? null;
+
+  if ($background_color) {
+    $styles['color'] = array_merge(
+      $styles['color'] ?? [],
+      [
+        'background' => get_theme_css_var($background_color)
+      ]
+    );
+  }
+
+  if ($text_color) {
+    $styles['color'] = array_merge(
+      $styles['color'] ?? [],
+      [
+        'text' => get_theme_css_var($text_color)
+      ]
+    );
+  }
+
+  return $styles;
 }

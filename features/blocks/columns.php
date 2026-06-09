@@ -118,28 +118,53 @@ function render_block_columns($content, $block) {
       add_class($child, $column_classes);
     } else {
       $width = $column_attrs['width'] ?? null;
-      [$value, $unit] = $width ? preg_split('/(?<=[0-9])(?=[a-z%])/', $width) : [null, null];
-
-      if ($value && is_numeric($value)) {
-        $is_grid_size = false;
-
-        if ($unit === '%') {
-          $size = $value / 100 * 12;
-          $grid_size = round($value / 100 * 12);
-          $is_grid_size = abs($size - $grid_size) <= 0.005;
-        }
+      
+      if ($width && is_numeric($width)) {
+        // Handle numeric width without unit (treat as percentage)
+        $size = $width / 100 * 12;
+        $grid_size = round($width / 100 * 12);
+        $is_grid_size = abs($size - $grid_size) <= 0.005;
         
         if ($is_grid_size) {
           $class = sprintf($options['column_class'], $grid_size, $breakpoint);
           add_class($child, $class);
           remove_style($child, 'flex-basis');
         } else {
-          // $abs_width = "calc($width + var(--bs-gutter-x))";
-          $abs_width = "calc($width)";
-
-          // add_style($child, 'flex-basis', $abs_width);
+          // Use percentage for flex-basis
+          $abs_width = "{$width}%";
           add_style($child, 'flex-basis', $abs_width);
-          // add_style($child, 'min-width', 'fit-content');
+          add_style($child, 'max-width', '100%');
+          add_style($child, 'width', 'auto');
+          add_class($child, 'flex-grow-0');
+        }
+      } else if ($width && preg_match('/^(\d+(?:\.\d+)?)(px|rem|em|%|vw|vh)?$/', $width, $matches)) {
+        // Handle width with or without unit
+        $value = $matches[1];
+        $unit = isset($matches[2]) ? $matches[2] : '%';
+        
+        if ($unit === '%') {
+          $size = $value / 100 * 12;
+          $grid_size = round($value / 100 * 12);
+          $is_grid_size = abs($size - $grid_size) <= 0.005;
+          
+          if ($is_grid_size) {
+            $class = sprintf($options['column_class'], $grid_size, $breakpoint);
+            add_class($child, $class);
+            remove_style($child, 'flex-basis');
+          } else {
+            $abs_width = "{$value}%";
+            add_style($child, 'flex-basis', $abs_width);
+            add_style($child, 'max-width', '100%');
+            add_style($child, 'width', 'auto');
+            add_class($child, 'flex-grow-0');
+          }
+        } else {
+          // Handle other units (px, rem, em, etc.)
+          if (!$unit) {
+            $unit = '%';
+          }
+          $abs_width = "{$value}{$unit}";
+          add_style($child, 'flex-basis', $abs_width);
           add_style($child, 'max-width', '100%');
           add_style($child, 'width', 'auto');
           add_class($child, 'flex-grow-0');

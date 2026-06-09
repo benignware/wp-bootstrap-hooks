@@ -34,8 +34,7 @@ function get_block_nav_walker($doc, $menu = [], $attrs = []) {
       $menu_item_attrs = $menu_item['attrs'] ?? [];
       $menu_item_url = $menu_item_attrs['url'] ?? null;
 
-      $is_active = has_class($item, 'current-menu-item');
-      $is_active = $is_active || has_class($item, 'current-menu-parent');
+      $is_active = has_class($item, 'current-menu-item', 'current-menu-ancestor', 'current-menu-parent');
 
       if ($level === 0) {
         add_class($item, 'nav-item');

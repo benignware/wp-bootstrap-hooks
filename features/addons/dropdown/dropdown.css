@@ -25,6 +25,17 @@
   align-items: center;
 }
 
+.wp-block-navigation-link:first-child .dropdown-item {
+  border-top-left-radius: var(--bs-dropdown-border-radius, var(--bs-border-radius, 0));
+  border-top-right-radius: var(--bs-dropdown-border-radius, var(--bs-border-radius, 0));
+}
+
+.wp-block-navigation-link:last-child .dropdown-item {
+  border-bottom-left-radius: var(--bs-dropdown-border-radius, var(--bs-border-radius, 0));
+  border-bottom-right-radius: var(--bs-dropdown-border-radius, var(--bs-border-radius, 0));
+}
+
+
 /* Align the badge to the right */
 .dropend .dropdown-item .badge {
   order: 1;

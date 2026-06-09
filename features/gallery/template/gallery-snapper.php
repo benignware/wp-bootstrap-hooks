@@ -41,7 +41,7 @@ for ($i = 0; $i < $wp_query->post_count; $i++) {
         data-bs-interval="<?= $autoplay ? $interval : 'false' ?>"
       >
         <div class="snapper-inner">
-          <div class="row grid <?= $column_class ?> snapper-row">
+          <div class="row <?= $column_class ?> snapper-row">
               <?php while (have_posts()): the_post(); ?>
                 <div class="snapper-col col-auto col-md">
                   <figure

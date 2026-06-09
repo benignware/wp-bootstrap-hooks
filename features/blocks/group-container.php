@@ -17,6 +17,8 @@ function render_block_group_container($content, $block) {
     return $content;
   }
 
+  $container = null;
+
   foreach ($body->childNodes as $node) {
     if ($node->nodeType !== XML_ELEMENT_NODE || $node->nodeName !== 'div') {
       continue;
@@ -32,6 +34,7 @@ function render_block_group_container($content, $block) {
     // echo 'Processing group container alignment: ' . ($is_alignfull ? 'alignfull' : 'alignwide') . "<br>";
     
     $container = $node;
+    break;
   }
 
   if (!$container) {

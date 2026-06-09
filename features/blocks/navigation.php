@@ -209,7 +209,8 @@ function render_block_navigation($content, $block) {
     remove_class($item, 'is-layout-flex');
   }
 
-  remove_class($container, '~^wp-block-navigation~', true);
+  // remove_class($container, '~^wp-block-navigation~', true);
+  remove_class($container, '~^wp-block-navigation-item~', true);
   remove_class($container, 'is-responsive', true);
 
   $output = serialize_html($doc);
@@ -220,24 +221,24 @@ function render_block_navigation($content, $block) {
 add_filter('render_block', 'benignware\wp\bootstrap_hooks\render_block_navigation', 100, 2);
 
 
-function navbar_modal_template_offcanvas($template, $attrs = []) {
-  $options = wp_bootstrap_options();
-  $modal_type = $options['navbar_modal_type'] ?? 'collapse';
+// function navbar_modal_template_offcanvas($template, $attrs = []) {
+//   $options = wp_bootstrap_options();
+//   $modal_type = $options['navbar_modal_type'] ?? 'collapse';
 
-  if ($modal_type !== 'offcanvas') {
-    return $template;
-  }
+//   if ($modal_type !== 'offcanvas') {
+//     return $template;
+//   }
 
-  $template = $options['navbar_modal_template_offcanvas'] ??
-    '<div id="%1$s" class="%2$s" tabindex="-1" aria-labelledby="offcanvasNavbarLabel">
-        <div class="offcanvas-header">
-          <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navigation</h5>
-          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-        </div>
-        <div class="offcanvas-body %4$s">%3$s</div>
-    </div>';
+//   $template = $options['navbar_modal_template_offcanvas'] ??
+//     '<div id="%1$s" class="%2$s" tabindex="-1" aria-labelledby="offcanvasNavbarLabel">
+//         <div class="offcanvas-header">
+//           <h5 class="offcanvas-title" id="offcanvasNavbarLabel">Navigation</h5>
+//           <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+//         </div>
+//         <div class="offcanvas-body %4$s">%3$s</div>
+//     </div>';
 
-  return $template;
-}
+//   return $template;
+// }
 
-add_filter('bootstrap_navbar_modal_template', 'benignware\wp\bootstrap_hooks\navbar_modal_template_offcanvas', 10, 2);
+// add_filter('bootstrap_navbar_modal_template', 'benignware\wp\bootstrap_hooks\navbar_modal_template_offcanvas', 10, 2);

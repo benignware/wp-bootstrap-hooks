@@ -139,21 +139,22 @@ function get_theme_css() {
   
   $rules = [
     $root_selector => $root_style,
-		// ":root .btn:where(.wp-element-button, .wp-block-button__link)" => [
-		// 	'background-color' => 'var(--bs-btn-bg)',
-		// ],
-		// ":root .btn:where(.wp-block-button__link)" => [
-		// 	'color' => 'var(--bs-btn-color)',
-		// ],
-    // '.btn:not(.wp-element-button), .wp-element-button' => get_theme_style([
-    //   '--bs-btn-border-radius' => 'styles.elements-button.border.radius',
-    //   // '--bs-btn-padding-x' => 'styles.elements.button.spacing.padding.left',
-    //   // '--bs-btn-padding-y' => 'styles.elements.button.spacing.padding.top',
-    //   // '--bs-btn-font-size' => 'styles.elements.button.typography.fontSize',
-    //   '--bs-btn-font-weight' => 'styles.elements.button.typography.fontWeight',
-    //   'text-transform' => 'styles.elements.button.typography.textTransform',
-    //   'letter-spacing' => 'styles.elements.button.typography.letterSpacing',
-    // ]),
+		":root .btn:where(.wp-element-button, .wp-block-button__link)" => [
+			'background-color' => 'var(--bs-btn-bg)',
+		],
+		":root .btn:where(.wp-block-button__link)" => [
+			'color' => 'var(--bs-btn-color)',
+		],
+    '.btn:not(.wp-element-button), .wp-element-button' => get_theme_style([
+      '--bs-btn-border-radius' => 'styles.elements-button.border.radius',
+      // '--bs-btn-padding-x' => 'styles.elements.button.spacing.padding.left',
+      // '--bs-btn-padding-y' => 'styles.elements.button.spacing.padding.top',
+      '--bs-btn-font-size' => 'styles.elements.button.typography.fontSize',
+			'--bs-btn-font-family' => 'styles.elements.button.typography.fontFamily',
+      '--bs-btn-font-weight' => 'styles.elements.button.typography.fontWeight',
+      'text-transform' => 'styles.elements.button.typography.textTransform',
+      'letter-spacing' => 'styles.elements.button.typography.letterSpacing',
+    ]),
 		':root .btn:not(.btn-link):where(.wp-block-button, .wp-block-button__link)' => array_merge(
 			get_theme_style([
 				'--bs-btn-border-radius' => 'styles.blocks.core/button.border.radius',
@@ -164,19 +165,19 @@ function get_theme_css() {
 				'--bs-btn-color' => 'styles.blocks.core/button.color.text',
 				'--bs-btn-hover-color' => 'styles.blocks.core/button.color.text',
 			]),
-			[
-				'background-color' => 'var(--bs-btn-bg)',
-				'color' => 'var(--bs-btn-color)',
-				'border-color' => 'var(--bs-btn-border-color)',
-				'border-radius' => 'var(--bs-btn-border-radius)',
-				'font-family' => 'var(--bs-btn-font-family)',
-				'font-size' => 'var(--bs-btn-font-size)',
-				'font-weight' => 'var(--bs-btn-font-weight)',
-				'padding-left' => 'var(--bs-btn-padding-x)',
-				'padding-right' => 'var(--bs-btn-padding-x)',
-				'padding-top' => 'var(--bs-btn-padding-y)',
-				'padding-bottom' => 'var(--bs-btn-padding-y)',
-			]
+			// [
+			// 	'background-color' => 'var(--bs-btn-bg)',
+			// 	'color' => 'var(--bs-btn-color)',
+			// 	'border-color' => 'var(--bs-btn-border-color)',
+			// 	'border-radius' => 'var(--bs-btn-border-radius)',
+			// 	'font-family' => 'var(--bs-btn-font-family)',
+			// 	'font-size' => 'var(--bs-btn-font-size)',
+			// 	'font-weight' => 'var(--bs-btn-font-weight)',
+			// 	'padding-left' => 'var(--bs-btn-padding-x)',
+			// 	'padding-right' => 'var(--bs-btn-padding-x)',
+			// 	'padding-top' => 'var(--bs-btn-padding-y)',
+			// 	'padding-bottom' => 'var(--bs-btn-padding-y)',
+			// ]
 		),
 		':root .btn:not(.btn-sm):not(.btn-lg):where(.wp-block-button, .wp-block-button__link)'  => get_theme_style([
 			'--bs-btn-padding-x' => 'styles.blocks.core/button.spacing.padding.left',

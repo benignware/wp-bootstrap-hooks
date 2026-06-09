@@ -4,11 +4,12 @@
  * Plugin Name: Bootstrap Hooks
  * Plugin URI: http://github.com/benignware/wp-bootstrap-hooks
  * Description: A collection of action and filters for bootstrap based themes
- * Version: 1.1.22
+ * Version: 1.1.21
  * Author: Benignware
  * Author URI: http://benignware.com
  * License: MIT
 */
+
 
 require_once 'lib/dom.php';
 require_once 'lib/editor.php';

@@ -1,5 +1,9 @@
 <?php
 namespace benignware\wp\bootstrap_hooks;
+
+$lightbox = array_merge($lightbox, [
+  'size' => 'preview'
+]);
 ?>
 <div
   <?php foreach (array_merge($attrs, [
@@ -9,7 +13,6 @@ namespace benignware\wp\bootstrap_hooks;
   <?php endforeach; ?>
 >
 <div class="gallery-inner position-relative h-100">
-    
     <div class="position-relative d-inline-flex">
       <?php if (count($wp_query->posts) > 0 && $post = $wp_query->posts[0]): ?>
         <?= wp_get_attachment_image($post->ID, $size, false, [

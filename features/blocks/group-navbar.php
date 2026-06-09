@@ -36,8 +36,6 @@ function render_block_group_navbar($content, $block) {
     return strpos($class, 'navbar') === 0;
   }));
 
-  add_class($container, $navbar_classes);
-
   // Get the toggler
   $toggler = find_by_class($nav, 'navbar-toggler');
 
@@ -117,6 +115,7 @@ function render_block_group_navbar($content, $block) {
     $nested_fragment = $doc->createDocumentFragment();
 
     remove_class($copy, '~^navbar~');
+    add_class($copy, 'navbar-nav');
 
     // Remove the toggler
     $nested_toggler = find_by_class($copy, 'navbar-toggler');
@@ -182,6 +181,8 @@ function render_block_group_navbar($content, $block) {
 
   remove_class($container, 'is-layout-flex');
   remove_class($container, 'has-global-padding');
+
+  add_class($container, $navbar_classes);
 
   return serialize_html($doc);
 

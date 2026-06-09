@@ -78,10 +78,15 @@ function render_block_button($content, $block) {
     if ($is_outline) {
       remove_class($button, 'has-text-color');
       remove_class($button, "has-$theme_color-color");
+      remove_class($block_element, 'has-text-color');
+      remove_class($block_element, "has-$theme_color-color");
     } else {
       remove_class($button, 'has-background');
       remove_class($button, 'has-background-color');
       remove_class($button, "has-$theme_color-background-color");
+      remove_class($block_element, 'has-background-color');
+      remove_class($block_element, "has-$theme_color-background-color");
+      
     }
     add_class($button, $is_outline ? 'btn-outline-' . $theme_color : 'btn-' . $theme_color);
 

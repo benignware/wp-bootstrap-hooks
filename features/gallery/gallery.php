@@ -65,7 +65,7 @@ function bootstrap_gallery($params, $content = null) {
 
   // $params['type'] = 'snapper'; 
 
-  if (is_string($params['style'])) {
+  if (isset($params['style']) && is_string($params['style'])) {
     $css_text = $params['style'];
     $style = array_reduce(explode(';', trim($css_text)), function($result, $item) {
       $parts = explode(':', $item);
@@ -95,6 +95,7 @@ function bootstrap_gallery($params, $content = null) {
   $params['lightbox'] = $params['lightbox'] === 'false' ? false : $params['lightbox'];
   $params['lightbox'] = $params['lightbox'] ? array_merge([
     'fit' => 'contain',
+    'size' => 'large',
     'backdrop' => true,
     'header' => true,
     'footer' => true,

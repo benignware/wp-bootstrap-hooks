@@ -1,7 +1,11 @@
 <?php
 namespace benignware\wp\bootstrap_hooks;
 
-$lightbox_in = true
+$lightbox_in = true;
+
+// Temporarily disable responsive image filters
+add_filter( 'wp_calculate_image_srcset', '__return_false', 1000000 );
+add_filter( 'wp_calculate_image_sizes', '__return_false', 1000000 );
 
 ?>
 <div
@@ -77,15 +81,25 @@ $lightbox_in = true
                       'class' => 'img-fluid m-0 w-100 h-100 position-absolute opacity-75',
                       'style' => "object-fit: cover; object-position: center; transform: scale(1.7); transform-origin: center; filter: blur(70px);",
                       'loading' => 'lazy',
-                      'data-bs-dismiss' => "modal"
+                      'data-bs-dismiss' => "modal",
                     ]) ?>
                   <?php endif; ?>
-                  <?= wp_get_attachment_image(get_the_ID(), 'large', false, [
-                    'class' => 'img-fluid m-0 w-100 h-100 position-relative',
-                    'style' => "object-position: center; object-fit: " . ($lightbox['fit'] ?? 'contain'),
-                    'loading' => 'lazy',
-                    'data-bs-dismiss' => "modal"
-                  ]) ?>
+                  <?php
+                    // get the actual thumbnail path
+                    // $img = wp_get_attachment_image_src( $attachment_id, $size, false );
+                  ?>
+                  <?= wp_get_attachment_image(
+                    get_the_ID(),
+                    $lightbox['size'] ?? 'large',
+                    false,
+                    [
+                      // 'src' => $img[0],
+                      'class' => 'img-fluid m-0 w-100 h-100 position-relative object-fit-' . ($lightbox['fit'] ?? 'contain'),
+                      'style' => "object-position: center;",
+                      'loading' => 'lazy',
+                      'data-bs-dismiss' => "modal",
+                    ]
+                  ) ?>
                 </div>
                 <?php if ($caption = wp_get_attachment_caption()): ?>
                   <div class="carousel-caption d-none d-md-block text-light">
@@ -199,3 +213,10 @@ $lightbox_in = true
     </div>
   </div>
 </div>
+<?php
+
+// Remove the temporary filters so other calls are unaffected
+remove_filter( 'wp_calculate_image_srcset', '__return_false' );
+remove_filter( 'wp_calculate_image_sizes', '__return_false' );
+
+?>

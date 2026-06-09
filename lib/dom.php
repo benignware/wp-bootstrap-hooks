@@ -71,9 +71,9 @@ function add_style($element, $name, $value) {
   $element->setAttribute('style', _stringify_style($styles));
 }
 
-function get_style($element, $name) {
+function get_style($element, $name = null) {
   $styles = _parse_style($element->getAttribute('style'));
-  return isset($styles[$name]) ? $styles[$name] : null;
+  return $name ? ($styles[$name] ?? null) : $styles;
 }
 
 function get_attributes($element) {
@@ -119,17 +119,22 @@ function has_class($element, ...$patterns) {
   return count($classes) > 0;
 }
 
-function add_class($element, $class) {
+function add_class($element, ...$class) {
   if ($element->nodeType !== 1) {
     return;
   }
 
   $classes = _parse_class($element->getAttribute('class'));
 
-  if (is_array($class)) {
-    $classes = array_merge($classes, $class);
-  } else {
-    $classes[] = $class;
+  foreach ($class as $c) {
+    if (is_array($c)) {
+      $c = array_filter($c, function($item) {
+        return $item !== null && $item !== '';
+      });
+      $classes = array_merge($classes, $c);
+    } else if (is_string($c)) {
+      $classes[] = trim($c);
+    }
   }
   
   $element->setAttribute('class', _stringify_class($classes));
@@ -218,6 +223,16 @@ function remove_all_children($parentNode) {
 // Deprecated: Use remove_all_children instead
 function remove_all($parentNode) {
   remove_all_children($parentNode);
+}
+
+function replace_all($parentNode, $newNode) {
+  if (!$parentNode || !$newNode) {
+    return;
+  }
+
+  remove_all_children($parentNode);
+
+  $parentNode->appendChild($newNode);
 }
 
 function trim_nodes($node_list) {

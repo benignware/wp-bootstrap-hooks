@@ -121,6 +121,15 @@ function cn2hex($colorname) {
 }
 
 function rgb($color) {
+  if (is_array($color)) {
+    if (!isset($color['color'])) {
+      return $color;
+    }
+    
+    $color = $color['color'];
+  }
+
+
   if (strpos($color, '#') === 0) {
     return hex2rgb($color);
   }

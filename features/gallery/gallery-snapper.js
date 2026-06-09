@@ -20,7 +20,7 @@ class Snapper {
       ...{
         interval: 5000,
         wrap: true,
-        touch: true,
+        touch: false,
         pause: 'hover'
       },
       ...this._parseDataAttributes(),
@@ -52,22 +52,16 @@ class Snapper {
     // Calculate scroll step based on column width
     const firstCol = this._element.querySelector(`.${Snapper.COL_SELECTOR}`);
 
-    console.log('Calculating step for:', firstCol);
-
     if (firstCol) {
       const bounds = firstCol.getBoundingClientRect();
       const colWidth = bounds.width;
       // const marginLeft = parseInt(window.getComputedStyle(firstCol).marginLeft);
       // const marginRight = parseInt(window.getComputedStyle(firstCol).marginRight);
-      // const 
-      
-      console.log('Column width:', colWidth);
       this._step = colWidth;
     }
   }
 
   _handleResize() {
-    console.log('Handling resize for:', this._element.id);
     // Recalculate step on resize
     this._calculateStep();
 
@@ -89,7 +83,6 @@ class Snapper {
     // Handle prev/next buttons
     document.querySelectorAll(`[data-bs-target="#${this._element.id}"][data-bs-slide]`).forEach(button => {
       button.addEventListener('click', e => {
-        console.log('Button clicked:', button);
         e.preventDefault();
         const direction = button.getAttribute('data-bs-slide');
         this[direction === 'next' ? 'next' : 'prev']();
@@ -99,7 +92,6 @@ class Snapper {
     // Handle indicators
     document.querySelectorAll(`[data-bs-target="#${this._element.id}"][data-bs-slide-to]`).forEach(button => {
       button.addEventListener('click', e => {
-        console.log('Indicator clicked:', button);
         e.preventDefault();
         const slideTo = parseInt(button.getAttribute('data-bs-slide-to'));
 
@@ -159,7 +151,6 @@ class Snapper {
     const images = this._element.querySelectorAll('img');
     images.forEach(img => {
       img.addEventListener('load', () => {
-        console.log('Image loaded:', img);
         this._update();
       });
       img.addEventListener('error', () => {
@@ -191,8 +182,6 @@ class Snapper {
     }
 
     const width = bounds.width;
-
-    console.log('Bounds:', bounds, this._step, width);
 
     const columnsPerView = Math.round(width / this._step);
     return columnsPerView;
@@ -239,15 +228,10 @@ class Snapper {
     const slideCount = this._getSlideCount();
     // const isNextVisible = slideCount > 1 && this._currentIndex < slideCount - 1;
     // const isPrevVisible = slideCount > 1 && this._currentIndex > 0;
-    const isNextVisible = slideCount > 1;
-    const isPrevVisible = slideCount > 1;
-
-    console.log('UPDATING CONTROLS', this._debugInfo(), {
-      isNextVisible,
-      isPrevVisible,
-      slideCount,
-      currentIndex: this._currentIndex
-    });
+    // const isNextVisible = slideCount > 1;
+    // const isPrevVisible = slideCount > 1;
+    const isNextVisible = true;
+    const isPrevVisible = true;
 
     const controls = document.querySelectorAll(`[data-bs-target="#${this._element.id}"][data-bs-slide]`);
 
@@ -262,6 +246,7 @@ class Snapper {
       if (isNext) {
         control.style.display = isNextVisible ? '' : 'none';
       }
+      
       if (isPrev) {
         control.style.display = isPrevVisible ? '' : 'none';
       }
@@ -310,8 +295,6 @@ class Snapper {
       this.pause();
       return;
     }
-
-    console.log('Next index:', nextIndex);
     
     this.to(nextIndex);
   }
@@ -326,8 +309,6 @@ class Snapper {
       this.pause();
       return;
     }
-
-    console.log('Previous index:', prevIndex);
     
     this.to(prevIndex);
   }

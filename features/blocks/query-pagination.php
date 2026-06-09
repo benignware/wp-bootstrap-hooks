@@ -24,6 +24,10 @@ function render_block_query_pagination($content, $block) {
   $pagination_class = $pagination_class ?: 'd-flex';
 
   add_class($container, $pagination_class);
+
+  if ($pagination_class === 'pagination') {
+    add_style($container, 'gap', 0);
+  }
   
   // Pagination prev/next
   foreach (['previous', 'next'] as $key) {
@@ -56,6 +60,10 @@ function render_block_query_pagination($content, $block) {
         
         $link->parentNode->insertBefore($item);
         $item->appendChild($link);
+
+        if (has_class($link, 'current')) {
+          add_class($link, 'active');
+        }
         
         $page_numbers->parentNode->insertBefore($item->cloneNode(true), $page_numbers);
       }
